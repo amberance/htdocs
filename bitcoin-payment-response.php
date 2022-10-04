@@ -10,6 +10,7 @@ $payment_time = time();
 
 $requestData = $_REQUEST;
 echo $requestData['PayerID'];
+echo $requestData['PayerID'];
 print_r('hello');
 var_dump($requestData['PayerID']);
 
@@ -36,7 +37,7 @@ fclose($stderr);
 
 if (!isset($userID)) {
     //print_r('UserId is null or undefined! Using 11');
-    $userID = 13;
+    $userID = 1;
     echo($userID);
 } else {
     echo($userID);
@@ -47,7 +48,7 @@ if (true) {
 //return;
     
 
-    
+    $orderId = $requestData['order_id'];
     
     if (isset($requestData['PayerID'])) {
         
@@ -63,7 +64,7 @@ if (true) {
         /******************* paymentResponse($paymentResponseData); */
 
         //$getPamentData = mysqli_query($db, "SELECT * FROM i_user_payments WHERE payment_type IN('point','product') AND payment_status = 'pending' AND payment_option = 'paypal' AND payer_iuid_fk = '$userID'") or die(mysqli_error($db));
-        $getPamentData = mysqli_query($db, "SELECT * FROM i_user_payments WHERE payment_type IN('point','product') AND payment_status = 'pending' AND payment_option = 'bitcoin' AND payer_iuid_fk = '$userID'") or die(mysqli_error($db));
+        $getPamentData = mysqli_query($db, "SELECT * FROM i_user_payments WHERE order_key = '$orderId' AND payment_type IN('point','product') AND payment_status = 'pending' AND payment_option = 'bitcoin' AND payer_iuid_fk = '$userID'") or die(mysqli_error($db));
         
         $pData = mysqli_fetch_array($getPamentData, MYSQLI_ASSOC);
         $userPayedPlanID = isset($pData['credit_plan_id']) ? $pData['credit_plan_id'] : NULL;
@@ -77,15 +78,12 @@ if (true) {
         var_dump($getPamentData);
         var_dump($pData);
         
-        
-        
-        
         if(!empty($userPayedPlanID)){
             $planDetails = mysqli_query($db, "SELECT * FROM i_premium_plans WHERE plan_id = '$userPayedPlanID'") or die(mysqli_error($db));
             $pAData = mysqli_fetch_array($planDetails, MYSQLI_ASSOC);
             $planAmount = $pAData['plan_amount'];
             mysqli_query($db, "UPDATE i_users SET wallet_points = wallet_points + $planAmount WHERE iuid = '$userID'") or die(mysqli_error($db));
-            mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'pending' WHERE payer_iuid_fk = '$userID' AND payment_type = 'point' AND payment_option = 'bitcoin'") or die(mysqli_error($db));
+            mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'ok' WHERE payer_iuid_fk = '$userID' AND payment_type = 'point' AND payment_option = 'bitcoin'") or die(mysqli_error($db));
         }else if(!empty($productID)){
             $productDetailsFromID = mysqli_query($db, "SELECT * FROM i_user_product_posts WHERE pr_id = '$productID'") or die(mysqli_error($db));
             $productData = mysqli_fetch_array($productDetailsFromID, MYSQLI_ASSOC);

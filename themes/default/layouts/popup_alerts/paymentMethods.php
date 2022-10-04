@@ -4,6 +4,10 @@
        <div class="i_modal_content">  
           <div class="purchase_premium_header flex_ tabing border_top_radius mp" data-p="<?php echo filter_var($planID, FILTER_SANITIZE_STRING);?>"><?php echo filter_var($LANG['choose_payment_method'], FILTER_SANITIZE_STRING);?></div>
           <div class="purchase_post_details tabing"> 
+          
+              <div class="payment_method_box transition payMethod" id="bitcoin" data-type="bitcoin">
+                  <div class="payment_method_item flex_ bitcoin"></div>
+              </div>
              <?php if($bitPayPaymentStatus == '1'){?>
              <!---->
               <div class="payment_method_box transition payMethod" id="bitpay" data-type="bitpay">
@@ -94,7 +98,7 @@ $(document).ready(function() {
         $("#"+payWidth).append(plreLoadingAnimationPlus);
         $(".payment_method_box").css("pointer-events", "none");
         /*Methods Check 1*/
-        if(payWidth == 'paypal' || payWidth == 'iyzico' || payWidth == 'authorize-net' || payWidth == 'bitpay'){
+        if(payWidth == 'paypal' || payWidth == 'iyzico' || payWidth == 'authorize-net' || payWidth == 'bitpay' ||  payWidth == 'bitcoin'){
             $.ajax({
                 type: 'post', //form method
                 context: this,
@@ -108,6 +112,7 @@ $(document).ready(function() {
                     alert(string);
                 },
                 success: function(response) {
+                alert("bitcoin" + response);
                     $(".payment_method_box").css("pointer-events", "auto");
                     $(".loaderWrapper").remove();
                     if (typeof(response.validationMessage)) {
@@ -119,9 +124,22 @@ $(document).ready(function() {
                             alert(messageData);
                         }); 
                     }
+                                        
+                   if(payWidth == 'bitcoin'){  
+                        //$(".lw-show-till-loading").show();
+                        //on success load paypalUrl page 
+                        //console.log(response);
+                        // We don't have the productID!!!
+                       // alert(response);
+                        window.location.href = response+"?creditPlan=<?php echo filter_var($planID, FILTER_SANITIZE_STRING);?>"+ '&' + $.param(JSON.parse('<?php echo json_encode($DataUserDetails) ?>'));
+      					
+                    }
+                    
                     if(payWidth == 'paypal'){  
                         $(".lw-show-till-loading").show();
                         //on success load paypalUrl page 
+                        console.log(response.paypalUrl);
+                        alert();
                         window.location.href = response.paypalUrl;
                     }else if(payWidth == 'bitpay'){
                         if (response.status == "success") {

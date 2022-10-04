@@ -192,6 +192,7 @@ try {
   //$db = new PDO("mysql:host=localhost;dbname=$database", $user, $password);
 
   $orderId = filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL);
+  $creditPlan = filter_input(INPUT_GET, 'creditPlan', FILTER_SANITIZE_URL);
   $customerId = -1;
   $productId = -1;
   $productPrice = -1;
@@ -199,10 +200,22 @@ try {
     echo "<li>Payer ID:" . $row['payer_iuid_fk'] . "</li>";
     $customerId = $row['payer_iuid_fk'];
     $productId = $row['paymet_product_id'];
+    $creditPlanId = $row['credit_plan_id'];
   }
-  foreach($db->query("SELECT * FROM i_user_product_posts where pr_id='$productId'") as $row) {
-      echo "<li>Price: " . $row['pr_price'] . "</li>";
-      $productPrice = $row['pr_price'];
+  
+  //if the credit plan is null, then it must be a product order!
+
+  
+  if(!empty($productId)) {
+      foreach($db->query("SELECT * FROM i_user_product_posts where pr_id='$productId'") as $row) {
+          echo "<li>Price of product: " . $row['pr_price'] . "</li>";
+          $productPrice = $row['pr_price'];
+      }
+  } else if(!empty($creditPlanId)) {
+      foreach($db->query("SELECT * FROM i_premium_plans where plan_id='$creditPlanId'") as $row) {
+          echo "<li>Price of plan: " . $row['amount'] . "</li>";
+          $productPrice = $row['amount'];
+      }
   }
   
   
@@ -213,9 +226,10 @@ try {
     die();
 }
 
+echo filter_input(INPUT_GET, 'creditPlan', FILTER_SANITIZE_URL);
 echo filter_input(INPUT_GET, 'productID', FILTER_SANITIZE_URL);
 echo filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL);
-echo filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL);
+echo $_SERVER['HTTP_REFERER'];
 ?>
 
 
