@@ -1,0 +1,43 @@
+{
+  "_from": "agora-rtc-sdk-ng",
+  "_id": "agora-rtc-sdk-ng@4.7.1",
+  "_inBundle": false,
+  "_integrity": "sha512-jf+azF8B/rAMHVQrc853PE0Th6InGmeXnGQ7ROK1+iU+4MSPwNlFWY3VBk5N8jsELGtplrNQGIOkjv1jTiLmjA==",
+  "_location": "/agora-rtc-sdk-ng",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "agora-rtc-sdk-ng",
+    "name": "agora-rtc-sdk-ng",
+    "escapedName": "agora-rtc-sdk-ng",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/agora-rtc-sdk-ng/-/agora-rtc-sdk-ng-4.7.1.tgz",
+  "_shasum": "a34aee03861d23d36a8148b35e75f67a89d9e304",
+  "_spec": "agora-rtc-sdk-ng",
+  "_where": "/Applications/MAMP/htdocs/agora",
+  "author": {
+    "name": "agora"
+  },
+  "bundleDependencies": false,
+  "declaration": true,
+  "declarationMap": true,
+  "deprecated": false,
+  "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "main": "AgoraRTC_N-production.js",
+  "name": "agora-rtc-sdk-ng",
+  "typings": "rtc-sdk_en.d.ts",
+  "version": "4.7.1",
+  "dependencies": {
+    "swiper": "^7.0.5"
+  }
+}
