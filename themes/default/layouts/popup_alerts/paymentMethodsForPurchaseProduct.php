@@ -10,7 +10,7 @@
                   <div class="payment_method_item flex_ bitcoin"></div>
               </div>
               <div class="payment_method_box transition payMethod" id="bitpay" data-type="bitpay">
-                  <div class="payment_method_item flex_ bitpay"></div>
+                  <div class="payment_method_item flex_ ethereum"></div>
               </div>
              <!---->
              <?php }?>
@@ -97,7 +97,7 @@ $(document).ready(function() {
         $("#"+payWidth).append(plreLoadingAnimationPlus);
         $(".payment_method_box").css("pointer-events", "none");
         /*Methods Check 1*/
-        if(payWidth == 'paypal' || payWidth == 'iyzico' || payWidth == 'authorize-net' || payWidth == 'bitpay' || payWidth == 'bitcoin'){
+        if(payWidth == 'paypal' || payWidth == 'iyzico' || payWidth == 'authorize-net' || payWidth == 'bitpay' || payWidth == 'bitcoin' || payWidth == 'ethereum'){
             $.ajax({
                 type: 'post', //form method
                 context: this,
@@ -122,7 +122,7 @@ $(document).ready(function() {
                         }); 
                     }
                     
-                   if(payWidth == 'bitcoin'){  
+                   if(payWidth == 'bitcoin' || payWidth == 'ethereum'){  
                         $(".lw-show-till-loading").show();
                         //on success load paypalUrl page 
                         console.log(response);

@@ -237,9 +237,9 @@ echo $_SERVER['HTTP_REFERER'];
 <center>
 <div data-boxcoin="custom-<?php echo filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL) ?>-<?php echo $customerId ?>" 
 data-price="<?php echo $productPrice ?>"
-data-external-reference="<?php echo filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL) ?>-<?php echo $customerId ?>-<?php echo filter_input(INPUT_GET, 'payer_email', FILTER_SANITIZE_URL) ?>"
+data-external-reference="<?php echo filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL) ?>"
 data-title="<?php echo filter_input(INPUT_GET, 'item_id', FILTER_SANITIZE_URL) ?>"
-data-description="<?php echo filter_input(INPUT_GET, 'payer_email', FILTER_SANITIZE_URL) ?>"
+data-description="<?php echo $customerId ?>"
 
 ></div>
 </center>

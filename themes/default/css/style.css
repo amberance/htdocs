@@ -7855,6 +7855,31 @@ background: #ccc;
   -ms-background-size: cover;
 }
 
+.bitcoin {
+  width: 205px;
+  height: 40px;
+  background: url("paymentIcons/bitcoin.svg") no-repeat center;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  -ms-background-size: cover;
+}
+
+
+.ethereum {
+  width: 205px;
+  height: 40px;
+  background: url("paymentIcons/ethereum.svg") no-repeat center;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  -ms-background-size: cover;
+}
+
+
+
+
+
 .stripe {
   width: 90px;
   height: 40px;
