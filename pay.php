@@ -5,23 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 <title>Payments</title>
 <!-- Primary Meta Tags -->
-<meta name="title" content="Payments">
-<meta name="description" content="dizzy is Creators Content Script. It is best way to start your online Creators platform. It is so fun for all your fans. Just create your contents and start to earn money.">
-<meta name="keywords" content="dizzy, creators, content creators, dizzy content creator script, dizzy creators">
 <script id="boxcoin" src="https://www.radient.one/boxcoin/js/client.js"></script>
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="">
-<meta property="og:title" content="Payments">
-<meta property="og:description" content="dizzy is Creators Content Script. It is best way to start your online Creators platform. It is so fun for all your fans. Just create your contents and start to earn money.">
-<meta property="og:image" content="">
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="">
-<meta property="twitter:title" content="Payments">
-<meta property="twitter:description" content="dizzy is Creators Content Script. It is best way to start your online Creators platform. It is so fun for all your fans. Just create your contents and start to earn money.">
-<meta property="twitter:image" content="">
+
+
 
 <meta name="theme-color" content="#f65169">
 <link rel="shortcut icon" type="image/png" href="https://www.radient.one/img/2022-03-16/image_1647408763070005900_1.png" sizes="128x128">
@@ -32,12 +20,7 @@
 <link rel="stylesheet" type="text/css" href="https://www.radient.one/themes/default/css/checkbox/checkbox.css">
 <link rel="stylesheet" type="text/css" href="https://www.radient.one/themes/default/css/crop/cropmain.css">
 <link rel="stylesheet" type="text/css" href="https://www.radient.one/themes/default/css/swiper/swiper-bundle.css">
-<style rel="stylesheet"  type="text/css">
-/*
 
-Add here your custom css styles Example: p { text-align: center; color: red; }
-
-*/ </style>
 <link rel="stylesheet" type="text/css" href="https://www.radient.one/themes/default/css/audioplayer.css?v=m11"><script type="text/javascript" src="https://www.radient.one/themes/default/js/jquery-v3.5.1.min.js"></script>
 <script type="text/javascript" src="https://www.radient.one/themes/default/js/jquery.form.js"></script>
 <script type="text/javascript" src="https://www.radient.one/themes/default/js/share.js?v=13.6.8"></script>
@@ -55,12 +38,7 @@ $(function() {
     </script>
     <script type="text/javascript" src="https://www.radient.one/themes/default/js/inora.js?v=o51171113.6.8"></script>
     <script type="text/javascript" src="https://www.radient.one/themes/default/js/character_count.js?v=3.6.8"></script>
-    <script type="text/javascript">
-    $(document).ready(function(){
-        $("#newPostT").characterCounter({
-            limit: 250  });
-    });
-        </script>
+
         <script type="text/javascript">
         </script>
         <script type="text/javascript" src="https://www.radient.one/themes/default/js/swiper/swiper-bundle.min.js"></script></head>
@@ -132,46 +110,9 @@ $(function() {
         </div>
         </div>
         </div>
-        <audio id="notification-sound-mes" class="sound-controls" preload="auto">
-        <source src="https://www.radient.one/themes/default/mp3/message.mp3" type="audio/mpeg">
-        </audio>
-        <audio id="notification-sound-not" class="sound-controls aw" preload="auto">
-        <source src="https://www.radient.one/themes/default/mp3/not.mp3" type="audio/mpeg">
-        </audio>
-        <audio id="notification-sound-coin" class="sound-controls" preload="auto">
-        <source src="https://www.radient.one/themes/default/mp3/coin.mp3" type="audio/mpeg">
-        </audio>
-        <audio id="notification-sound-call" class="sound-controls" preload="auto">
-        <source src="https://www.radient.one/themes/default/mp3/call.mp3" type="audio/mpeg">
-        </audio>
-        <script src="https://www.radient.one/src/gdpr-cookie.js?v=3.6.8"></script>
-        <script>
-        $.gdprcookie.init({
-            title: "ðŸ�ª Accept cookies & privacy policy?",
-            message: 'This site uses cookies, by continuing to use the service, you accept our use of cookies Cookies Policy, <a href="https://www.radient.one/cookies">Cookie Policy</a>',
-            delay: 600,
-            expires: 30,
-            acceptBtnLabel: "Accept",
-        });
-            
-            $(document.body)
-            .on("gdpr:show", function() {
-                //console.log("Cookie dialog is shown");
-            })
-            .on("gdpr:accept", function() {
-                var preferences = $.gdprcookie.preference();
-                //console.log("Preferences saved:", preferences);
-            })
-            .on("gdpr:advanced", function() {
-                //console.log("Advanced button was pressed");
-            });
-                
-                if ($.gdprcookie.preference("marketing") === true) {
-                    //console.log("This should run because marketing is accepted.");
-                }
-                </script>
+
+
                 <script type="text/javascript">
-                var audio = new Audio('https://www.radient.one//themes/default/mp3/call.mp3');
                 </script>     <div class="wrapper bCreatorBg">
                 <div class="i_not_found_page transition">
                 
@@ -249,6 +190,5 @@ data-description="<?php echo $customerId ?>"
                 
                 </div>
                 </div>
-                <div class="footer_container_out"><div class="footer_menu_item"><a href="https://www.radient.one/about-us">About Us</a></div><div class="footer_menu_item"><a href="https://www.radient.one/privacy-policies">Privacy Policies</a></div><div class="footer_menu_item"><a href="https://www.radient.one/contact">Contact</a></div><div class="footer_menu_item"><a href="https://www.radient.one/terms-of-use">Terms Of Use</a></div><div class="footer_menu_item"><a href="https://www.radient.one/cookies">Cookies</a></div><div class="footer_menu_item"><a href="https://www.radient.one/terms-of-sales">Terms of sales</a></div><div class="footer_menu_item"><a href="https://www.radient.one/payments">Payments</a></div><div class="footer_menu_item">dizzy Â© 2022</div> </div>
                 </body>
                 </html> 
