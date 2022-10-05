@@ -16,7 +16,6 @@
     var areas;
     var active_area;
     var active_area_id;
-    var active_element;
     var transactions_table;
     var transactions_filters = [false, false, false, false];
     var transaction_statuses = { P: 'Pending', C: 'Completed', R: 'Refunded', X: 'Underpayment' };
@@ -128,6 +127,7 @@
     */
 
     var BXCAdmin = {
+        active_element: false,
 
         card: function (message, type = false) {
             var card = main.find('.bxc-info-card');
@@ -152,6 +152,7 @@
         balance: function (area) {
             if (!loading(area)) {
                 let table = main.find('#bxc-table-balances tbody');
+                if (!table.e.length) return;
                 if (!table.html()) area.addClass('bxc-loading-first');
                 ajax('get-balances', {}, (response) => {
                     let code = '';
@@ -174,16 +175,21 @@
                 case 'btc':
                     explorer = 'https://www.blockchain.com/btc/{R}/{V}';
                     break;
-                case 'link':
-                case 'bat':
-                case 'shib':
-                case 'usdc':
-                case 'usdt':
                 case 'eth':
                     explorer = 'https://www.blockchain.com/eth/{R}/{V}';
                     break;
                 case 'doge':
                     explorer = 'https://dogechain.info/{R}/{V}';
+                    break;
+                case 'link':
+                case 'bat':
+                case 'shib':
+                case 'usdc':
+                case 'usdt':
+                    explorer = 'https://etherscan.io/{R}/{V}#tokentxns';
+                    break;
+                case 'usdt_tron':
+                    explorer = 'https://tronscan.org/#/{R}/{V}';
                     break;
                 case 'algo':
                     explorer = 'https://algoexplorer.io/{R}/{V}';
@@ -390,7 +396,8 @@
             let hash = _(this).attr('data-hash');
             if (hash) {
                 let cryptocurrency = _(this).attr('data-cryptocurrency');
-                window.open(BXCAdmin.explorer(cryptocurrency, hash, 'tx'));
+                let url = BXCAdmin.explorer(cryptocurrency, hash, 'tx');
+                if (url) window.open(url);
             }
         });
 
@@ -698,25 +705,8 @@
 
         main.on('click', '#bxc-table-balances tr', function () {
             let cryptocurrency = _(this).attr('data-cryptocurrency');
-            window.open(BXCAdmin.explorer(cryptocurrency, BXC_ADDRESS[cryptocurrency]));
-        });
-
-        main.on('click', '.bxc-select', function () {
-            let ul = _(this).find('ul');
-            let active = ul.hasClass('bxc-active');
-            activate(ul, !active);
-            if (!active) setTimeout(() => { active_element = ul.e[0] }, 300);
-
-        });
-
-        main.on('click', '.bxc-select li', function () {
-            let select = _(this.closest('.bxc-select'));
-            let value = _(this).attr('data-value');
-            var item = select.find(`[data-value="${value}"]`);
-            activate(select.find('li'), false);
-            select.find('p').attr('data-value', value).html(item.html());
-            activate(item, true);
-            active_element = false;
+            let url = BXCAdmin.explorer(cryptocurrency, BXC_ADDRESS[cryptocurrency]);
+            if (url) window.open(url);
         });
 
         window.onscroll = function () {
@@ -738,9 +728,9 @@
         }
 
         document.addEventListener('click', function (e) {
-            if (active_element && !active_element.contains(e.target)) {
-                activate(active_element, false);
-                active_element = false;
+            if (BXCAdmin.active_element && !BXCAdmin.active_element.contains(e.target)) {
+                activate(BXCAdmin.active_element, false);
+                BXCAdmin.active_element = false;
             }
         });
     });

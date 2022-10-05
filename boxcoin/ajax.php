@@ -43,7 +43,7 @@ switch ($_POST['function']) {
     case 'delete-checkout':
         die(bxc_json_response(bxc_checkout_delete($_POST['checkout_id'])));
     case 'create-transaction':
-        die(bxc_json_response(bxc_transactions_create($_POST['amount'], $_POST['cryptocurrency_code'], bxc_post('currency_code'), bxc_post('external_reference'), bxc_post('title'), bxc_post('description'), bxc_post('url'), bxc_post('billing', ''))));
+        die(bxc_json_response(bxc_transactions_create($_POST['amount'], $_POST['cryptocurrency_code'], bxc_post('currency_code'), bxc_post('external_reference'), bxc_post('title'), bxc_post('description'), bxc_post('url'), bxc_post('billing', ''), bxc_post('vat'))));
     case 'get-fiat-value':
         die(bxc_json_response(bxc_crypto_get_fiat_value($_POST['amount'], $_POST['cryptocurrency_code'], $_POST['currency_code'])));
     case 'cron':
@@ -56,6 +56,10 @@ switch ($_POST['function']) {
         die(bxc_json_response(bxc_update($_POST['domain'])));
     case 'evc':
         die(bxc_json_response(bxc_ve($_POST['code'], $_POST['domain'])));
+    case 'vat':
+        die(bxc_json_response(bxc_vat($_POST['amount'], bxc_post('country_code'), bxc_post('currency'))));
+    case 'vat-validation':
+        die(bxc_json_response(bxc_vat_validation($_POST['vat_number'])));
     default:
         die(bxc_json_response('No function with name: ' . $_POST['function'], false));
 }

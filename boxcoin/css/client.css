@@ -220,6 +220,21 @@
   opacity: 0 !important;
   padding: 0 !important; }
 
+.bxc-scrollbar {
+  overflow-y: scroll !important;
+  scrollbar-color: #ced6db #ced6db;
+  scrollbar-width: thin; }
+  .bxc-scrollbar::-webkit-scrollbar {
+    width: 5px; }
+  .bxc-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1; }
+  .bxc-scrollbar::-webkit-scrollbar-thumb {
+    background: #ced6db;
+    border-radius: 6px;
+    transition: all 0.4s; }
+  .bxc-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #A0A0A0; }
+
 /* 
 
 # TYPOGRAPHY
@@ -246,6 +261,80 @@
 ==========================================================
 
 */
+.bxc-select ul, .bxc-ul {
+  padding: 10px 0 !important;
+  display: none;
+  overflow: hidden;
+  position: absolute;
+  margin: 0;
+  background: #fff;
+  border-radius: 4px;
+  padding: 10px 0;
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  list-style: none;
+  z-index: 9999995; }
+  .bxc-select ul.bxc-active, .bxc-ul.bxc-active {
+    display: block;
+    margin-bottom: 15px; }
+  .bxc-select ul li, .bxc-ul li {
+    cursor: pointer;
+    padding: 6px 25px 6px 12px;
+    margin: 0;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: .3px;
+    line-height: 20px;
+    white-space: nowrap;
+    list-style: none;
+    transition: all 0.1s; }
+    .bxc-select ul li.bxc-active, .bxc-ul li.bxc-active {
+      display: none; }
+    .bxc-select ul li:hover, .bxc-ul li:hover {
+      background-color: #2bb0ba;
+      color: #fff; }
+
+.bxc-select {
+  position: relative;
+  color: #464646;
+  font-size: 14px;
+  height: 35px;
+  line-height: 35px;
+  display: inline-block; }
+  .bxc-select p {
+    position: relative;
+    padding: 0 20px 0 0;
+    margin: 0;
+    cursor: pointer;
+    font-weight: 500;
+    letter-spacing: .3px;
+    font-size: 13px !important;
+    line-height: 35px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.4s; }
+    .bxc-select p span {
+      font-weight: 400;
+      opacity: 0.7; }
+    .bxc-select p:after {
+      content: "\61";
+      font-family: "Boxcoin Icons";
+      position: absolute;
+      top: 0;
+      right: 1px;
+      font-size: 9px;
+      font-style: normal;
+      font-weight: normal;
+      line-height: 35px; }
+    .bxc-select p:hover {
+      color: #2bb0ba; }
+  .bxc-select.bxc-loading {
+    overflow: visible; }
+  .bxc-select.bxc-right ul {
+    right: 0; }
+  .bxc-select + .bxc-select {
+    margin-left: 20px; }
+
 .bxc-input {
   display: flex;
   justify-content: space-between;
@@ -651,6 +740,27 @@ hr {
   .bxc-amount-fiat:not(.bxc-donation) > div:first-child {
     display: none; }
 
+.bxc-donation {
+  text-align: left; }
+  .bxc-donation #user-amount {
+    align-items: center; }
+    .bxc-donation #user-amount span {
+      margin: 0 10px 0 60px; }
+
+.bxc-vat {
+  font-weight: 400;
+  font-size: 13px;
+  margin-top: 5px;
+  display: block;
+  letter-spacing: .3px; }
+  .bxc-vat:empty {
+    display: none; }
+
+.bxc-billing .bxc-title-1 {
+  margin-bottom: 30px; }
+.bxc-billing .bxc-title-2 {
+  margin-top: 30px; }
+
 .bxc-payment-methods-cnt, .bxc-billing-cnt {
   align-items: flex-start;
   padding-top: 30px; }
@@ -731,9 +841,11 @@ hr {
 .bxc-qrcode {
   max-width: 130px; }
 
-.bxc-qrcode-text img {
-  max-width: 35px;
-  margin-right: 15px; }
+.bxc-qrcode-text {
+  padding-left: 30px; }
+  .bxc-qrcode-text img {
+    max-width: 35px;
+    margin-right: 15px; }
 
 .bxc-pay-address .bxc-title, .bxc-pay-amount .bxc-title {
   font-weight: 500;
@@ -787,7 +899,7 @@ hr {
 .bxc-complete-cnt, .bxc-failed-cnt, .bxc-underpayment-cnt {
   display: none;
   text-align: center;
-  padding: 60px 0;
+  padding: 60px 30px;
   animation: bxc-fade-in .5s; }
   .bxc-complete-cnt > i, .bxc-failed-cnt > i, .bxc-underpayment-cnt > i {
     color: #2bb0ba;
@@ -805,6 +917,11 @@ hr {
 
 .bxc-complete-cnt-active .bxc-complete-cnt {
   display: block; }
+
+.bxc-complete-cnt .bxc-order-processing span:first-child {
+  display: none; }
+.bxc-complete-cnt .bxc-text:not(.bxc-order-processing) span:last-child {
+  display: none; }
 
 .bxc-failed-cnt-active .bxc-failed-cnt {
   display: block; }
@@ -956,6 +1073,18 @@ hr {
     .bxc-amount-fiat > div {
       margin: 0 5px; }
 
+  .bxc-donation {
+    display: block;
+    text-align: center; }
+    .bxc-donation #user-amount {
+      margin-top: 15px;
+      justify-content: center; }
+      .bxc-donation #user-amount span {
+        margin: 0 10px 0 0;
+        text-align: right;
+        display: inline-block;
+        flex-grow: 0; }
+
   .bxc-payment-methods {
     padding: 0;
     margin: 30px auto; }
@@ -982,6 +1111,12 @@ hr {
 
   .bxc-qrcode-text, .bxc-pay-address, .bxc-pay-amount {
     justify-content: center; }
+
+  .bxc-qrcode-text {
+    padding-left: 0;
+    display: block; }
+    .bxc-qrcode-text img {
+      margin: 0 0 30px 0; }
 
   .bxc-payment-methods-cnt .bxc-collapse-btn {
     padding-left: 0 !important; } }

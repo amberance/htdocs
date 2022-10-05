@@ -124,7 +124,7 @@
     }
 
     _.init.prototype.parent = function () {
-        return _(this.e[0].parentElement);
+        return this.e.length ? _(this.e[0].parentElement) : false;
     }
 
     _.init.prototype.prev = function () {
@@ -144,7 +144,7 @@
     _.init.prototype.html = function (value = false) {
         if (!this.e.length) return;
         if (value === false) return this.e[0].innerHTML;
-        if (typeof value === 'string') this.e[0].innerHTML = value; else this.e[0].appendChild(value);
+        if (typeof value === 'string' || typeof value === 'number') this.e[0].innerHTML = value; else this.e[0].appendChild(value);
         return _(this.e);
     }
 
@@ -399,12 +399,12 @@
                 });
             },
 
-            initTransaction: function (transaction_id, amount, address, cryptocurrency, external_reference, countdown_partial = false, custom_token = false, redirect = false) {
+            initTransaction: function (transaction_id, amount, address, cryptocurrency, external_reference, countdown_partial = false, custom_token = false, redirect = false, vat = false) {
                 let pay_cnt = active_checkout.find('.bxc-pay-cnt');
                 let area = pay_cnt.find('.bxc-pay-address');
                 let cryptocurrency_uppercase = BOXCoin.baseCode(cryptocurrency.toUpperCase());
                 let countdown_area = pay_cnt.find('[data-countdown]');
-                let data = { id: transaction_id, amount: amount, address_payment: address, cryptocurrency: cryptocurrency, external_reference: external_reference, custom_token: custom_token, redirect: redirect };
+                let data = { id: transaction_id, amount: amount, address_payment: address, cryptocurrency: cryptocurrency, external_reference: external_reference, custom_token: custom_token, redirect: redirect, vat: vat };
                 let network_label = BOXCoin.network(cryptocurrency, false);
                 active_checkout.addClass('bxc-pay-cnt-active');
                 area.find('.bxc-text').html(cryptocurrency_uppercase + network_label + ' ' + bxc_('address'));
@@ -499,9 +499,10 @@
 
             completeTransaction: function (encrypted_transaction, active_transaction, interval_id = false) {
                 if (typeof BXC_WP_AJAX_URL != ND) {
-                    _.ajax(BXC_WP_AJAX_URL, { action: 'bxc_wp_ajax', type: 'woocommerce-payment-complete', transaction: active_transaction }, (response) => {
+                    _.ajax(BXC_WP_AJAX_URL, { action: 'bxc_wp_ajax', type: BOXCoin.getURL('plugin') + '-payment-complete', transaction: active_transaction }, (response) => {
                         document.location.href = response;
                     });
+                    active_checkout.find('.bxc-text').addClass('bxc-order-processing');
                 }
                 if (BXC_SETTINGS.webhook) {
                     ajax('webhook', { transaction: encrypted_transaction });
@@ -621,6 +622,25 @@
         localStorage.setItem(name, JSON.stringify(value));
     }
 
+    function vat(select) {
+        let checkout = _(select.closest('.bxc-main'));
+        let vat = checkout.find('.bxc-vat');
+        if (vat.e.length) {
+            loading(vat);
+            ajax('vat', {
+                amount: checkout.attr('data-start-price'),
+                country_code: _(select.options[select.selectedIndex]).attr('data-country-code'),
+                currency: checkout.attr('data-currency')
+            }, (response) => {
+                vat.html(response[4]);
+                vat.attr('data-country', response[3]).attr('data-country-code', response[2]).attr('data-amount', response[1]).attr('data-percentage', response[5]);
+                checkout.attr('data-price', response[0]);
+                checkout.find('.bxc-amount-fiat-total').html(response[0]);
+                loading(vat, false);
+            });
+        }
+    }
+
     /*
     * ----------------------------------------------------------
     * Init
@@ -658,6 +678,7 @@
                     body.on('click', '.bxc-payment-methods > div', function () {
                         let checkout = _(checkoutParent(this));
                         let id = checkout.parent().attr('data-boxcoin');
+                        checkout.find('.bxc-input').removeClass('bxc-error');
                         checkout.find('.bxc-error').remove();
                         if (active_checkout_id && id != active_checkout_id) {
                             checkout.find('.bxc-body').prepend(`<div class="bxc-error bxc-text">${bxc_('Another transaction is being processed. Complete the transaction or cancel it to start a new one.')}</div>`);
@@ -671,6 +692,7 @@
                         let amount = active_checkout.attr('data-price');
                         let input = active_checkout.find('#user-amount');
                         let custom_token = _(this).attr('data-custom-coin');
+                        let vat = checkout.find('.bxc-vat');
                         let billing = false;
                         if (!amount || amount == -1) {
                             amount = input.find('input').val();
@@ -689,6 +711,9 @@
                             });
                             storage('bxc-billing', billing);
                         }
+                        if (vat.e.length && vat.attr('data-amount')) {
+                            vat = { amount: vat.attr('data-amount'), percentage: vat.attr('data-percentage'), country: vat.attr('data-country'), country_code: vat.attr('data-country-code') }
+                        } else vat = false;
                         active_checkout.addClass('bxc-pay-cnt-active');
                         loading(active_checkout.find('.bxc-pay-cnt'));
                         ajax('create-transaction', {
@@ -700,7 +725,8 @@
                             description: active_checkout.attr('data-description'),
                             custom_token: custom_token,
                             url: document.location.href,
-                            billing: billing ? JSON.stringify(billing) : ''
+                            billing: billing ? JSON.stringify(billing) : '',
+                            vat: vat 
                         }, (response) => {
                             if (!Array.isArray(response)) return console.error(response);
                             if (['stripe', 'verifone'].includes(cryptocurrency_code)) {
@@ -709,7 +735,7 @@
                                 BOXCoin.event('TransactionStarted', data);
                                 document.location = response[2];
                             } else {
-                                BOXCoin.checkout.initTransaction(response[0], response[1], response[2], cryptocurrency_code, external_reference, false, custom_token, active_checkout.attr('data-redirect'));
+                                BOXCoin.checkout.initTransaction(response[0], response[1], response[2], cryptocurrency_code, external_reference, false, custom_token, active_checkout.attr('data-redirect'), vat);
                             }
                         });
                     });
@@ -748,27 +774,73 @@
 
                     /*
                     * ----------------------------------------------------------
-                    * Invoice
+                    * Invoice & VAT
                     * ----------------------------------------------------------
                     */
 
                     body.on('click', '#bxc-btn-invoice', function () {
                         let billing = storage('bxc-billing');
+                        let countries = _('#bxc-billing [name="country"]');
                         if (billing) {
                             for (var key in billing) {
                                 _(`#bxc-billing [name="${key}"]`).val(billing[key]);
                             }
+                        } else {
+                            countries.val(_(this.closest('.bxc-main')).find('.bxc-vat').attr('data-country'));
                         }
                         _(this).remove();
+                        vat(countries.e[0]);
                         _('#bxc-billing').removeClass('bxc-hidden');
                     });
 
+                    body.on('change', '#bxc-billing [name="country"]', function () {
+                        vat(this);
+                    });
+
+                    body.on('focusout', '#bxc-billing [name="vat"]', function () {
+                        let vat_number = _(this).val();
+                        if (BXC_SETTINGS.vat_validation && vat_number.length > 5 && vat_number.charAt(0).match(/[A-Z]/i)) {
+                            let checkout = _(this.closest('.bxc-main'));
+                            let vat_box = checkout.find('.bxc-vat');
+                            loading(vat_box);
+                            ajax('vat-validation', {
+                                vat_number: vat_number
+                            }, (response) => {
+                                if (response && response.data && response.data.valid) {
+                                    let price = checkout.attr('data-start-price');
+                                    checkout.find('.bxc-vat').html('');
+                                    checkout.attr('data-price', price);
+                                    checkout.find('.bxc-amount-fiat-total').html(price);
+                                } else {
+                                    vat(_('#bxc-billing [name="country"]').e[0]);
+                                }
+                                loading(vat_box, false);
+                            });
+                        }
+                    });
                     break;
                 }
             }
         } else {
             globalInit();
         }
+
+        body.on('click', '.bxc-select', function () {
+            let ul = _(this).find('ul');
+            let active = ul.hasClass('bxc-active');
+            activate(ul, !active);
+            if (admin && !active) setTimeout(() => { BXCAdmin.active_element = ul.e[0] }, 300);
+        });
+
+        body.on('click', '.bxc-select li', function () {
+            let select = _(this.closest('.bxc-select'));
+            let value = _(this).attr('data-value');
+            var item = select.find(`[data-value="${value}"]`);
+            activate(select.find('li'), false);
+            select.find('p').attr('data-value', value).html(item.html());
+            activate(item, true);
+            if (admin) BXCAdmin.active_element = false;
+        });
 
     }, false);
 
