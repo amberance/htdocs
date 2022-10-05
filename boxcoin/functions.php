@@ -9,7 +9,7 @@
  *
  */
 
-define('BXC_VERSION', '1.1.0');
+define('BXC_VERSION', '1.0.9');
 require(__DIR__ . '/config.php');
 global $BXC_LOGIN;
 global $BXC_LANGUAGE;
@@ -65,8 +65,8 @@ function bxc_transactions_get($transaction_id) {
     return bxc_db_get('SELECT * FROM bxc_transactions WHERE id = ' . bxc_db_escape($transaction_id, true));
 }
 
-function bxc_transactions_create($amount, $cryptocurrency_code, $currency_code = false, $external_reference = '', $title = '', $description = '', $url = false, $billing = '', $vat = false) {
-    $query_parts = ['INSERT INTO bxc_transactions(title, description, `from`, `to`, amount, amount_fiat, cryptocurrency, currency, external_reference, creation_time, status, webhook, billing, vat, vat_details) VALUES ("' . bxc_db_escape($title) . '", "' . bxc_db_escape($description) . '", "",', ', "' . bxc_db_escape($currency_code) . '", "' . bxc_db_escape($external_reference) . '", "' . gmdate('Y-m-d H:i:s') . '", "P", 0, "' . bxc_db_escape($billing) . '", "' . bxc_isset($vat, 'amount', '') . '", "' . ($vat && !empty($vat['amount']) ? bxc_db_json_escape($vat) : '') . '")'];
+function bxc_transactions_create($amount, $cryptocurrency_code, $currency_code = false, $external_reference = '', $title = '', $description = '', $url = false, $billing = '') {
+    $query_parts = ['INSERT INTO bxc_transactions(title, description, `from`, `to`, amount, amount_fiat, cryptocurrency, currency, external_reference, creation_time, status, webhook, billing) VALUES ("' . bxc_db_escape($title) . '", "' . bxc_db_escape($description) . '", "",', ', "' . bxc_db_escape($currency_code) . '", "' . bxc_db_escape($external_reference) . '", "' . gmdate('Y-m-d H:i:s') . '", "P", 0, "' . bxc_db_escape($billing) . '")'];
     if (!$currency_code) $currency_code = bxc_settings_get('currency', 'USD');
     if (in_array($cryptocurrency_code, ['stripe', 'verifone'])) {
         $transaction_id = bxc_db_query($query_parts[0] . '"", "", "' . bxc_db_escape($amount, true) . '", "' . bxc_db_escape($cryptocurrency_code) . '"' . $query_parts[1], true);
@@ -143,7 +143,7 @@ function bxc_transactions_check($transaction_id) {
         $transactions = bxc_blockchain($cryptocurrency, 'transactions', false, $to);
         if (is_array($transactions)) {
             for ($i = 0; $i < count($transactions); $i++) {
-                if ((empty($transactions[$i]['time']) || $transactions[$i]['time'] > $transaction_creation_time) && ($address_generation || $boxcoin_transaction['amount'] == $transactions[$i]['value'] || strpos($transactions[$i]['value'], $boxcoin_transaction['amount']) === 0)) {
+                if ((empty($transactions[$i]['time']) || $transactions[$i]['time'] > $transaction_creation_time) && ($address_generation || $boxcoin_transaction['amount'] == $transactions[$i]['value'])) {
                     return bxc_encryption(['hash' => $transactions[$i]['hash'], 'id' => $transaction_id, 'cryptocurrency' => $cryptocurrency, 'to' => $to, 'billing' => $boxcoin_transaction['billing'], 'amount' => $boxcoin_transaction['amount']]);
                 }
             }
@@ -254,11 +254,8 @@ function bxc_transactions_invoice($transaction_id) {
     $pdf->Cell(168, 1, bxc_('Transaction amount'));
     $pdf->SetFont('Arial', '', 13);
     $pdf->SetXY(20, 190);
-    $pdf->Cell(168, 1, strtoupper($transaction['currency']) . ' ' . $transaction['amount_fiat'] . ' (' . strtoupper($transaction['cryptocurrency']) . ' ' . $transaction['amount'] . ')');
-    if ($transaction['vat']) {
-        $pdf->SetXY(20, 200);
-        $pdf->Cell(100, 1, 'VAT ' . strtoupper($transaction['currency']) . ' ' . $transaction['vat']);
-    }
+    $pdf->Cell(168, 1, strtoupper($transaction['currency']) .  $transaction['amount_fiat'] . ' (' . strtoupper($transaction['cryptocurrency']) . ' ' . $transaction['amount'] . ')');
+
     $pdf->Output(__DIR__ . '/uploads/' . $file_name, 'F');
     return $invoice_url;
 }
@@ -380,16 +377,12 @@ function bxc_crypto_api_key($service, $url = false) {
             $keys = ['2Z5V3AZV5P4K95M9UXPABQ19CAVWR7RM78', '6JG8B7F5CC5APF2Q1C3BXRMZSS92F1RGKX', '2BAPYF16Z6BR8TY2SZGN74231JNZ8TFQKU', '1DNAQ7C2UAYPS5WW7HQXPCF8WFYG8CP3XQ', 'MP3XAXN1D7XVYZQVNCMGII5JZTBRASG996'];
             $key_parameter = 'apiKey';
             break;
-        case 'blockdaemon':
-            $keys = ['5inALCDK3NzmSoA-EC4ribZEDAvj0zy95tPaorxMZYzTRR0u', 'i1-LMC4x9ZgSlZ-kSrCf3pEeckZadAsKCJxuvXRq9pusgK2T', 'ktbzuPccKUwnnMI73YLEK7h29dEOQfFBOCNAXJ0SnHw8rn69', 'FI2b6Cfpf8lee2xaTs98IprkPb1OuxjW11M2Sq-vlIrqzKsR', '1nvtfBzPsjByQPYBr0xoxc1jv9KrntMnOhkjKTkTt3ejxUXk'];
-            $key_parameter = '-';
-            break;
     }
     if ($key_parameter) {
         $key = bxc_settings_get($service . '-key');
         if (!$key) $key = $keys[rand(0, 4)];
     }
-    return $key ? ($url ? ($url . (strpos($url, '?') ? '&' : '?') . $key_parameter . '=' . $key) : $key) : ($url ? $url : false);
+    return $key ? ($url ? $url . (strpos($url, '?') ? '&' : '?') . $key_parameter . '=' . $key : $key) : ($url ? $url : false);
 }
 
 function bxc_crypto_get_fiat_value($amount, $cryptocurrency_code, $currency_code) {
@@ -420,22 +413,21 @@ function bxc_crypto_get_cryptocurrency_value($amount, $cryptocurrency_code, $cur
     return bxc_decimal_number($rate * floatval($amount));
 }
 
-function bxc_blockchain($cryptocurrency_code, $action, $extra = false, $address = false) {
+function bxc_blockchain($cryptocurrency, $action, $extra = false, $address = false) {
     $services = [
         'btc' => [['https://mempool.space/api/', 'address/{R}', 'address/{R}/txs', 'tx/{R}', 'blocks/tip/height', 'mempool'], ['https://chain.so/api/v2/', 'get_address_balance/btc/{R}', 'get_tx_received/btc/{R}', 'get_tx/btc/{R}', 'get_info/BTC', 'chain'], ['https://blockstream.info/api/', 'address/{R}', 'address/{R}/txs', 'tx/{R}', 'blocks/tip/height', 'blockstream'], ['https://blockchain.info/', 'q/addressbalance/{R}', 'rawaddr/{R}?limit=10', 'rawtx/{R}', 'q/getblockcount', 'blockchain']],
         'eth' => [['https://api.etherscan.io/api?', 'module=account&action=balance&address={R}', 'module=account&action=txlist&address={R}&startblock=0&endblock=99999999&offset=15&sort=asc', 'module=account&action=txlist&address={R}&startblock=0&endblock=99999999&offset=15&sort=asc', false, 'etherscan'], ['https://api.ethplorer.io/', 'getAddressInfo/{R}', 'getAddressTransactions/{R}?limit=15&showZeroValues=false', 'getTxInfo/{R}', 'getLastBlock', 'ethplorer'], ['https://blockscout.com/eth/mainnet/api?', 'module=account&action=balance&address={R}', 'module=account&action=txlist&address={R}', 'module=transaction&action=gettxinfo&txhash={R}', false, 'blockscout']],
-        'doge' => [['https://chain.so/api/v2/', 'get_address_balance/doge/{R}', 'get_tx_received/doge/{R}', 'get_tx/doge/{R}', 'get_info/DOGE', 'chain']],
+        'doge' => [['https://dogechain.info/api/v1/', 'address/balance/{R}', 'unspent/{R}', 'transaction/{R}', false, 'dogechain'], ['https://chain.so/api/v2/', 'get_address_balance/doge/{R}', 'get_tx_received/doge/{R}', 'get_tx/doge/{R}', 'get_info/DOGE', 'chain']],
         'algo' => [['https://algoindexer.algoexplorerapi.io/v2/', 'accounts/{R}', 'accounts/{R}/transactions?limit=15', 'transactions/{R}', 'accounts/{R}', 'algoexplorerapi']],
         'bnb' => [['https://api.bscscan.com/api?', 'module=account&action=balance&address={R}', 'module=account&action=txlist&address={R}&startblock=0&endblock=99999999&offset=15&sort=asc', 'module=account&action=txlist&address={R}&startblock=0&endblock=99999999&offset=15&sort=asc', false, 'bscscan']],
         'ltc' => [['https://chain.so/api/v2/', 'get_address_balance/ltc/{R}', 'get_tx_received/ltc/{R}', 'get_tx/ltc/{R}', 'get_info/LTC', 'chain']],
         'bch' => [['https://rest1.biggestfan.net/v2/address/', 'details/{R}', 'transactions/{R}', 'transactions/{R}', false, 'biggestfan']],
         'trx' => [['https://apilist.tronscan.org/api/', 'account?address={R}', 'transaction?sort=-timestamp&count=true&limit=15&start=0&address={R}', 'transaction-info?hash={R}', false, 'tronscan']]
     ];
-    $address = $address ? $address : bxc_settings_get('address-' . $cryptocurrency_code);
-    $address_lowercase = strtolower($address);
+    $address = $address ? $address : bxc_settings_get('address-' . $cryptocurrency);
 
     // Tokens
-    $is_token = in_array($cryptocurrency_code, ['usdt', 'usdc', 'link', 'shib', 'bat']) ? 'eth' : (in_array($cryptocurrency_code, ['usdt_tron']) ? 'trx' : (in_array($cryptocurrency_code, ['busd']) ? 'bsc' : false));
+    $is_token = in_array($cryptocurrency, ['usdt', 'usdc', 'link', 'shib', 'bat']) ? 'eth' : (in_array($cryptocurrency, ['usdt_tron']) ? 'trx' : (in_array($cryptocurrency, ['busd']) ? 'bsc' : false));
     if ($is_token) {
         switch ($is_token) {
             case 'eth':
@@ -448,9 +440,9 @@ function bxc_blockchain($cryptocurrency_code, $action, $extra = false, $address 
                 $services = [['https://api.bscscan.com/api?', 'module=account&action=tokenbalance&contractaddress={A}&address={R}&tag=latest', 'module=account&action=tokentx&contractaddress={A}&address={R}&startblock=0&endblock=99999999&offset=15&sort=asc', 'module=account&action=tokentx&contractaddress={A}&address={R}&startblock=0&endblock=99999999&offset=15&sort=asc', false, 'bscscan', 'module=account&action=tokentx&address={R}&startblock=0&endblock=99999999&offset=15&sort=asc']];
                 break;
         }
-        $contract_address = bxc_settings_db('contract-address-' . $cryptocurrency_code);
+        $contract_address = bxc_settings_db('contract-address-' . $cryptocurrency);
     } else {
-        $services = bxc_settings_get('custom-token-code') == $cryptocurrency_code ? $services['eth'] : bxc_isset($services, $cryptocurrency_code);
+        $services = bxc_settings_get('custom-token-code') == $cryptocurrency ? $services['eth'] : bxc_isset($services, $cryptocurrency);
     }
 
     $slugs = false;
@@ -462,12 +454,12 @@ function bxc_blockchain($cryptocurrency_code, $action, $extra = false, $address 
     $custom_explorer = bxc_settings_get('custom-explorer-active') ? bxc_settings_get('custom-explorer-' . $action . '-url') : false;
     if ($custom_explorer) {
         $path = bxc_settings_get('custom-explorer-' . $action . '-path');
-        $data = bxc_curl(str_replace(['{R}', '{N}', '{N2}'], [$single_transaction ? $extra : $address, $cryptocurrency_code, bxc_crypto_name($cryptocurrency_code)], $custom_explorer));
+        $data = bxc_curl(str_replace(['{R}', '{N}', '{N2}'], [$single_transaction ? $extra : $address, $cryptocurrency, bxc_crypto_name($cryptocurrency)], $custom_explorer));
         $data = bxc_get_array_value_by_path($action == 'transactions' ? trim(explode(',', $path)[0]) : $path, json_decode($data, true));
         if ($data) {
             $custom_explorer_divider = 1;
             if (bxc_settings_get('custom-explorer-divider')) {
-                $custom_explorer_divider = $cryptocurrency_code == 'eth' ? 1000000000000000000 : 100000000;
+                $custom_explorer_divider = $cryptocurrency == 'eth' ? 1000000000000000000 : 100000000;
             }
             switch ($action) {
                 case 'balance':
@@ -496,82 +488,6 @@ function bxc_blockchain($cryptocurrency_code, $action, $extra = false, $address 
     // Get data
     $data_original = false;
     for ($i = 0; $i < count($services); $i++) {
-
-        // Blockdaemon
-        $blockdaemon = false;
-        if ($i === 0 && in_array($cryptocurrency_code, ['btc', 'eth', 'doge', 'xrp', 'ltc', 'algo', 'sol', 'xlm', 'xtz', 'dot', 'near', 'bch'])) {
-            $base_url = 'https://svc.blockdaemon.com/universal/v1/' . bxc_crypto_name($cryptocurrency_code) . '/mainnet/';
-            $header = ['Content-Type: application/json', 'Authorization: Bearer ' . bxc_crypto_api_key('blockdaemon')];
-            switch ($action) {
-                case 'balance':
-                    $json = bxc_curl($base_url . 'account/' . $address, '', $header);
-                    $data = json_decode($json, true);
-                    if (is_array($data) && isset($data[0]['confirmed_balance'])) {
-                        return bxc_decimal_number($data[0]['confirmed_balance'] / (10 ** $data[0]['currency']['decimals']));
-                    }
-                    bxc_error($json, 'blockdaemon');
-                    break;
-                case 'transactions':
-                case 'transaction':
-                    $json = bxc_curl($base_url . ($single_transaction ? ('tx/' . $extra) : ('account/' . $address . '/txs')), '', $header);
-                    $data = json_decode($json, true);
-                    if ($data) {
-                        if ($single_transaction) {
-                            if (isset($data['events'])) {
-                                if (!isset($data['confirmations'])) {
-                                    $data['confirmations'] = bxc_isset($data, 'status') == 'completed' ? 9999 : 0;
-                                }
-                                $data = [$data];
-                            }
-                        } else $data = $data['data'];
-                    }
-                    if (is_array($data)) {
-                        if (count($data) && isset($data[0]['events'])) {
-                            $slugs = ['date', 'address', 'value', 'confirmations', 'id', 'block_number'];
-                            for ($j = 0; $j < count($data); $j++) {
-                                $events = $data[$j]['events'];
-                                $transaction_value = 0;
-                                $sender_address = '';
-                                for ($y = 0; $y < count($events); $y++) {
-                                    switch ($cryptocurrency_code) {
-                                        case 'btc':
-                                            if (!empty($events[$y]['meta']) && !empty($events[$y]['meta']['addresses'])) {
-                                                $event_address = $events[$y]['meta']['addresses'][0];
-                                                if ($events[$y]['type'] == 'utxo_output' && strtolower($event_address) == $address_lowercase) {
-                                                    $transaction_value += $events[$y]['amount'];
-                                                } else if ($events[$y]['type'] == 'utxo_input') {
-                                                    $sender_address = $event_address;
-                                                }
-                                            }
-                                            break;
-                                        case 'bch':
-                                        case 'algo':
-                                        case 'ltc':
-                                        case 'doge':
-                                        case 'eth':
-                                            $get_address = false;
-                                            if (strtolower(bxc_isset($events[$y], 'destination')) == $address_lowercase) {
-                                                $transaction_value += $events[$y]['amount'];
-                                                $get_address = true;
-                                                if (isset($events[$y]['decimals'])) $divider = 10 ** $events[$y]['decimals'];
-                                            } else if (bxc_isset($events[$y], 'type') == 'utxo_input') {
-                                                $get_address = true;
-                                            }
-                                            if ($get_address && !empty($events[$y]['source'])) $sender_address = $events[$y]['source'];
-                                            break;
-                                    }
-                                }
-                                $data[$j]['value'] = $transaction_value;
-                                $data[$j]['address'] = $sender_address;
-                            }
-                        }
-                        $blockdaemon = true;
-                    } else bxc_error($json, 'blockdaemon');
-                    break;
-            }
-        }
-
-        // Other explorers
         $url_part = $services[$i][$action == 'balance' ? 1 : ($action == 'transactions' ? 2 : ($single_transaction ? 3 : 4))];
         if ($url_part === false) continue;
         $url = $services[$i][0] . str_replace('{R}', $single_transaction && !in_array($services[$i][5], ['etherscan', 'bscscan', 'biggestfan']) ? $extra : $address, $url_part);
@@ -587,14 +503,14 @@ function bxc_blockchain($cryptocurrency_code, $action, $extra = false, $address 
                             $symbol = $i == 0 ? 'tokenSymbol' : 'symbol';
                             if (is_array($items)) {
                                 for ($j = 0; $j < count($items); $j++) {
-                                    if (strtolower($i == 1 ? $items[$j]['tokenInfo'][$symbol] : $items[$j][$symbol]) == $cryptocurrency_code) {
+                                    if (strtolower($i == 1 ? $items[$j]['tokenInfo'][$symbol] : $items[$j][$symbol]) == $cryptocurrency) {
                                         $contract_address = $i == 1 ? $items[$j]['tokenInfo']['address']: $items[$j]['contractAddress'];
                                         break;
                                     }
                                 }
                             }
                             if ($contract_address) {
-                                bxc_settings_db('contract-address-' . $cryptocurrency_code, $contract_address);
+                                bxc_settings_db('contract-address-' . $cryptocurrency, $contract_address);
                             } else $continue = true;
                         } else $continue = true;
                     }
@@ -604,15 +520,15 @@ function bxc_blockchain($cryptocurrency_code, $action, $extra = false, $address 
                     $data = json_decode(bxc_curl(str_replace('{R}', $address, $services[$i][0] . $services[$i][1])), true);
                     $data = bxc_isset($data, 'trc20token_balances');
                     if (is_array($data)) {
-                        $cryptocurrency_code_base = strtolower(str_replace('_tron', '', $cryptocurrency_code));
+                        $cryptocurrency_base = strtolower(str_replace('_tron', '', $cryptocurrency));
                         for ($j = 0; $j < count($data); $j++) {
-                            if (strtolower($data[$j]['tokenAbbr']) == $cryptocurrency_code_base) {
+                            if (strtolower($data[$j]['tokenAbbr']) == $cryptocurrency_base) {
                                 $contract_address = $data[$j]['tokenId'];
                                 break;
                             }
                         }
                         if ($contract_address) {
-                            bxc_settings_db('contract-address-' . $cryptocurrency_code, $contract_address);
+                            bxc_settings_db('contract-address-' . $cryptocurrency, $contract_address);
                         } else $continue = true;
                     }
                     break;
@@ -625,14 +541,14 @@ function bxc_blockchain($cryptocurrency_code, $action, $extra = false, $address 
                             $symbol = 'tokenSymbol';
                             if (is_array($items)) {
                                 for ($j = 0; $j < count($items); $j++) {
-                                    if (strtolower($items[$j][$symbol]) == $cryptocurrency_code) {
+                                    if (strtolower($items[$j][$symbol]) == $cryptocurrency) {
                                         $contract_address = $items[$j]['contractAddress'];
                                         break;
                                     }
                                 }
                             }
                             if ($contract_address) {
-                                bxc_settings_db('contract-address-' . $cryptocurrency_code, $contract_address);
+                                bxc_settings_db('contract-address-' . $cryptocurrency, $contract_address);
                             } else $continue = true;
                         } else $continue = true;
                     }
@@ -641,561 +557,553 @@ function bxc_blockchain($cryptocurrency_code, $action, $extra = false, $address 
             }
             if ($continue) continue;
         }
+        $data = $data_original = bxc_curl(bxc_crypto_api_key($services[$i][5], $url));
+        switch ($cryptocurrency) {
+            case 'btc':
+                switch ($action) {
+                    case 'balance':
+                        $data = json_decode($data, true);
+                        switch ($i) {
+                            case 0:
+                            case 2:
+                                if (isset($data['chain_stats'])) {
+                                    return ($data['chain_stats']['funded_txo_sum'] - $data['chain_stats']['spent_txo_sum']) / 100000000;
+                                }
+                                break;
+                            case 1:
+                                if (isset($data['data'])) {
+                                    return $data['data']['confirmed_balance'];
+                                }
+                                break;
+                            case 3:
+                                if (is_numeric($data)) {
+                                    return intval($data) / 100000000;
+                                }
+                                break;
+                        }
+                        break;
+                    case 'transaction':
+                    case 'transactions':
+                        $data = json_decode($data, true);
+                        $input_slug = false;
+                        $output_slug = false;
+                        $confirmations = false;
+                        $continue = false;
 
-        if (!$blockdaemon) {
-            $data = $data_original = bxc_curl(bxc_crypto_api_key($services[$i][5], $url));
-            switch ($cryptocurrency_code) {
-                case 'btc':
-                    switch ($action) {
-                        case 'balance':
-                            $data = json_decode($data, true);
-                            switch ($i) {
-                                case 0:
-                                case 2:
-                                    if (isset($data['chain_stats'])) {
-                                        return ($data['chain_stats']['funded_txo_sum'] - $data['chain_stats']['spent_txo_sum']) / 100000000;
-                                    }
-                                    break;
-                                case 1:
-                                    if (isset($data['data'])) {
-                                        return $data['data']['confirmed_balance'];
-                                    }
-                                    break;
-                                case 3:
-                                    if (is_numeric($data)) {
-                                        return intval($data) / 100000000;
-                                    }
-                                    break;
-                            }
-                            break;
-                        case 'transaction':
-                        case 'transactions':
-                            $data = json_decode($data, true);
-                            $input_slug = false;
-                            $output_slug = false;
-                            $confirmations = false;
-                            $continue = false;
+                        // Get transaction and verify the API is working
+                        switch ($i) {
+                            case 0:
+                            case 2:
+                                if (is_array($data)) {
+                                    $output_slug = 'vout';
+                                    $input_slug = 'vin';
+                                    $continue = true;
+                                }
+                                break;
+                            case 1:
+                                if (isset($data['data']) && (($single_transaction && isset($data['data']['txid'])) || isset($data['data']['txs']))) {
+                                    $data = $single_transaction ? $data['data'] : $data['data']['txs'];
+                                    $input_slug = 'inputs';
+                                    $output_slug = 'outputs';
+                                    $continue = true;
+                                }
+                                break;
+                            case 3:
+                                if (($single_transaction && isset($data['inputs'])) || isset($data['txs'])) {
+                                    if (!$single_transaction) $data = $data['txs'];
+                                    $input_slug = 'inputs';
+                                    $output_slug = 'out';
+                                    $continue = true;
+                                }
+                                break;
+                        }
+                        if ($continue) {
+                            $slugs = ['time', 'address', 'value', 'confirmations', 'hash', 'block_height'];
+                            $sender_address = '';
+                            $time = 0;
+                            $block_height = 0;
+                            $hash = '';
+                            $divider = 100000000;
+                            if ($single_transaction) $data = [$data];
 
-                            // Get transaction and verify the API is working
-                            switch ($i) {
-                                case 0:
-                                case 2:
-                                    if (is_array($data)) {
-                                        $output_slug = 'vout';
-                                        $input_slug = 'vin';
-                                        $continue = true;
-                                    }
-                                    break;
-                                case 1:
-                                    if (isset($data['data']) && (($single_transaction && isset($data['data']['txid'])) || isset($data['data']['txs']))) {
-                                        $data = $single_transaction ? $data['data'] : $data['data']['txs'];
-                                        if ($single_transaction) {
-                                            $input_slug = 'inputs';
-                                            $output_slug = 'outputs';
+                            // Get transactions details
+                            for ($j = 0; $j < count($data); $j++) {
+                                $transaction_value = 0;
+                                switch ($i) {
+                                    case 0:
+                                    case 2:
+                                        if (bxc_isset($data[$j]['status'], 'confirmed')) {
+                                            $time = $data[$j]['status']['block_time'];
+                                            $block_height = $data[$j]['status']['block_height'];
                                         }
-                                        $continue = true;
-                                    }
-                                    break;
-                                case 3:
-                                    if (($single_transaction && isset($data['inputs'])) || isset($data['txs'])) {
-                                        if (!$single_transaction) $data = $data['txs'];
-                                        $input_slug = 'inputs';
-                                        $output_slug = 'out';
-                                        $continue = true;
-                                    }
-                                    break;
-                            }
-                            if ($continue) {
-                                $slugs = ['time', 'address', 'value', 'confirmations', 'hash', 'block_height'];
-                                $sender_address = '';
-                                $time = 0;
-                                $block_height = 0;
-                                $hash = '';
-                                $divider = $i === 1 ? 1 : 100000000;
-                                if ($single_transaction) $data = [$data];
+                                        $hash = $data[$j]['txid'];
+                                        break;
+                                    case 1:
+                                        $time = $data[$j]['time'];
+                                        $block_height = false;
+                                        $confirmations = $data[$j]['confirmations'];
+                                        $transaction_value = $data[$j]['value'];
+                                        $hash = $data[$j]['txid'];
+                                        break;
+                                    case 3:
+                                        $time = $data[$j]['time'];
+                                        $block_height = $data[$j]['block_height'];
+                                        $hash = $data[$j]['hash'];
+                                        break;
+                                }
 
-                                // Get transactions details
-                                for ($j = 0; $j < count($data); $j++) {
-                                    $transaction_value = 0;
+                                // Get transaction amount
+                                $outputs = $output_slug ? $data[$j][$output_slug] : [];
+                                for ($y = 0; $y < count($outputs); $y++) {
                                     switch ($i) {
                                         case 0:
                                         case 2:
-                                            if (bxc_isset($data[$j]['status'], 'confirmed')) {
-                                                $time = $data[$j]['status']['block_time'];
-                                                $block_height = $data[$j]['status']['block_height'];
-                                            }
-                                            $hash = $data[$j]['txid'];
+                                            $value = $outputs[$y]['value'];
+                                            $output_address = $outputs[$y]['scriptpubkey_address'];
                                             break;
                                         case 1:
-                                            $time = $data[$j]['time'];
-                                            $block_height = false;
-                                            $confirmations = $data[$j]['confirmations'];
-                                            $transaction_value = $single_transaction ? 0 : $data[$j]['value'];
-                                            $hash = $data[$j]['txid'];
+                                            $value = $outputs[$y]['value'];
+                                            $output_address = $outputs[$y]['address'];
                                             break;
                                         case 3:
-                                            $time = $data[$j]['time'];
-                                            $block_height = $data[$j]['block_height'];
-                                            $hash = $data[$j]['hash'];
+                                            $value = $outputs[$y]['value'];
+                                            $output_address = $outputs[$y]['addr'];
                                             break;
                                     }
-
-                                    // Get transaction amount
-                                    $outputs = $output_slug ? $data[$j][$output_slug] : [];
-                                    for ($y = 0; $y < count($outputs); $y++) {
-                                        switch ($i) {
-                                            case 0:
-                                            case 2:
-                                                $value = $outputs[$y]['value'];
-                                                $output_address = $outputs[$y]['scriptpubkey_address'];
-                                                break;
-                                            case 1:
-                                                $value = $outputs[$y]['value'];
-                                                $output_address = $outputs[$y]['address'];
-                                                break;
-                                            case 3:
-                                                $value = $outputs[$y]['value'];
-                                                $output_address = $outputs[$y]['addr'];
-                                                break;
-                                        }
-                                        if (strtolower($output_address) == $address_lowercase) {
-                                            $transaction_value += $value;
-                                        }
-                                        $outputs[$y] = ['value' => $value, 'address' => $output_address];
+                                    if ($output_address == $address) {
+                                        $transaction_value += $value;
                                     }
-
-                                    // Get sender address
-                                    $input = bxc_isset($data[$j], $input_slug);
-                                    if ($input && count($input)) {
-                                        $input = $input[0];
-                                        switch ($i) {
-                                            case 0:
-                                            case 2:
-                                                $sender_address = $input['prevout']['scriptpubkey_address'];
-                                                break;
-                                            case 1:
-                                                $sender_address = $input['address'];
-                                                break;
-                                            case 3:
-                                                $sender_address = $input['prev_out']['addr'];
-                                                break;
-                                        }
-                                    }
-
-                                    // Assign transaction values
-                                    $data[$j]['time'] = $time;
-                                    $data[$j]['address'] = $sender_address;
-                                    $data[$j]['confirmations'] = $confirmations;
-                                    $data[$j]['value'] = $transaction_value;
-                                    $data[$j]['hash'] = $hash;
-                                    $data[$j]['block_height'] = $block_height;
+                                    $outputs[$y] = ['value' => $value, 'address' => $output_address];
                                 }
-                            }
-                            break;
-                        case 'blocks_count':
-                            switch ($i) {
-                                case 0:
-                                case 2:
-                                case 3:
-                                    if (is_numeric($data)) {
-                                        return intval($data);
-                                    }
-                                    break;
-                                case 1:
-                                    if (isset($data['data']) && isset($data['data']['blocks'])) {
-                                        return intval($data['data']['blocks']);
-                                    }
-                                    break;
-                            }
-                    }
-                    break;
-                case 'link':
-                case 'shib':
-                case 'bat':
-                case 'usdt':
-                case 'usdc':
-                case 'eth':
-                    $data = json_decode($data, true);
-                    switch ($action) {
-                        case 'balance':
-                            switch ($i) {
-                                case 2:
-                                case 0:
-                                    $data = bxc_isset($data, 'result');
-                                    if (is_numeric($data)) {
-                                        return floatval($data) / ($is_token ? 1000000 : 1000000000000000000);
-                                    }
-                                    break;
-                                case 1:
-                                    if ($is_token) {
-                                        $data = bxc_isset($data, 'tokens', []);
-                                        for ($j = 0; $j < count($data); $j++) {
-                                            if (strtolower(bxc_isset(bxc_isset($data, 'tokenInfo'), 'symbol')) == $cryptocurrency_code) {
-                                                return floatval($data['balance']) / (10 ** intval($data['tokenInfo']['decimals']));
-                                            }
-                                        }
-                                    } else {
-                                        $data = bxc_isset(bxc_isset($data, 'ETH'), 'balance');
-                                        if (is_numeric($data)) {
-                                            return floatval($data);
-                                        }
-                                    }
-                                    break;
-                            }
-                            break;
-                        case 'transaction':
-                        case 'transactions':
-                            switch ($i) {
-                                case 2:
-                                case 0:
-                                    $data = bxc_isset($data, 'result');
-                                    if (is_array($data)) {
-                                        $count = count($data);
-                                        $slugs = ['timeStamp', 'from', 'value', 'confirmations', 'hash', 'blockNumber'];
-                                        $divider = $is_token ? 1000000 : 1000000000000000000;
-                                        if ($single_transaction) {
-                                            if ($i === 0) {
-                                                $data_single = [];
-                                                for ($j = 0; $j < $count; $j++) {
-                                                    if ($data[$j]['hash'] == $extra) {
-                                                        $data_single = [$data[$j]];
-                                                        break;
-                                                    }
-                                                }
-                                                $data = $data_single;
-                                            } else {
-                                                $data = [$data];
-                                            }
-                                        } else if ($is_token) {
-                                            $data_temp = [];
-                                            for ($j = 0; $j < $count; $j++) {
-                                                if (strtolower($data[$j]['tokenSymbol']) == $cryptocurrency_code) {
-                                                    array_push($data_temp, $data[$j]);
-                                                }
-                                            }
-                                            $data = $data_temp;
-                                        }
-                                        if ($count && isset($data[0]['tokenDecimal'])) $divider = 10 ** intval($data[0]['tokenDecimal']);
-                                    }
-                                    break;
-                                case 1:
-                                    if ($single_transaction || is_array($data) || $is_token) {
-                                        $slugs = ['timestamp', 'from', 'value', 'confirmations', 'hash', 'blockNumber'];
-                                        if ($single_transaction) $data = [$data];
-                                    }
-                                    if ($is_token) {
-                                        $count = count($data);
-                                        if ($single_transaction) {
-                                            if ($count) {
-                                                $transaction_value = 0;
-                                                $operations = $data[0]['operations'];
-                                                $address = strtolower($address);
-                                                for ($j = 0; $j < count($operations); $j++) {
-                                                    if ($operations[$j]['type'] == 'transfer' && strtolower($operations[$j]['to']) == $address_lowercase) {
-                                                        $transaction_value += $operations[$j]['value'];
-                                                    }
-                                                }
-                                                $divider = 10 ** intval($operations[0]['tokenInfo']['decimals']);
-                                                $data[0]['value'] = $transaction_value;
-                                            }
-                                        } else {
-                                            $data = bxc_isset($data, 'operations', []);
-                                            $data_temp = [];
-                                            for ($j = 0; $j < $count; $j++) {
-                                                if (strtolower($data[$j]['tokenInfo']['symbol']) == $cryptocurrency_code) {
-                                                    array_push($data_temp, $data[$j]);
-                                                    $divider = 10 ** intval($data[$j]['tokenInfo']['decimals']);
-                                                }
-                                            }
-                                            $slugs[4] = 'transactionHash';
-                                            $data = $data_temp;
-                                        }
-                                    }
-                                    break;
-                            }
-                            if ($slugs && (!$data || (count($data) && (!isset($data[0]) || !bxc_isset($data[0], $slugs[0]))))) $slugs = false;
-                            break;
-                        case 'blocks_count':
-                            switch ($i) {
-                                case 1:
-                                    if (is_numeric($data['lastBlock'])) {
-                                        return intval($data['lastBlock']);
-                                    }
-                                    break;
-                            }
-                    }
-                    break;
-                case 'doge':
-                    $data = json_decode($data, true);
-                    switch ($action) {
-                        case 'balance':
-                            switch ($i) {
-                                case 0:
-                                    $data = bxc_isset($data, 'data');
-                                    if ($data && isset($data['confirmed_balance'])) {
-                                        return $data['confirmed_balance'];
-                                    }
-                                    break;
-                            }
-                            break;
-                        case 'transaction':
-                        case 'transactions':
-                            switch ($i) {
-                                case 0:
-                                    $data = bxc_isset($data, 'data');
-                                    if ($data) {
-                                        if (!$single_transaction) $data = bxc_isset($data, 'txs');
-                                        $slugs = ['time', 'address', 'value', 'confirmations', 'txid', false];
-                                    } else if (is_array($data)) return [];
-                                    break;
-                            }
-                            if ($slugs) {
-                                if (is_array($data)) {
-                                    if ($single_transaction && ($i === 0 || $i === 1)) {
-                                        $data['address'] = $data['inputs'][0]['address'];
-                                        $outputs = $data['outputs'];
-                                        for ($j = 0; $j < count($outputs); $j++) {
-                                            if (strtolower($outputs[$j]['address']) == $address_lowercase) {
-                                                $data['value'] = $outputs[$j]['value'];
-                                                break;
-                                            }
-                                        }
-                                        $data = [$data];
+
+                                // Get sender address
+                                $input = bxc_isset($data[$j], $input_slug);
+                                if ($input && count($input)) {
+                                    $input = $input[0];
+                                    switch ($i) {
+                                        case 0:
+                                        case 2:
+                                            $sender_address = $input['prevout']['scriptpubkey_address'];
+                                            break;
+                                        case 1:
+                                            $sender_address = $input['address'];
+                                            break;
+                                        case 3:
+                                            $sender_address = $input['prev_out']['addr'];
+                                            break;
                                     }
                                 }
-                                if (!$data || (count($data) && (!isset($data[0]) || (!bxc_isset($data[0], $slugs[0]) && !bxc_isset($data[0], $slugs[1]))))) $slugs = false;
+
+                                // Assign transaction values
+                                $data[$j]['time'] = $time;
+                                $data[$j]['address'] = $sender_address;
+                                $data[$j]['confirmations'] = $confirmations;
+                                $data[$j]['value'] = $transaction_value;
+                                $data[$j]['hash'] = $hash;
+                                $data[$j]['block_height'] = $block_height;
                             }
-                            break;
-                        case 'blocks_count':
-                            switch ($i) {
-                                case 0:
-                                    if (is_numeric($data['lastBlock'])) {
-                                        return intval($data['lastBlock']);
-                                    }
-                                    break;
-                            }
-                    }
-                    break;
-                case 'algo':
-                    $data = json_decode($data, true);
-                    switch ($action) {
-                        case 'balance':
-                            switch ($i) {
-                                case 0:
-                                    $data = bxc_isset(bxc_isset($data, 'account'), 'amount');
-                                    if (is_numeric($data)) {
-                                        return floatval($data) / 1000000;
-                                    }
-                                    break;
-                            }
-                            break;
-                        case 'transaction':
-                        case 'transactions':
-                            switch ($i) {
-                                case 0:
-                                    $current_round = bxc_isset($data, 'current-round');
-                                    $data = bxc_isset($data, $single_transaction ? 'transaction' : 'transactions');
-                                    if ($data) {
-                                        $slugs = ['round-time', 'sender', 'amount', 'confirmations', 'id', 'confirmed-round'];
-                                        $divider = 1000000;
-                                        if ($single_transaction) {
-                                            $data['amount'] = bxc_isset(bxc_isset($data, 'payment-transaction'), 'amount', -1);
-                                            $data['confirmations'] = $current_round - bxc_isset($data, 'confirmed-round');
-                                            $data = [$data];
-                                        } else {
-                                            for ($j = 0; $j < count($data); $j++) {
-                                                $data[$j]['amount'] = bxc_isset(bxc_isset($data[$j], 'payment-transaction'), 'amount', -1);
-                                                $data[$j]['confirmations'] = $current_round - bxc_isset($data[$j], 'confirmed-round');
-                                            }
-                                        }
-                                    } else if (is_array($data)) return [];
-                                    break;
-                            }
-                            break;
-                        case 'blocks_count':
-                            switch ($i) {
-                                case 1:
-                                    if (is_numeric($data['current-round'])) {
-                                        return intval($data['current-round']);
-                                    }
-                                    break;
-                            }
-                    }
-                    break;
-                case 'busd':
-                case 'bnb':
-                    $data = json_decode($data, true);
-                    switch ($action) {
-                        case 'balance':
-                            switch ($i) {
-                                case 0:
-                                    $data = bxc_isset($data, 'result');
-                                    if (is_numeric($data)) {
-                                        return floatval($data) / 1000000000000000000;
-                                    }
-                                    break;
-                            }
-                            break;
-                        case 'transaction':
-                        case 'transactions':
-                            switch ($i) {
-                                case 0:
-                                    $data = bxc_isset($data, 'result');
-                                    if (is_array($data)) {
-                                        $slugs = ['timeStamp', 'from', 'value', 'confirmations', 'hash', 'blockNumber'];
-                                        $divider = 1000000000000000000;
-                                        if ($single_transaction) {
-                                            if ($i === 0) {
-                                                $data_single = [];
-                                                for ($j = 0; $j < count($data); $j++) {
-                                                    if ($data[$j]['hash'] == $extra) {
-                                                        $data_single = [$data[$j]];
-                                                        break;
-                                                    }
-                                                }
-                                                $data = $data_single;
-                                            } else {
-                                                $data = [$data];
-                                            }
-                                        }
-                                    }
-                                    break;
-                            }
-                            break;
-                    }
-                    break;
-                case 'ltc':
-                    $data = json_decode($data, true);
-                    switch ($action) {
-                        case 'balance':
-                            switch ($i) {
-                                case 0:
-                                    $data = bxc_isset($data, 'data');
-                                    if ($data && isset($data['confirmed_balance'])) {
-                                        return $data['confirmed_balance'];
-                                    }
-                                    break;
-                            }
-                            break;
-                        case 'transaction':
-                        case 'transactions':
-                            switch ($i) {
-                                case 0:
-                                    $data = bxc_isset($data, 'data');
-                                    if ($data) {
-                                        if (!$single_transaction) $data = bxc_isset($data, 'txs');
-                                        $slugs = ['time', 'address', 'value', 'confirmations', 'txid', false];
-                                    } else if (is_array($data)) return [];
-                                    break;
-                            }
-                            if ($slugs) {
-                                if (is_array($data)) {
-                                    if ($single_transaction && ($i === 0 || $i === 1)) {
-                                        $data['address'] = $data['inputs'][0]['address'];
-                                        $outputs = $data['outputs'];
-                                        for ($j = 0; $j < count($outputs); $j++) {
-                                            if (strtolower($outputs[$j]['address']) == $address_lowercase) {
-                                                $data['value'] = $outputs[$j]['value'];
-                                                break;
-                                            }
-                                        }
-                                        $data = [$data];
-                                    }
+                        }
+                        break;
+                    case 'blocks_count':
+                        switch ($i) {
+                            case 0:
+                            case 2:
+                            case 3:
+                                if (is_numeric($data)) {
+                                    return intval($data);
                                 }
-                                if (!$data || (count($data) && (!isset($data[0]) || (!bxc_isset($data[0], $slugs[0]) && !bxc_isset($data[0], $slugs[1]))))) $slugs = false;
-                            }
-                            break;
-                    }
-                    break;
-                case 'bch':
-                    $data = json_decode($data, true);
-                    switch ($action) {
-                        case 'balance':
-                            switch ($i) {
-                                case 0:
-                                    $data = bxc_isset($data, 'balance');
-                                    if ($data) return $data;
-                                    break;
-                            }
-                            break;
-                        case 'transaction':
-                        case 'transactions':
-                            switch ($i) {
-                                case 0:
-                                    $data = bxc_isset($data, 'txs');
-                                    if ($data) {
-                                        $slugs = ['time', 'address', 'value', 'confirmations', 'txid', false];
-                                    } else if (is_array($data)) return [];
-                                    break;
-                            }
-                            if ($slugs) {
-                                if (is_array($data)) {
+                                break;
+                            case 1:
+                                if (isset($data['data']) && isset($data['data']['blocks'])) {
+                                    return intval($data['data']['blocks']);
+                                }
+                                break;
+                        }
+                }
+                break;
+            case 'link':
+            case 'shib':
+            case 'bat':
+            case 'usdt':
+            case 'usdc':
+            case 'eth':
+                $data = json_decode($data, true);
+                switch ($action) {
+                    case 'balance':
+                        switch ($i) {
+                            case 2:
+                            case 0:
+                                $data = bxc_isset($data, 'result');
+                                if (is_numeric($data)) {
+                                    return floatval($data) / ($is_token ? 1000000 : 1000000000000000000);
+                                }
+                                break;
+                            case 1:
+                                if ($is_token) {
+                                    $data = bxc_isset($data, 'tokens', []);
                                     for ($j = 0; $j < count($data); $j++) {
-                                        $data_transaction = $data[$j][0];
-                                        $data_transaction['address'] = str_replace('bitcoincash:', '', $data_transaction['vin'][0]['cashAddress']);
-                                        $outputs = $data_transaction['vout'];
-                                        $address_prefix = 'bitcoincash:' . $address;
-                                        for ($y = 0; $y < count($outputs); $y++) {
-                                            if (strtolower($outputs[$y]['scriptPubKey']['addresses'][0]) == $address_prefix) {
-                                                $data_transaction['value'] = $outputs[$y]['value'];
-                                                break;
-                                            }
+                                    	if (strtolower(bxc_isset(bxc_isset($data, 'tokenInfo'), 'symbol')) == $cryptocurrency) {
+                                            return floatval($data['balance']) / (10 ** intval($data['tokenInfo']['decimals']));
                                         }
-                                        $data[$j] = $data_transaction;
                                     }
+                                } else {
+                                    $data = bxc_isset(bxc_isset($data, 'ETH'), 'balance');
+                                    if (is_numeric($data)) {
+                                        return floatval($data);
+                                    }
+                                }
+                                break;
+                        }
+                        break;
+                    case 'transaction':
+                    case 'transactions':
+                        switch ($i) {
+                            case 2:
+                            case 0:
+                                $data = bxc_isset($data, 'result');
+                                if (is_array($data)) {
+                                    $slugs = ['timeStamp', 'from', 'value', 'confirmations', 'hash', 'blockNumber'];
+                                    $divider = 1000000000000000000;
                                     if ($single_transaction) {
-                                        for ($j = 0; $j < count($data); $j++) {
-                                            if ($data[$j]['txid'] == $extra) {
-                                                $data = [$data[$j]];
-                                                break;
+                                        if ($i === 0) {
+                                            $data_single = [];
+                                            for ($j = 0; $j < count($data); $j++) {
+                                                if ($data[$j]['hash'] == $extra) {
+                                                    $data_single = [$data[$j]];
+                                                    break;
+                                                }
                                             }
+                                            $data = $data_single;
+                                        } else {
+                                            $data = [$data];
+                                        }
+                                    } else if ($is_token) {
+                                        $data_temp = [];
+                                        for ($j = 0; $j < count($data); $j++) {
+                                            if (strtolower($data[$j]['tokenSymbol']) == $cryptocurrency) {
+                                                array_push($data_temp, $data[$j]);
+                                                $divider = 10 ** intval($data[$j]['tokenDecimal']);
+                                            }
+                                        }
+                                        $data = $data_temp;
+                                    }
+                                }
+                                break;
+                            case 1:
+                                if ($single_transaction || is_array($data) || $is_token) {
+                                    $slugs = ['timestamp', 'from', 'value', 'confirmations', 'hash', 'blockNumber'];
+                                    if ($single_transaction) $data = [$data];
+                                }
+                                if ($is_token && !$single_transaction) {
+                                    $data = bxc_isset($data, 'operations', []);
+                                    $data_temp = [];
+                                    for ($j = 0; $j < count($data); $j++) {
+                                        if (strtolower($data[$j]['tokenInfo']['symbol']) == $cryptocurrency) {
+                                            array_push($data_temp, $data[$j]);
+                                            $divider = 10 ** intval($data[$j]['tokenInfo']['decimals']);
+                                        }
+                                    }
+                                    $slugs[4] = 'transactionHash';
+                                    $data = $data_temp;
+                                }
+                                break;
+                        }
+                        if ($slugs && (!$data || (count($data) && (!isset($data[0]) || !bxc_isset($data[0], $slugs[0]))))) $slugs = false;
+                        break;
+                    case 'blocks_count':
+                        switch ($i) {
+                            case 1:
+                                if (is_numeric($data['lastBlock'])) {
+                                    return intval($data['lastBlock']);
+                                }
+                                break;
+                        }
+                }
+                break;
+            case 'doge':
+                $data = json_decode($data, true);
+                switch ($action) {
+                    case 'balance':
+                        switch ($i) {
+                            case 0:
+                                $data = bxc_isset($data, 'balance');
+                                if (is_numeric($data)) {
+                                    return floatval($data);
+                                }
+                                break;
+                            case 1:
+                                $data = bxc_isset($data, 'data');
+                                if ($data && isset($data['confirmed_balance'])) {
+                                    return $data['confirmed_balance'];
+                                }
+                                break;
+                        }
+                        break;
+                    case 'transaction':
+                    case 'transactions':
+                        switch ($i) {
+                            case 0:
+                                $data = bxc_isset($data, $single_transaction ? 'transaction' : 'unspent_outputs');
+                                if ($data) {
+                                    $slugs = ['time', 'address', 'value', 'confirmations', 'tx_hash', false];
+                                    if (!$single_transaction) $divider = 100000000;
+                                } else if (is_array($data)) return [];
+                                break;
+                            case 1:
+                                $data = bxc_isset($data, 'data');
+                                if ($data) {
+                                    if (!$single_transaction) $data = bxc_isset($data, 'txs');
+                                    $slugs = ['time', 'address', 'value', 'confirmations', 'txid', false];
+                                } else if (is_array($data)) return [];
+                                break;
+                        }
+                        if ($slugs) {
+                            if (is_array($data)) {
+                                if ($single_transaction && ($i === 0 || $i === 1)) {
+                                    $data['address'] = $data['inputs'][0]['address'];
+                                    $outputs = $data['outputs'];
+                                    if ($i === 0) $slugs[4] = 'hash';
+                                    for ($j = 0; $j < count($outputs); $j++) {
+                                        if ($outputs[$j]['address'] == $address) {
+                                            $data['value'] = $outputs[$j]['value'];
+                                            break;
+                                        }
+                                    }
+                                    $data = [$data];
+                                }
+                            }
+                            if (!$data || (count($data) && (!isset($data[0]) || (!bxc_isset($data[0], $slugs[0]) && !bxc_isset($data[0], $slugs[1]))))) $slugs = false;
+                        }
+                        break;
+                    case 'blocks_count':
+                        switch ($i) {
+                            case 1:
+                                if (is_numeric($data['lastBlock'])) {
+                                    return intval($data['lastBlock']);
+                                }
+                                break;
+                        }
+                }
+                break;
+            case 'algo':
+                $data = json_decode($data, true);
+                switch ($action) {
+                    case 'balance':
+                        switch ($i) {
+                            case 0:
+                                $data = bxc_isset(bxc_isset($data, 'account'), 'amount');
+                                if (is_numeric($data)) {
+                                    return floatval($data) / 1000000;
+                                }
+                                break;
+                        }
+                        break;
+                    case 'transaction':
+                    case 'transactions':
+                        switch ($i) {
+                            case 0:
+                                $current_round = bxc_isset($data, 'current-round');
+                                $data = bxc_isset($data, $single_transaction ? 'transaction' : 'transactions');
+                                if ($data) {
+                                    $slugs = ['round-time', 'sender', 'amount', 'confirmations', 'id', 'confirmed-round'];
+                                    $divider = 1000000;
+                                    if ($single_transaction) {
+                                        $data['amount'] = bxc_isset(bxc_isset($data, 'payment-transaction'), 'amount', -1);
+                                        $data['confirmations'] = $current_round - bxc_isset($data, 'confirmed-round');
+                                        $data = [$data];
+                                    } else {
+                                        for ($j = 0; $j < count($data); $j++) {
+                                            $data[$j]['amount'] = bxc_isset(bxc_isset($data[$j], 'payment-transaction'), 'amount', -1);
+                                            $data[$j]['confirmations'] = $current_round - bxc_isset($data[$j], 'confirmed-round');
+                                        }
+                                    }
+                                } else if (is_array($data)) return [];
+                                break;
+                        }
+                        break;
+                    case 'blocks_count':
+                        switch ($i) {
+                            case 1:
+                                if (is_numeric($data['current-round'])) {
+                                    return intval($data['current-round']);
+                                }
+                                break;
+                        }
+                }
+                break;
+            case 'busd':
+            case 'bnb':
+                $data = json_decode($data, true);
+                switch ($action) {
+                    case 'balance':
+                        switch ($i) {
+                            case 0:
+                                $data = bxc_isset($data, 'result');
+                                if (is_numeric($data)) {
+                                    return floatval($data) / 1000000000000000000;
+                                }
+                                break;
+                        }
+                        break;
+                    case 'transaction':
+                    case 'transactions':
+                        switch ($i) {
+                            case 0:
+                                $data = bxc_isset($data, 'result');
+                                if (is_array($data)) {
+                                    $slugs = ['timeStamp', 'from', 'value', 'confirmations', 'hash', 'blockNumber'];
+                                    $divider = 1000000000000000000;
+                                    if ($single_transaction) {
+                                        if ($i === 0) {
+                                            $data_single = [];
+                                            for ($j = 0; $j < count($data); $j++) {
+                                                if ($data[$j]['hash'] == $extra) {
+                                                    $data_single = [$data[$j]];
+                                                    break;
+                                                }
+                                            }
+                                            $data = $data_single;
+                                        } else {
+                                            $data = [$data];
                                         }
                                     }
                                 }
-                                if (!$data || (count($data) && (!isset($data[0]) || (!bxc_isset($data[0], $slugs[0]) && !bxc_isset($data[0], $slugs[1]))))) $slugs = false;
-                            }
-                            break;
-                    }
-                    break;
-                case 'trx':
-                case 'usdt_tron':
-                    $data = json_decode($data, true);
-                    switch ($action) {
-                        case 'balance':
-                            switch ($i) {
-                                case 0:
-                                    if ($is_token) {
-                                        $data = bxc_isset($data, 'trc20token_balances');
-                                        if (is_array($data)) {
-                                            $cryptocurrency_code = strtolower(str_replace('_tron', '', $cryptocurrency_code));
-                                            for ($j = 0; $j < count($data); $j++) {
-                                                if (strtolower($data[$j]['tokenAbbr']) == $cryptocurrency_code) return floatval($data[$j]['balance']) / 1000000;
-                                            }
+                                break;
+                        }
+                        break;
+                }
+                break;
+            case 'ltc':
+                $data = json_decode($data, true);
+                switch ($action) {
+                    case 'balance':
+                        switch ($i) {
+                            case 0:
+                                $data = bxc_isset($data, 'data');
+                                if ($data && isset($data['confirmed_balance'])) {
+                                    return $data['confirmed_balance'];
+                                }
+                                break;
+                        }
+                        break;
+                    case 'transaction':
+                    case 'transactions':
+                        switch ($i) {
+                            case 0:
+                                $data = bxc_isset($data, 'data');
+                                if ($data) {
+                                    if (!$single_transaction) $data = bxc_isset($data, 'txs');
+                                    $slugs = ['time', 'address', 'value', 'confirmations', 'txid', false];
+                                } else if (is_array($data)) return [];
+                                break;
+                        }
+                        if ($slugs) {
+                            if (is_array($data)) {
+                                if ($single_transaction && ($i === 0 || $i === 1)) {
+                                    $data['address'] = $data['inputs'][0]['address'];
+                                    $outputs = $data['outputs'];
+                                    for ($j = 0; $j < count($outputs); $j++) {
+                                        if ($outputs[$j]['address'] == $address) {
+                                            $data['value'] = $outputs[$j]['value'];
+                                            break;
                                         }
                                     }
-                                    break;
+                                    $data = [$data];
+                                }
                             }
-                            break;
-                        case 'transaction':
-                        case 'transactions':
-                            switch ($i) {
-                                case 0:
-                                    $data = $single_transaction ? [$data] : bxc_isset($data, 'data', []);
-                                    $transactions_data = [];
+                            if (!$data || (count($data) && (!isset($data[0]) || (!bxc_isset($data[0], $slugs[0]) && !bxc_isset($data[0], $slugs[1]))))) $slugs = false;
+                        }
+                        break;
+                }
+                break;
+            case 'bch':
+                $data = json_decode($data, true);
+                switch ($action) {
+                    case 'balance':
+                        switch ($i) {
+                            case 0:
+                                $data = bxc_isset($data, 'balance');
+                                if ($data) return $data;
+                                break;
+                        }
+                        break;
+                    case 'transaction':
+                    case 'transactions':
+                        switch ($i) {
+                            case 0:
+                                $data = bxc_isset($data, 'txs');
+                                if ($data) {
+                                    $slugs = ['time', 'address', 'value', 'confirmations', 'txid', false];
+                                } else if (is_array($data)) return [];
+                                break;
+                        }
+                        if ($slugs) {
+                            if (is_array($data)) {
+                                for ($j = 0; $j < count($data); $j++) {
+                                    $data_transaction = $data[$j][0];
+                                    $data_transaction['address'] = str_replace('bitcoincash:', '', $data_transaction['vin'][0]['cashAddress']);
+                                    $outputs = $data_transaction['vout'];
+                                    $address_prefix = 'bitcoincash:' . $address;
+                                    for ($y = 0; $y < count($outputs); $y++) {
+                                        if ($outputs[$y]['scriptPubKey']['addresses'][0] == $address_prefix) {
+                                            $data_transaction['value'] = $outputs[$y]['value'];
+                                            break;
+                                        }
+                                    }
+                                    $data[$j] = $data_transaction;
+                                }
+                                if ($single_transaction) {
                                     for ($j = 0; $j < count($data); $j++) {
-                                        if (isset($data[$j]['contractData']) && bxc_isset($data[$j]['contractData'], 'contract_address') == $contract_address && isset($data[$j]['trigger_info'])) {
-                                            $data[$j]['value'] = bxc_decimal_number($data[$j]['trigger_info']['parameter']['_value'] / 1000000);
-                                            array_push($transactions_data, $data[$j]);
+                                        if ($data[$j]['txid'] == $extra) {
+                                            $data = [$data[$j]];
+                                            break;
                                         }
                                     }
-                                    $data = $transactions_data;
-                                    $slugs = ['timestamp', 'ownerAddress', 'value', $single_transaction ? 'confirmations' : 'confirmed', 'hash', false];
-                                    break;
+                                }
                             }
-                            break;
-                    }
-                    break;
-            }
+                            if (!$data || (count($data) && (!isset($data[0]) || (!bxc_isset($data[0], $slugs[0]) && !bxc_isset($data[0], $slugs[1]))))) $slugs = false;
+                        }
+                        break;
+                }
+                break;
+            case 'trx':
+            case 'usdt_tron':
+                $data = json_decode($data, true);
+                switch ($action) {
+                    case 'balance':
+                        switch ($i) {
+                            case 0:
+                                if ($is_token) {
+                                    $data = bxc_isset($data, 'trc20token_balances');
+                                    if (is_array($data)) {
+                                        $cryptocurrency = strtolower(str_replace('_tron', '', $cryptocurrency));
+                                        for ($j = 0; $j < count($data); $j++) {
+                                            if (strtolower($data[$j]['tokenAbbr']) == $cryptocurrency) return floatval($data[$j]['balance']) / 1000000;
+                                        }
+                                    }
+                                }
+                                break;
+                        }
+                        break;
+                    case 'transaction':
+                    case 'transactions':
+                        switch ($i) {
+                            case 0:
+                                $data = $single_transaction ? [$data] : bxc_isset($data, 'data', []);
+                                $transactions_data = [];
+                                for ($j = 0; $j < count($data); $j++) {
+                                    if (isset($data[$j]['contractData']) && bxc_isset($data[$j]['contractData'], 'contract_address') == $contract_address && isset($data[$j]['trigger_info'])) {
+                                        $data[$j]['value'] = bxc_decimal_number($data[$j]['trigger_info']['parameter']['_value'] / 1000000);
+                                        array_push($transactions_data, $data[$j]);
+                                    }
+                                }
+                                $data = $transactions_data;
+                                $slugs = ['timestamp', 'ownerAddress', 'value', $single_transaction ? 'confirmations' : 'confirmed', 'hash', false];
+                                break;
+                        }
+                        break;
+                }
+                break;
         }
 
         // Add the transactions
@@ -1226,7 +1134,7 @@ function bxc_crypto_get_address($cryptocurrency_code) {
     } else if (bxc_settings_get('gemini-address-generation')) {
         $data = bxc_gemini_curl('deposit/' . $cryptocurrency_name . '/newAddress');
         $address = bxc_isset($data, 'address');
-        if (bxc_isset($data, 'result') === 'error') bxc_error($data['message'], 'bxc_crypto_get_address');
+        if (bxc_isset($data, 'result') === 'error') bxc_error($data['message'], 'bxc_crypto_get_address', false);
     }
     if ($address) {
         $pos = strpos($address, ':');
@@ -1306,7 +1214,7 @@ function bxc_crypto_get_network($cryptocurrency_code, $label = true) {
 function bxc_crypto_whitelist_invalid($address, $check_address_generation = true) {
     if ($check_address_generation && bxc_is_address_generation()) return false;
     if (!defined('BXC_WHITELIST') || in_array($address, BXC_WHITELIST)) return false;
-    bxc_error('The address ' . $address . ' is not on the whitelist. Edit the config.php file and add it to the constant BXC_WHITELIST.', 'bxc_crypto_address_verification');
+    bxc_error('The address ' . $address . ' is not on the whitelist. Edit the config.php file and add it to the constant BXC_WHITELIST.', 'bxc_crypto_address_verification', bxc_verify_admin());
     return true;
 }
 
@@ -1766,7 +1674,7 @@ function bxc_installation($data) {
             // Create the database
             $connection = new mysqli($data['db-host'], $data['db-user'], $data['db-password'], $data['db-name'], $data['db-port']);
             $connection->set_charset('utf8mb4');
-            $connection->query('CREATE TABLE IF NOT EXISTS bxc_transactions (id INT NOT NULL AUTO_INCREMENT, `from` VARCHAR(255) NOT NULL DEFAULT "", `to` VARCHAR(255), hash VARCHAR(255) NOT NULL DEFAULT "", `title` VARCHAR(500) NOT NULL DEFAULT "", description VARCHAR(1000) NOT NULL DEFAULT "", amount VARCHAR(100) NOT NULL, amount_fiat VARCHAR(100) NOT NULL, cryptocurrency VARCHAR(10) NOT NULL, currency VARCHAR(10) NOT NULL, external_reference VARCHAR(1000) NOT NULL DEFAULT "", creation_time DATETIME NOT NULL, status VARCHAR(1) NOT NULL, webhook TINYINT NOT NULL, vat FLOAT, vat_details TINYTEXT, PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+            $connection->query('CREATE TABLE IF NOT EXISTS bxc_transactions (id INT NOT NULL AUTO_INCREMENT, `from` VARCHAR(255) NOT NULL DEFAULT "", `to` VARCHAR(255), hash VARCHAR(255) NOT NULL DEFAULT "", `title` VARCHAR(500) NOT NULL DEFAULT "", description VARCHAR(1000) NOT NULL DEFAULT "", amount VARCHAR(100) NOT NULL, amount_fiat VARCHAR(100) NOT NULL, cryptocurrency VARCHAR(10) NOT NULL, currency VARCHAR(10) NOT NULL, external_reference VARCHAR(1000) NOT NULL DEFAULT "", creation_time DATETIME NOT NULL, status VARCHAR(1) NOT NULL, webhook TINYINT NOT NULL, PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
             $connection->query('CREATE TABLE IF NOT EXISTS bxc_checkouts (id INT NOT NULL AUTO_INCREMENT, title VARCHAR(255), description TEXT, price VARCHAR(100) NOT NULL, currency VARCHAR(10) NOT NULL, type VARCHAR(1), redirect VARCHAR(255), hide_title TINYINT, external_reference VARCHAR(1000) NOT NULL DEFAULT "", creation_time DATETIME NOT NULL, PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
             $connection->query('CREATE TABLE IF NOT EXISTS bxc_settings (name VARCHAR(255) NOT NULL, value LONGTEXT, PRIMARY KEY (name)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
@@ -1813,9 +1721,6 @@ function bxc_curl($url, $post_fields = '', $header = [], $type = 'GET') {
     }
     if (!empty($header)) {
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        if (bxc_isset($header, 'CURLOPT_USERPWD')) {
-            curl_setopt($ch, CURLOPT_USERPWD, $header['CURLOPT_USERPWD']);
-        }
     }
     $response = curl_exec($ch);
     if (curl_errno($ch) > 0) {
@@ -1834,7 +1739,6 @@ function bxc_download($url) {
 function bxc_cron() {
     if (bxc_settings_get('update-auto')) {
         bxc_update($_POST['domain']);
-        bxc_version_updates();
     }
     if (bxc_settings_get('invoice-active')) {
         $path = __DIR__ . '/uploads/';
@@ -1851,7 +1755,7 @@ function bxc_cron() {
 }
 
 function bxc_decimal_number($number) {
-    $number = rtrim(number_format($number, 10, '.', ''),'0');
+    $number = rtrim(sprintf('%.18F', $number), '0');
     return substr($number, -1) == '.' ? substr($number, 0, -1) : $number;
 }
 
@@ -1987,22 +1891,16 @@ function bxc_payment_redirect_url($url, $client_reference_id) {
 function bxc_version_updates() {
     if (bxc_settings_db('version') != BXC_VERSION) {
         try {
-
-            // 09-22
             bxc_db_query('ALTER TABLE bxc_checkouts ADD COLUMN hide_title TINYINT');
             bxc_db_query('ALTER TABLE bxc_transactions ADD COLUMN billing TINYTEXT COLLATE utf8mb4_unicode_ci');
-
-            // 10-22
-            bxc_db_query('ALTER TABLE bxc_transactions ADD COLUMN vat FLOAT');
-            bxc_db_query('ALTER TABLE bxc_transactions ADD COLUMN vat_details TINYTEXT');
         } catch (Exception $e) {}
         bxc_settings_db('version', BXC_VERSION);
     }
 }
 
-function bxc_error($message, $function_name) {
+function bxc_error($message, $function_name, $force = true) {
     $message = 'Boxcoin error [' . $function_name . ']: ' . $message;
-    if (bxc_isset($_GET, 'debug')) {
+    if ($force || bxc_verify_admin()) {
         trigger_error($message);
     }
     return $message;
@@ -2010,24 +1908,6 @@ function bxc_error($message, $function_name) {
 
 function bxc_is_address_generation() {
     return bxc_settings_get('custom-explorer-active') && bxc_settings_get('custom-explorer-address') || bxc_settings_get('gemini-address-generation');
-}
-
-function bxc_ve_box() {
-    if (!isset($_COOKIE['TR_' . 'VUU' . 'KMILO']) || !password_verify('YTYFUJG', $_COOKIE['TR_' . 'VUU' . 'KMILO'])) {
-        echo file_get_contents(__DIR__ . '/resources/epc.html');
-        return false;
-    }
-    return true;
-}
-
-function bxc_ve($code, $domain) {
-    if ($code == 'auto') $code = bxc_settings_get('en' . 'vato-purc' . 'hase-code');
-    if (empty($code)) return [false, ''];
-    $response = bxc_curl('htt' . 'ps://boxcoin' . '.dev/sync/ve' . 'r' . 'ification.p' . 'hp?ve' . 'rifi' . 'cation&code=' . $code . '&domain=' . $domain);
-    if ($response == 've' . 'rific' . 'ation-success') {
-        return [true, password_hash('YTYFUJG', PASSWORD_DEFAULT)];
-    }
-    return [false, $response];
 }
 
 /*
@@ -2084,30 +1964,23 @@ function bxc_verifone_curl($url_part, $type = 'POST') {
     $response = bxc_curl('https://api.2checkout.com/rest/6.0/' . $url_part, '',  ['Content-Type: application/json', 'Accept: application/json', 'X-Avangate-Authentication: code="' . $merchant_id . '" date="' . $date . '" hash="' . $hash . '"'], $type);
     return is_string($response) ? json_decode($response, true) : $response;
 }
- 
-function bxc_vat($amount, $country_code = false, $currency_code = false) {
-    $rates = json_decode(file_get_contents(__DIR__ . '/resources/vat.json'), true)['rates'];
-    $ip = $country_code ? ['countryCode' => $country_code] : (isset($_SERVER['HTTP_CF_CONNECTING_IP']) && substr_count($_SERVER['HTTP_CF_CONNECTING_IP'], '.') == 3 ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['REMOTE_ADDR']);
-    if (!$country_code && strlen($ip) > 6) {
-        $ip = strlen($ip) > 6 ? json_decode(bxc_download('http://ip-api.com/json/' . $ip . '?fields=country,countryCode'), true) : false;
+
+function bxc_ve_box() {
+    if (!isset($_COOKIE['TR_' . 'VUU' . 'KMILO']) || !password_verify('YTYFUJG', $_COOKIE['TR_' . 'VUU' . 'KMILO'])) {
+        echo file_get_contents(__DIR__ . '/resources/epc.html');
+        return false;
     }
-    if (isset($ip['countryCode'])) {
-        for ($i = 0; $i < count($rates); $i++) {
-            if ($rates[$i]['country_code'] == $ip['countryCode']) {
-                $amount = floatval($amount);
-                $rate_percentage = $rates[$i]['standard_rate'];
-                $rate = $amount * ($rate_percentage / 100);
-                return [round($amount + $rate, 2), round($rate, 2), $rates[$i]['country_code'], $rates[$i]['country_name'], str_replace(['{1}', '{2}'], [strtoupper($currency_code), round($rate, 2)], bxc_('Including {1} {2} for VAT in')) . ' ' . bxc_($rates[$i]['country_name']), $rate_percentage];
-            }
-        }
-    }
-    return [$amount, 0, '', bxc_isset($ip, 'country', ''), '', 0];
+    return true;
 }
 
-function bxc_vat_validation($vat_number) {
-    $key = bxc_settings_get('vatsense-key');
-    if (!$key) return bxc_error('Missing Vatsense key. Set it in the Boxcoin settings area.', 'bxc_vat_validation');
-    return json_decode(bxc_curl('https://api.vatsense.com/1.0/validate?vat_number=' . $vat_number, '', ['CURLOPT_USERPWD' => 'user:' . $key]), true);
+function bxc_ve($code, $domain) {
+    if ($code == 'auto') $code = bxc_settings_get('en' . 'vato-purc' . 'hase-code');
+    if (empty($code)) return [false, ''];
+    $response = bxc_curl('htt' . 'ps://boxcoin' . '.dev/sync/verification.p' . 'hp?verifi' . 'cation&code=' . $code . '&domain=' . $domain);
+    if ($response == 'verific' . 'ation-success') {
+        return [true, password_hash('YTYFUJG', PASSWORD_DEFAULT)];
+    }
+    return [false, $response];
 }
 
 /*

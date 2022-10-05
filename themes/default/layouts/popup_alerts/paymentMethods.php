@@ -5,23 +5,15 @@
           <div class="purchase_premium_header flex_ tabing border_top_radius mp" data-p="<?php echo filter_var($planID, FILTER_SANITIZE_STRING);?>"><?php echo filter_var($LANG['choose_payment_method'], FILTER_SANITIZE_STRING);?></div>
           <div class="purchase_post_details tabing"> 
           
+             <!---->
               <div class="payment_method_box transition payMethod" id="bitcoin" data-type="bitcoin">
                   <div class="payment_method_item flex_ bitcoin"></div>
               </div>
-             <?php if($bitPayPaymentStatus == '1'){?>
-             <!---->
-              <div class="payment_method_box transition payMethod" id="bitpay" data-type="bitpay">
-                  <div class="payment_method_item flex_ bitpay"></div>
+              <div class="payment_method_box transition payMethod" id="ethereum" data-type="ethereum">
+                  <div class="payment_method_item flex_ ethereum"></div>
               </div>
              <!---->
-             <?php }?>
-             <?php if($razorPayPaymentStatus == '1'){?>
-             <!---->
-             <div class="payment_method_box transition payMethod" id="razorpay" data-type="razorpay">
-                  <div class="payment_method_item flex_ razorpay"></div>
-              </div>
-             <!---->
-             <?php }?>
+             
              <?php if($payPalPaymentStatus == '1'){?> 
              <!---->
              <div class="payment_method_box transition payMethod" id="paypal" data-type="paypal">

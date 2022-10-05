@@ -415,11 +415,6 @@
     "value": [
       {
         "type": "password",
-        "id": "blockdaemon-key",
-        "title": "Blockdaemon"
-      },
-      {
-        "type": "password",
         "id": "etherscan-key",
         "title": "Etherscan"
       },
@@ -748,11 +743,6 @@
         "type": "textarea",
         "id": "underpayment-description",
         "title": "Underpayment description"
-      },
-      {
-        "type": "textarea",
-        "id": "order-processing-text",
-        "title": "Order processing description"
       }
     ]
   },
@@ -798,31 +788,6 @@
         "type": "textarea",
         "id": "invoice-details",
         "title": "Your business details"
-      }
-    ]
-  },
-
-  {
-    "type": "multi-input",
-    "id": "gemini",
-    "title": "VAT",
-    "content": "Enable VAT calculation at checkout.",
-    "help": "https://boxcoin.dev/docs/#vat",
-    "value": [
-      {
-        "type": "checkbox",
-        "id": "vat",
-        "title": "Active"
-      },
-      {
-        "type": "checkbox",
-        "id": "vat-validation",
-        "title": "VAT number validation"
-      },
-      {
-        "type": "password",
-        "id": "vatsense-key",
-        "title": "Vatsense API key"
       }
     ]
   },

@@ -8,7 +8,7 @@
 <meta name="title" content="Payments">
 <meta name="description" content="dizzy is Creators Content Script. It is best way to start your online Creators platform. It is so fun for all your fans. Just create your contents and start to earn money.">
 <meta name="keywords" content="dizzy, creators, content creators, dizzy content creator script, dizzy creators">
-<script id="boxcoin" src="https://www.amberance.com/boxcoin/js/client.js"></script>
+<script id="boxcoin" src="https://www.radient.one/boxcoin/js/client.js"></script>
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="">
@@ -24,37 +24,37 @@
 <meta property="twitter:image" content="">
 
 <meta name="theme-color" content="#f65169">
-<link rel="shortcut icon" type="image/png" href="https://www.amberance.com/img/2022-03-16/image_1647408763070005900_1.png" sizes="128x128">
-<link rel="manifest" href="https://www.amberance.com/src/manifest.json">
-<link rel="apple-touch-icon" href="https://www.amberance.com/src/192x192.png"><link rel="stylesheet" type="text/css" href="https://www.amberance.com/themes/default/css/style.css?v=g2111113111411111322111242111111111111111111111111s1131211111111111113.6.8">
-<link rel="stylesheet" type="text/css" href="https://www.amberance.com/themes/default/css/lightGallery/lightgallery.css">
-<link rel="stylesheet" type="text/css" href="https://www.amberance.com/themes/default/css/videojscss/video-js.css">
-<link rel="stylesheet" type="text/css" href="https://www.amberance.com/themes/default/css/checkbox/checkbox.css">
-<link rel="stylesheet" type="text/css" href="https://www.amberance.com/themes/default/css/crop/cropmain.css">
-<link rel="stylesheet" type="text/css" href="https://www.amberance.com/themes/default/css/swiper/swiper-bundle.css">
+<link rel="shortcut icon" type="image/png" href="https://www.radient.one/img/2022-03-16/image_1647408763070005900_1.png" sizes="128x128">
+<link rel="manifest" href="https://www.radient.one/src/manifest.json">
+<link rel="apple-touch-icon" href="https://www.radient.one/src/192x192.png"><link rel="stylesheet" type="text/css" href="https://www.radient.one/themes/default/css/style.css?v=g2111113111411111322111242111111111111111111111111s1131211111111111113.6.8">
+<link rel="stylesheet" type="text/css" href="https://www.radient.one/themes/default/css/lightGallery/lightgallery.css">
+<link rel="stylesheet" type="text/css" href="https://www.radient.one/themes/default/css/videojscss/video-js.css">
+<link rel="stylesheet" type="text/css" href="https://www.radient.one/themes/default/css/checkbox/checkbox.css">
+<link rel="stylesheet" type="text/css" href="https://www.radient.one/themes/default/css/crop/cropmain.css">
+<link rel="stylesheet" type="text/css" href="https://www.radient.one/themes/default/css/swiper/swiper-bundle.css">
 <style rel="stylesheet"  type="text/css">
 /*
 
 Add here your custom css styles Example: p { text-align: center; color: red; }
 
 */ </style>
-<link rel="stylesheet" type="text/css" href="https://www.amberance.com/themes/default/css/audioplayer.css?v=m11"><script type="text/javascript" src="https://www.amberance.com/themes/default/js/jquery-v3.5.1.min.js"></script>
-<script type="text/javascript" src="https://www.amberance.com/themes/default/js/jquery.form.js"></script>
-<script type="text/javascript" src="https://www.amberance.com/themes/default/js/share.js?v=13.6.8"></script>
-<script type="text/javascript" src="https://www.amberance.com/themes/default/js/clipboard/clipboard.min.js"></script>
-<script type="text/javascript" src="https://www.amberance.com/themes/default/js/lightGallery/lightgallery-all.min.js"></script>
-<script type="text/javascript" src="https://www.amberance.com/themes/default/js/autoresize.min.js"></script>
-<script type="text/javascript" src="https://www.amberance.com/themes/default/js/videojs/video.js"></script>
-<script type="text/javascript" src="https://www.amberance.com/themes/default/js/scrollBar/jquery.slimscroll.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://www.radient.one/themes/default/css/audioplayer.css?v=m11"><script type="text/javascript" src="https://www.radient.one/themes/default/js/jquery-v3.5.1.min.js"></script>
+<script type="text/javascript" src="https://www.radient.one/themes/default/js/jquery.form.js"></script>
+<script type="text/javascript" src="https://www.radient.one/themes/default/js/share.js?v=13.6.8"></script>
+<script type="text/javascript" src="https://www.radient.one/themes/default/js/clipboard/clipboard.min.js"></script>
+<script type="text/javascript" src="https://www.radient.one/themes/default/js/lightGallery/lightgallery-all.min.js"></script>
+<script type="text/javascript" src="https://www.radient.one/themes/default/js/autoresize.min.js"></script>
+<script type="text/javascript" src="https://www.radient.one/themes/default/js/videojs/video.js"></script>
+<script type="text/javascript" src="https://www.radient.one/themes/default/js/scrollBar/jquery.slimscroll.min.js"></script>
 <script type="text/javascript">
-var siteurl = 'https://www.amberance.com/';
+var siteurl = 'https://www.radient.one/';
 $(function() {
     $('.commenta').autoResize();
     var clipboard = new ClipboardJS('.copyUrl');
 });
     </script>
-    <script type="text/javascript" src="https://www.amberance.com/themes/default/js/inora.js?v=o51171113.6.8"></script>
-    <script type="text/javascript" src="https://www.amberance.com/themes/default/js/character_count.js?v=3.6.8"></script>
+    <script type="text/javascript" src="https://www.radient.one/themes/default/js/inora.js?v=o51171113.6.8"></script>
+    <script type="text/javascript" src="https://www.radient.one/themes/default/js/character_count.js?v=3.6.8"></script>
     <script type="text/javascript">
     $(document).ready(function(){
         $("#newPostT").characterCounter({
@@ -63,12 +63,12 @@ $(function() {
         </script>
         <script type="text/javascript">
         </script>
-        <script type="text/javascript" src="https://www.amberance.com/themes/default/js/swiper/swiper-bundle.min.js"></script></head>
+        <script type="text/javascript" src="https://www.radient.one/themes/default/js/swiper/swiper-bundle.min.js"></script></head>
         <body>
         <div class="header">
         <div class="i_header_in">
         <div class="i_logo tabing flex_">
-        <a href="https://www.amberance.com/"><img src="https://www.amberance.com/img/2022-03-16/image_1647408798008302700_1.png"></a>
+        <a href="https://www.radient.one/"><img src="https://www.radient.one/img/2022-03-16/image_1647408798008302700_1.png"></a>
         </div>
         <div class="i_search" style="position:relative;">
         <div class="mobile_back tabing flex_ mobile_srcbtn">
@@ -105,7 +105,7 @@ $(function() {
         <svg id="Capa_40" data-name="Capa 40" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 438.29"><polygon points="393.06 93.2 393.06 0 293.87 0 393.06 93.2"/><polygon points="141.81 112.87 370.19 112.87 256 5.58 141.81 112.87"/><polygon points="385.13 142.87 126.87 142.87 256 438.29 385.13 142.87"/><polygon points="118.94 93.2 218.13 0 118.94 0 118.94 93.2"/><polygon points="88.94 112.87 88.94 22.59 3.25 112.87 88.94 112.87"/><polygon points="423.06 112.87 508.75 112.87 423.06 22.59 423.06 112.87"/><polygon points="417.88 142.87 312.55 383.82 512 142.87 417.88 142.87"/><polygon points="94.13 142.87 0 142.87 199.45 383.82 94.13 142.87"/></svg>              </div>
         </div>
         <div class="i_header_btn_item transition shopi ownTooltip" data-label="Marketplace">
-        <a href="https://www.amberance.com/marketplace?cat=all">
+        <a href="https://www.radient.one/marketplace?cat=all">
         <div class="i_h_in">
         <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300.01"><path d="M150,0A150,150,0,1,0,300,150,150,150,0,0,0,150,0Zm82.17,222.64h0a14.74,14.74,0,0,1-14.74,14.74h-9.11V173.62H165.25v63.76H81.08a14.74,14.74,0,0,1-14.73-14.74V146.17a28.71,28.71,0,0,0,18.75-9,28.75,28.75,0,0,0,42,0,28.75,28.75,0,0,0,42,0,28.75,28.75,0,0,0,42,0,28.71,28.71,0,0,0,21,9.13v76.35Zm0-91.91A13.26,13.26,0,0,1,219,117.49a7.78,7.78,0,1,0-15.56,0,13.24,13.24,0,1,1-26.47,0,7.78,7.78,0,0,0-15.56,0,13.24,13.24,0,1,1-26.47,0,7.78,7.78,0,1,0-15.56,0,13.23,13.23,0,1,1-26.46,0,7.79,7.79,0,0,0-15.57,0,13.23,13.23,0,0,1-26.26,2.3L91.21,65.35H207.73l37.59,53.76A13.24,13.24,0,0,1,232.2,130.73Z" transform="translate(0)"/><rect x="89.04" y="174.16" width="47.62" height="33.26"/></svg>              </div>
         </a>
@@ -133,22 +133,22 @@ $(function() {
         </div>
         </div>
         <audio id="notification-sound-mes" class="sound-controls" preload="auto">
-        <source src="https://www.amberance.com/themes/default/mp3/message.mp3" type="audio/mpeg">
+        <source src="https://www.radient.one/themes/default/mp3/message.mp3" type="audio/mpeg">
         </audio>
         <audio id="notification-sound-not" class="sound-controls aw" preload="auto">
-        <source src="https://www.amberance.com/themes/default/mp3/not.mp3" type="audio/mpeg">
+        <source src="https://www.radient.one/themes/default/mp3/not.mp3" type="audio/mpeg">
         </audio>
         <audio id="notification-sound-coin" class="sound-controls" preload="auto">
-        <source src="https://www.amberance.com/themes/default/mp3/coin.mp3" type="audio/mpeg">
+        <source src="https://www.radient.one/themes/default/mp3/coin.mp3" type="audio/mpeg">
         </audio>
         <audio id="notification-sound-call" class="sound-controls" preload="auto">
-        <source src="https://www.amberance.com/themes/default/mp3/call.mp3" type="audio/mpeg">
+        <source src="https://www.radient.one/themes/default/mp3/call.mp3" type="audio/mpeg">
         </audio>
-        <script src="https://www.amberance.com/src/gdpr-cookie.js?v=3.6.8"></script>
+        <script src="https://www.radient.one/src/gdpr-cookie.js?v=3.6.8"></script>
         <script>
         $.gdprcookie.init({
             title: "ðŸ�ª Accept cookies & privacy policy?",
-            message: 'This site uses cookies, by continuing to use the service, you accept our use of cookies Cookies Policy, <a href="https://www.amberance.com/cookies">Cookie Policy</a>',
+            message: 'This site uses cookies, by continuing to use the service, you accept our use of cookies Cookies Policy, <a href="https://www.radient.one/cookies">Cookie Policy</a>',
             delay: 600,
             expires: 30,
             acceptBtnLabel: "Accept",
@@ -171,7 +171,7 @@ $(function() {
                 }
                 </script>
                 <script type="text/javascript">
-                var audio = new Audio('https://www.amberance.com//themes/default/mp3/call.mp3');
+                var audio = new Audio('https://www.radient.one//themes/default/mp3/call.mp3');
                 </script>     <div class="wrapper bCreatorBg">
                 <div class="i_not_found_page transition">
                 
@@ -226,10 +226,10 @@ try {
     die();
 }
 
-echo filter_input(INPUT_GET, 'creditPlan', FILTER_SANITIZE_URL);
-echo filter_input(INPUT_GET, 'productID', FILTER_SANITIZE_URL);
-echo filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL);
-echo $_SERVER['HTTP_REFERER'];
+//echo filter_input(INPUT_GET, 'creditPlan', FILTER_SANITIZE_URL);
+//echo filter_input(INPUT_GET, 'productID', FILTER_SANITIZE_URL);
+//echo filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL);
+//echo $_SERVER['HTTP_REFERER'];
 ?>
 
 
@@ -249,6 +249,6 @@ data-description="<?php echo $customerId ?>"
                 
                 </div>
                 </div>
-                <div class="footer_container_out"><div class="footer_menu_item"><a href="https://www.amberance.com/about-us">About Us</a></div><div class="footer_menu_item"><a href="https://www.amberance.com/privacy-policies">Privacy Policies</a></div><div class="footer_menu_item"><a href="https://www.amberance.com/contact">Contact</a></div><div class="footer_menu_item"><a href="https://www.amberance.com/terms-of-use">Terms Of Use</a></div><div class="footer_menu_item"><a href="https://www.amberance.com/cookies">Cookies</a></div><div class="footer_menu_item"><a href="https://www.amberance.com/terms-of-sales">Terms of sales</a></div><div class="footer_menu_item"><a href="https://www.amberance.com/payments">Payments</a></div><div class="footer_menu_item">dizzy Â© 2022</div> </div>
+                <div class="footer_container_out"><div class="footer_menu_item"><a href="https://www.radient.one/about-us">About Us</a></div><div class="footer_menu_item"><a href="https://www.radient.one/privacy-policies">Privacy Policies</a></div><div class="footer_menu_item"><a href="https://www.radient.one/contact">Contact</a></div><div class="footer_menu_item"><a href="https://www.radient.one/terms-of-use">Terms Of Use</a></div><div class="footer_menu_item"><a href="https://www.radient.one/cookies">Cookies</a></div><div class="footer_menu_item"><a href="https://www.radient.one/terms-of-sales">Terms of sales</a></div><div class="footer_menu_item"><a href="https://www.radient.one/payments">Payments</a></div><div class="footer_menu_item">dizzy Â© 2022</div> </div>
                 </body>
                 </html> 

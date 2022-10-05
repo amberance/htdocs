@@ -114,10 +114,10 @@ if (isset($_POST) && count($_POST) > 0) {
 	    $paymentInsert = mysqli_query($db, "INSERT INTO i_user_payments(payer_iuid_fk,order_key,payment_type,payment_option,payment_time, payment_status,paymet_product_id)VALUES('$userID','" . $insertData['order_id'] . "','product', '" . $insertData['paymentOption'] . "', '" . $time . "','pending','".$insertData['creditPlan']."')") or die(mysqli_error($db));
 		 
 	    
-	    if ($paymentOption == 'bitcoin') {
+	    if (($paymentOption == 'bitcoin') || ($paymentOption == 'ethereum')) {
 	        
 	        // return payment array on ajax request
-	        echo json_encode("https://www.amberance.com/pay.php");
+	        echo json_encode("https://www.radient.one/pay.php");
 	        
 	    }
 		// Then send data to payment process service for process payment

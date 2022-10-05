@@ -32,15 +32,15 @@ function bxc_checkout_init() {
     }
     $language = bxc_language();
     $translations = $language ? file_get_contents(__DIR__ . '/resources/languages/client/' . $language . '.json') : '{}';
-    $settings = ['qr_code_color' => $qr_color, 'countdown' => bxc_settings_get('refresh-interval', 60), 'confirmations' => bxc_settings_get('confirmations', 3), 'webhook' => bxc_settings_get('webhook-url'), 'redirect' => bxc_settings_get('payment-redirect'), 'vat_validation' => bxc_settings_get('vat-validation')];
+    $settings = ['qr_code_color' => $qr_color, 'countdown' => bxc_settings_get('refresh-interval', 60), 'confirmations' => bxc_settings_get('confirmations', 3), 'webhook' => bxc_settings_get('webhook-url'), 'redirect' => bxc_settings_get('payment-redirect')];
     echo 'var BXC_TRANSLATIONS = ' . ($translations ? $translations : '{}') . '; var BXC_URL = "' . BXC_URL . '"; var BXC_SETTINGS = ' . json_encode($settings, JSON_INVALID_UTF8_IGNORE | JSON_UNESCAPED_UNICODE) . ';';
 }
 
 function bxc_select_countries() {
     $countries = json_decode(file_get_contents(__DIR__ . '/resources/countries.json'), true);
     $code = '';
-    foreach ($countries as $key => $country_code) {
-        $code .= '<option value="' . $key . '" data-country-code="' . $country_code . '">' . bxc_($key) . '</option>';
+    for ($i = 0; $i < count($countries); $i++) {
+        $code .= '<option value="' . $countries[$i] . '">' . bxc_($countries[$i]) . '</option>';
     }
     echo $code;
 }
@@ -53,12 +53,11 @@ function bxc_checkout($settings) {
     $custom_token = bxc_settings_get('custom-token-type');
     $collapse = bxc_settings_get('collapse');
     if (!$custom) {
-        if (!is_numeric($checkout_id)) die();
         $settings = bxc_checkout_get($checkout_id);
     }
     if (!$settings) die();
     $title = ($custom && !empty($settings['title'])) || (!isset($settings['hide_title']) && !bxc_settings_get('hide-title')) || empty($settings['hide_title']);
-    $currency_code = empty($settings['currency']) ? bxc_settings_get('currency', 'USD') : $settings['currency'];
+    if (empty($settings['currency'])) $settings['currency'] = bxc_settings_get('currency', 'USD');
     if (bxc_settings_get('stripe-active') || bxc_settings_get('verifone-active')) {
         $cryptocurrencies_code .= '<div data-cryptocurrency="' . (bxc_settings_get('stripe-active') ? 'stripe' : 'verifone') . '" class="bxc-flex"><img src="' . BXC_URL . 'media/icon-cc.svg" alt="' . bxc_('Credit or debit card') . '" /><span>' . bxc_('Credit or debit card') . '</span></div>';
     }
@@ -77,9 +76,8 @@ function bxc_checkout($settings) {
             $cryptocurrencies_code .= '<div data-cryptocurrency="' . $cryptocurrency_code . '" class="bxc-flex"><img src="' . BXC_URL . 'media/icon-' . $cryptocurrency_code . '.svg" alt="' . strtoupper($cryptocurrency_code) . '" /><span>' . $cryptocurrencies[$i][1] . bxc_crypto_get_network($cryptocurrency_code) . '</span><span>' . strtoupper(bxc_crypto_get_base_code($cryptocurrency_code)) . '</span></div>';
         }
     }
-    $checkout_price = floatval($settings['price']);
+    $checkout_price = $settings['price'];
     if ($checkout_price == -1) $checkout_price = '';
-    $checkout_start_price = $checkout_price;
     $checkout_type = empty($_POST['payment_page']) ? bxc_isset($settings, 'type', 'I') : 'I';
     $checkout_type = bxc_isset(['I' => 'inline', 'L' => 'link', 'P' => 'popup', 'H' => 'hidden'], $checkout_type, $checkout_type);
     echo '<!-- Boxcoin - https://boxcoin.dev -->';
@@ -88,16 +86,10 @@ function bxc_checkout($settings) {
     $color_1 = bxc_settings_get('color-1');
     $color_2 = bxc_settings_get('color-2');
     $color_3 = bxc_settings_get('color-3');
-    $vat = bxc_settings_get('vat');
-    if ($vat && $checkout_price) {
-        $vat_details = bxc_vat($checkout_price, false, $currency_code);
-        $checkout_price = $vat_details[0];
-        $vat = '<span class="bxc-vat" data-country="' . $vat_details[3] . '" data-country-code="' . $vat_details[2] . '" data-amount="' . $vat_details[1] . '" data-percentage="' . $vat_details[5] . '">' . $vat_details[4] . '</span>';
-    }
     if ($color_1) {
         $css = '.bxc-payment-methods>div:hover,.bxc-btn.bxc-btn-border:hover, .bxc-btn.bxc-btn-border:active { border-color: ' . $color_1 . '; color: ' . $color_1 . '; }';
         $css .= '.bxc-complete-cnt>i, .bxc-failed-cnt>i,.bxc-payment-methods>div:hover span+span,.bxc-clipboard:hover,.bxc-tx-cnt .bxc-loading:before,.bxc-loading:before,.bxc-btn-text:hover { color: ' . $color_1 . '; }';
-        $css .= '.bxc-tx-status,.bxc-select ul li:hover { background-color: ' . $color_1 . '; }';
+        $css .= '.bxc-tx-status { background-color: ' . $color_1 . '; }';
     }
     if ($color_2) {
         $css .= '.bxc-box { color: ' . $color_2 . '; }';
@@ -108,7 +100,7 @@ function bxc_checkout($settings) {
     }
     if ($css) echo '<style>' . $css . '</style>';
 ?>
-<div class="bxc-main bxc-start bxc-<?php echo $checkout_type; if (bxc_is_rtl(bxc_language())) echo ' bxc-rtl'; ?>" data-currency="<?php echo $currency_code ?>" data-price="<?php echo $checkout_price ?>" data-external-reference="<?php echo bxc_isset($settings, 'external_reference', bxc_isset($settings, 'external-reference', '')) ?>" data-title="<?php echo str_replace('"', '', bxc_isset($settings, 'title', '')) ?>" data-description="<?php echo str_replace('"', '', bxc_isset($settings, 'description', '')) ?>" data-redirect="<?php echo bxc_isset($settings, 'redirect', '') ?>" data-start-price="<?php echo $checkout_start_price ?>">
+<div class="bxc-main bxc-start bxc-<?php echo $checkout_type; if (bxc_is_rtl(bxc_language())) echo ' bxc-rtl'; ?>" data-currency="<?php echo $settings['currency'] ?>" data-price="<?php echo $checkout_price ?>" data-external-reference="<?php echo bxc_isset($settings, 'external_reference', bxc_isset($settings, 'external-reference', '')) ?>" data-title="<?php echo str_replace('"', '', bxc_isset($settings, 'title', '')) ?>" data-description="<?php echo str_replace('"', '', bxc_isset($settings, 'description', '')) ?>" data-redirect="<?php echo bxc_isset($settings, 'redirect', '') ?>">
     <?php if ($checkout_type == 'popup') echo '<i class="bxc-popup-close bxc-icon-close"></i>' ?>
     <div class="bxc-cnt bxc-box">
         <?php echo $title ?>
@@ -119,7 +111,7 @@ function bxc_checkout($settings) {
                     <?php if (!$checkout_price) echo '<div class="bxc-text">' . bxc_(bxc_settings_get('user-amount-text', 'Pay what you want')) . '</div>'; ?>
                 </div>
                 <div class="bxc-title">
-                    <?php echo $checkout_price ? strtoupper($currency_code) . ' <span class="bxc-amount-fiat-total">' . $checkout_price . '</span>' . $vat : '<div class="bxc-input" id="user-amount"><span>' . strtoupper($settings['currency']) . '</span><input type="number" min="0" /></div>' ?>
+                    <?php echo $checkout_price ? strtoupper($settings['currency']) . ' ' . $checkout_price : '<div class="bxc-input" id="user-amount"><span>' . strtoupper($settings['currency']) . '</span><input type="number" min="0" /></div>' ?>
                 </div>
             </div>
             <?php if (bxc_settings_get('invoice-active')) { ?>
@@ -128,7 +120,6 @@ function bxc_checkout($settings) {
                     <?php bxc_e('Generate invoice?') ?>
                 </div>
                 <div id="bxc-billing" class="bxc-billing bxc-hidden">
-                    <div class="bxc-title bxc-title-1"><?php bxc_e('Billing information') ?></div>
                     <div class="bxc-input">
                         <input name="name" type="text" placeholder="<?php bxc_e('Full name') ?>" />
                     </div>
@@ -148,7 +139,6 @@ function bxc_checkout($settings) {
                             <?php bxc_select_countries() ?>
                         </select>
                     </div>
-                    <div class="bxc-title bxc-title-2"><?php bxc_e('Payment') ?></div>
                 </div>
             </div>
             <?php } ?>
@@ -251,12 +241,7 @@ function bxc_checkout($settings) {
             <?php bxc_e(bxc_settings_get('success-title', 'Payment completed')) ?>
         </div>
         <div class="bxc-text">
-            <span>
-                <?php bxc_e(bxc_settings_get('success-description', 'Thank you for your payment')) ?>
-            </span>
-            <span>
-                <?php bxc_e(bxc_settings_get('order-processing-text', 'We are processing the order, please wait...')) ?>
-            </span>
+            <?php bxc_e(bxc_settings_get('success-title', 'Thank you for your payment')) ?>
         </div>
     </div>
     <div class="bxc-failed-cnt bxc-box">
@@ -282,7 +267,10 @@ function bxc_checkout($settings) {
         </div>
         <div class="bxc-text">
             <?php bxc_e(bxc_settings_get('underpayment-description', 'We have detected your payment but the amount is less than requested and the transaction cannot be completed, please contact us.')) ?>
-            <?php bxc_e('Your transaction ID is:') ?><span id="bxc-underpaid-tx-id"></span>
+        </div>
+        <div class="bxc-text">
+            <?php bxc_e('Your transaction ID is:') ?>
+            <span id="bxc-underpaid-tx-id"></span>
         </div>
     </div>
 </div>
