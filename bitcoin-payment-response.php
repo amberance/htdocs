@@ -56,7 +56,8 @@ if (isset($status) && ($status=='C')) {
     
     // Send data to payment response function for further process
     paymentResponse($paymentResponseData);
-    $getPamentData = mysqli_query($db, "SELECT * FROM i_user_payments WHERE payment_type IN('point','product') AND payment_status = 'pending' AND payment_option = 'bitcoin' AND payer_iuid_fk = '$userID'") or die(mysqli_error($db));
+    //$getPamentData = mysqli_query($db, "SELECT * FROM i_user_payments WHERE payment_type IN('point','product') AND payment_status = 'pending' AND payment_option = 'bitcoin' AND payer_iuid_fk = '$userID'") or die(mysqli_error($db));
+    $getPamentData = mysqli_query($db, "SELECT * FROM i_user_payments WHERE order_key = '" . $orderId . "'") or die(mysqli_error($db));
     $pData = mysqli_fetch_array($getPamentData, MYSQLI_ASSOC);
     $userPayedPlanID = isset($pData['credit_plan_id']) ? $pData['credit_plan_id'] : NULL;
     $payerUserID = isset($pData['payer_iuid_fk']) ? $pData['payer_iuid_fk'] : NULL;
