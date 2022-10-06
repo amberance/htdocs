@@ -282,7 +282,6 @@ if ($requestData['paymentOption'] == 'paytm') {
 			'data' => preparePaymentData($orderId, $requestData['amount'], $requestData['id'], 'razorpay'),
 		];
 		$getPamentData = mysqli_query($db, "SELECT * FROM i_user_payments WHERE order_key = '" . $orderId . "'") or die(mysqli_error($db));
-		
 		$pData = mysqli_fetch_array($getPamentData, MYSQLI_ASSOC);
 		$userPayedPlanID = isset($pData['credit_plan_id']) ? $pData['credit_plan_id'] : NULL;
 		$payerUserID = isset($pData['payer_iuid_fk']) ? $pData['payer_iuid_fk'] : NULL;

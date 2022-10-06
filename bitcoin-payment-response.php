@@ -93,7 +93,7 @@ if (isset($status) && ($status=='C')) {
         $productOwnerID = isset($productData['iuid_fk']) ? $productData['iuid_fk'] : NULL;
         $adminEarning = ($adminFee * $productPrice) / 100;
         $userEarning = $productPrice - $adminEarning;
-        mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'ok' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE payer_iuid_fk = '$payerUserID' AND payment_type = 'product' AND payment_status = 'pending' AND payment_option = 'bitcoin'") or die(mysqli_error($db));
+        mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'ok' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE payer_iuid_fk = '$payerUserID' AND payment_type = 'product' AND payment_status = 'pending' AND payment_option = 'bitcoin' and paymet_product_id = '$productID'") or die(mysqli_error($db));
         mysqli_query($db, "UPDATE i_users SET wallet_money = wallet_money + '$userEarning' WHERE iuid = '$productOwnerID'") or die(mysqli_error($db));
     }
     // Check if payment not successfull
