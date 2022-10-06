@@ -104,7 +104,7 @@ $(document).ready(function() {
                     alert(string);
                 },
                 success: function(response) {
-                alert("bitcoin" + response);
+                console.log("In success of Ajax call" + response);
                     $(".payment_method_box").css("pointer-events", "auto");
                     $(".loaderWrapper").remove();
                     if (typeof(response.validationMessage)) {
@@ -120,7 +120,7 @@ $(document).ready(function() {
                    if(payWidth == 'bitcoin'){  
                         //$(".lw-show-till-loading").show();
                         //on success load paypalUrl page 
-                        //console.log(response);
+                        console.log("In the bitcoin if block" + response);
                         // We don't have the productID!!!
                        // alert(response);
                         window.location.href = response+"?creditPlan=<?php echo filter_var($planID, FILTER_SANITIZE_STRING);?>"+ '&' + $.param(JSON.parse('<?php echo json_encode($DataUserDetails) ?>'));
@@ -130,8 +130,8 @@ $(document).ready(function() {
                     if(payWidth == 'paypal'){  
                         $(".lw-show-till-loading").show();
                         //on success load paypalUrl page 
-                        console.log(response.paypalUrl);
-                        alert();
+                        console.log("In the paypal ajax success block. Forwardin to " + response.paypalUrl);
+                       
                         window.location.href = response.paypalUrl;
                     }else if(payWidth == 'bitpay'){
                         if (response.status == "success") {

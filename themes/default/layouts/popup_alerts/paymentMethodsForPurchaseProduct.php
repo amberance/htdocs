@@ -118,14 +118,15 @@ $(document).ready(function() {
                     
                     if(payWidth == 'paypal'){  
                         $(".lw-show-till-loading").show();
+                        cosle.log("paypal was selected. Here is the URL:");
                         //on success load paypalUrl page 
                         console.log(response.paypalUrl);
-                        alert();
+                        //alert();
                         window.location.href = response.paypalUrl;
                     } else if(payWidth == 'bitcoin' || payWidth == 'ethereum'){  
                         $(".lw-show-till-loading").show();
                         //on success load paypalUrl page 
-                        //console.log(response);
+                        console.log("Crypto was selected.");
                         window.location.href = response+"?productID=<?php echo filter_var($productID, FILTER_SANITIZE_STRING);?>"+ '&' + $.param(JSON.parse('<?php echo json_encode($DataUserDetails) ?>'));
                         
                     }   else if(payWidth == 'bitpay'){

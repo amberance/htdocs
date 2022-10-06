@@ -177,13 +177,16 @@ try {
 
 
 <center>
+Please pay the specified amount to the given address through your crypto wallet.<br/>
+
 <div data-boxcoin="custom-<?php echo filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL) ?>-<?php echo $customerId ?>" 
 data-price="<?php echo $productPrice ?>"
 data-external-reference="<?php echo filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL) ?>"
 data-title="<?php echo filter_input(INPUT_GET, 'item_id', FILTER_SANITIZE_URL) ?>"
 data-description="<?php echo $customerId ?>"
-
 ></div>
+
+Please do not close your browser.
 </center>
                 
                 

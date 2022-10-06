@@ -5,6 +5,12 @@ if (!defined('INORA_METHODS_CONFIG')) {
 	define('INORA_METHODS_CONFIG', realpath('includes/payment/paymentConfig.php'));
 }
 $payment_time = time(); 
+
+
+$stderr = fopen('php://stderr', 'w');
+fwrite($stderr,$payment_time );
+fclose($stderr);
+
 use App\Components\Payment\BitPayResponse; 
 use App\Components\Payment\IyzicoResponse;
 use App\Components\Payment\PaypalIpnResponse;
@@ -16,114 +22,36 @@ $configData = configItem();
 // Get Request Data when payment success or failed
 $requestData = $_REQUEST;
 
+$stderr = fopen('php://stderr', 'w');
+fwrite($stderr, "About to enter PayPal processing." );
+fclose($stderr);
 
-// Check payment Method is paytm
-if ($requestData['paymentOption'] == 'paytm') {
-	// Get Payment Response instance
-	$paytmResponse = new PaytmResponse();
 
-	// Fetch payment data using payment response instance
-	$paytmData = $paytmResponse->getPaytmPaymentData($requestData);
-
-	// Check if payment status is success
-	if ($paytmData['STATUS'] == 'TXN_SUCCESS') {
-
-		// Create payment success response data.
-		$paymentResponseData = [
-			'status' => true,
-			'rawData' => $paytmData,
-			'data' => preparePaymentData($paytmData['ORDERID'], $paytmData['TXNAMOUNT'], $paytmData['TXNID'], 'paytm'),
-		];
-		// Send data to payment response.
-		paymentResponse($paymentResponseData);
-	} else {
-		// Create payment failed response data.
-		$paymentResponseData = [
-			'status' => false,
-			'rawData' => $paytmData,
-			'data' => preparePaymentData($paytmData['ORDERID'], $paytmData['TXNAMOUNT'], $paytmData['TXNID'], 'paytm'),
-		];
-		// Send data to payment response function
-		paymentResponse($paymentResponseData);
-	}
-// Check payment method is instamojo
-} else if ($requestData['paymentOption'] == 'iyzico') {
-
-	// Check if payment status is success for iyzico.
-	if ($_REQUEST['status'] == 'success') {
-		// Get iyzico response.
-		$iyzicoResponse = new IyzicoResponse();
-
-		// fetch payment data using iyzico response instance.
-		$iyzicoData = $iyzicoResponse->getIyzicoPaymentData($requestData);
-		$rawResult = json_decode($iyzicoData->getRawResult(), true);
-
-		// Check if iyzico payment data is success
-		// Then create a array for success data
-		if ($iyzicoData->getStatus() == 'success') {
-			$paymentResponseData = [
-				'status' => true,
-				'rawData' => (array) $iyzicoData,
-				'data' => preparePaymentData($requestData['orderId'], $rawResult['price'], $rawResult['conversationId'], 'iyzico'),
-			];
-			$getPamentData = mysqli_query($db, "SELECT * FROM i_user_payments WHERE order_key='" . $requestData['orderId'] . "'") or die(mysqli_error($db));
-			$pData = mysqli_fetch_array($getPamentData, MYSQLI_ASSOC);
-			$userPayedPlanID = isset($pData['credit_plan_id']) ? $pData['credit_plan_id'] : NULL;
-			$payerUserID = isset($pData['payer_iuid_fk']) ? $pData['payer_iuid_fk'] : NULL;
-			$productID = isset($pData['paymet_product_id']) ? $pData['paymet_product_id'] : NULL;
-			if(!empty($userPayedPlanID)){
-				$planDetails = mysqli_query($db, "SELECT * FROM i_premium_plans WHERE plan_id = '$userPayedPlanID'") or die(mysqli_error($db));
-				$pAData = mysqli_fetch_array($planDetails, MYSQLI_ASSOC);
-				$planAmount = $pAData['plan_amount'];
-				mysqli_query($db, "UPDATE i_users SET wallet_points = wallet_points + $planAmount WHERE iuid = '$payerUserID'") or die(mysqli_error($db));
-				mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'pending' WHERE order_key='" . $requestData['orderId'] . "'") or die(mysqli_error($db));
-            }else if(!empty($productID)){
-				$productDetailsFromID = mysqli_query($db, "SELECT * FROM i_user_product_posts WHERE pr_id = '$productID'") or die(mysqli_error($db));
-				$productData = mysqli_fetch_array($productDetailsFromID, MYSQLI_ASSOC);
-				$productPrice = isset($productData['pr_price']) ? $productData['pr_price'] : NULL;
-				$productOwnerID = isset($productData['iuid_fk']) ? $productData['iuid_fk'] : NULL;
-				$adminEarning = ($adminFee * $productPrice) / 100;
-				$userEarning = $productPrice - $adminEarning;
-				mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'pending' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE payer_iuid_fk = '$payerUserID' AND order_key = '" . $requestData['orderId'] . "'") or die(mysqli_error($db));
-				mysqli_query($db, "UPDATE i_users SET wallet_money = wallet_money + '$userEarning' WHERE iuid = '$productOwnerID'") or die(mysqli_error($db));
-			}
-			// Send data to payment response
-			paymentResponse($paymentResponseData);
-			// If payment failed then create data for failed
-		} else {
-			mysqli_query($db, "DELETE FROM i_user_payments WHERE order_key='" . $requestData['orderId'] . "'") or die(mysqli_error($db));
-			// Prepare failed payment data
-			$paymentResponseData = [
-				'status' => false,
-				'rawData' => (array) $iyzicoData,
-				'data' => preparePaymentData($requestData['orderId'], $rawResult['price'], $rawResult['conversationId'], 'iyzico'),
-			];
-			// Send data to payment response
-			paymentResponse($paymentResponseData);
-		}
-		// Check before 3d payment process payment failed
-	} else {
-		// Prepare failed payment data
-		$paymentResponseData = [
-			'status' => false,
-			'rawData' => $requestData,
-			'data' => preparePaymentData($requestData['orderId'], $rawResult['price'], null, 'iyzico'),
-		];
-		// Send data to process response
-		paymentResponse($paymentResponseData);
-	}
-
-// Check Paypal payment process
-} else if ($requestData['paymentOption'] == 'paypal') {
+if ($requestData['paymentOption'] == 'paypal') {
 	// Get instance of paypal
 	$paypalIpnResponse = new PaypalIpnResponse();
 
 	// fetch paypal payment data
 	$paypalIpnData = $paypalIpnResponse->getPaypalPaymentData();
 	$rawData = json_decode($paypalIpnData, true); 
+	
+	
+	$stderr = fopen('php://stderr', 'w');
+	fwrite($stderr," In PayPal Condition ");
+	fclose($stderr);
+	echo $rawData;
+	
 	// Note : IPN and redirects will come here
 	// Check if payment status exist and it is success
+	$stderr = fopen('php://stderr', 'w');
+	fwrite($stderr,$rawData);
+	fclose($stderr);
+	
 	if (isset($requestData['PayerID'])) {
+	    
+	    $stderr = fopen('php://stderr', 'w');
+	    fwrite($stderr,"  Inside paypal with PayerId   ");
+	    fclose($stderr);
 
 		// Then create a data for success paypal data
 		$paymentResponseData = [
@@ -139,11 +67,16 @@ if ($requestData['paymentOption'] == 'paytm') {
 		$payerUserID = isset($pData['payer_iuid_fk']) ? $pData['payer_iuid_fk'] : NULL;
 		$productID = isset($pData['paymet_product_id']) ? $pData['paymet_product_id'] : NULL;
 		if(!empty($userPayedPlanID)){
+		    
 			$planDetails = mysqli_query($db, "SELECT * FROM i_premium_plans WHERE plan_id = '$userPayedPlanID'") or die(mysqli_error($db));
 			$pAData = mysqli_fetch_array($planDetails, MYSQLI_ASSOC);
 			$planAmount = $pAData['plan_amount'];
 			mysqli_query($db, "UPDATE i_users SET wallet_points = wallet_points + $planAmount WHERE iuid = '$userID'") or die(mysqli_error($db));
 			mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'pending' WHERE payer_iuid_fk = '$userID' AND payment_type = 'point' AND payment_option = 'paypal'") or die(mysqli_error($db));
+			$stderr = fopen('php://stderr', 'w');
+			fwrite($stderr,"  PayPal Plan Handled!   ");
+			fclose($stderr);
+		
 		}else if(!empty($productID)){
             $productDetailsFromID = mysqli_query($db, "SELECT * FROM i_user_product_posts WHERE pr_id = '$productID'") or die(mysqli_error($db));
 			$productData = mysqli_fetch_array($productDetailsFromID, MYSQLI_ASSOC);
@@ -153,6 +86,10 @@ if ($requestData['paymentOption'] == 'paytm') {
             $userEarning = $productPrice - $adminEarning;
 			mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'pending' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE payer_iuid_fk = '$payerUserID' AND payment_type = 'product' AND payment_status = 'pending' AND payment_option = 'paypal'") or die(mysqli_error($db));
 			mysqli_query($db, "UPDATE i_users SET wallet_money = wallet_money + '$userEarning' WHERE iuid = '$productOwnerID'") or die(mysqli_error($db));
+			$stderr = fopen('php://stderr', 'w');
+			fwrite($stderr,"  PayPal Product Handled!  ");
+			fclose($stderr);
+		
 		}
 		// Check if payment not successfull
 	} else {
