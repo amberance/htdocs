@@ -9,8 +9,8 @@
               <div class="payment_method_box transition payMethod" id="bitcoin" data-type="bitcoin">
                   <div class="payment_method_item flex_ bitcoin"></div>
               </div>
-              <div class="payment_method_box transition payMethod" id="ethereum" data-type="ethereum">
-                  <div class="payment_method_item flex_ ethereum"></div>
+              <div class="payment_method_box transition payMethod" id="bitcoin" data-type="bitcoin">
+                  <div class="payment_method_item flex_ bitcoin"></div>
               </div>
 
 
@@ -115,12 +115,6 @@ $(document).ready(function() {
                         }); 
                     }
                     
-                   if(payWidth == 'bitcoin' || payWidth == 'ethereum'){  
-                        $(".lw-show-till-loading").show();
-                        //on success load paypalUrl page 
-                        console.log(response);
-                        window.location.href = response+"?productID=<?php echo filter_var($productID, FILTER_SANITIZE_STRING);?>"+ '&' + $.param(JSON.parse('<?php echo json_encode($DataUserDetails) ?>'));
-                    }
                     
                     if(payWidth == 'paypal'){  
                         $(".lw-show-till-loading").show();
@@ -128,7 +122,13 @@ $(document).ready(function() {
                         console.log(response.paypalUrl);
                         alert();
                         window.location.href = response.paypalUrl;
-                    }else if(payWidth == 'bitpay'){
+                    } else if(payWidth == 'bitcoin' || payWidth == 'ethereum'){  
+                        $(".lw-show-till-loading").show();
+                        //on success load paypalUrl page 
+                        //console.log(response);
+                        window.location.href = response+"?productID=<?php echo filter_var($productID, FILTER_SANITIZE_STRING);?>"+ '&' + $.param(JSON.parse('<?php echo json_encode($DataUserDetails) ?>'));
+                        
+                    }   else if(payWidth == 'bitpay'){
                         if (response.status == "success") {
                             window.location.href = response.invoiceUrl;
                         } else {

@@ -138,6 +138,7 @@ try {
   $productId = -1;
   $productPrice = -1;
   foreach($db->query("SELECT * FROM i_user_payments where order_key='$orderId'") as $row) {
+    //
     echo "<li>Payer ID:" . $row['payer_iuid_fk'] . "</li>";
     $customerId = $row['payer_iuid_fk'];
     $productId = $row['paymet_product_id'];
@@ -149,12 +150,12 @@ try {
   
   if(!empty($productId)) {
       foreach($db->query("SELECT * FROM i_user_product_posts where pr_id='$productId'") as $row) {
-          echo "<li>Price of product: " . $row['pr_price'] . "</li>";
+          //echo "<li>Price of product: " . $row['pr_price'] . "</li>";
           $productPrice = $row['pr_price'];
       }
   } else if(!empty($creditPlanId)) {
       foreach($db->query("SELECT * FROM i_premium_plans where plan_id='$creditPlanId'") as $row) {
-          echo "<li>Price of plan: " . $row['amount'] . "</li>";
+          //echo "<li>Price of plan: " . $row['amount'] . "</li>";
           $productPrice = $row['amount'];
       }
   }

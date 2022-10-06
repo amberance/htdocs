@@ -16,7 +16,6 @@ $configData = configItem();
 // Get Request Data when payment success or failed
 $requestData = $_REQUEST;
 
-var_dump($_REQUEST);
 
 // Check payment Method is paytm
 if ($requestData['paymentOption'] == 'paytm') {
