@@ -8,16 +8,30 @@ $requestData = $_REQUEST;
 
 $json = file_get_contents('php://input');
 $data = json_decode($json);
-$key = $data->key;
-$status = $data->transaction->status;
-$orderId = $data->transaction->external_reference;
-$userIdFromOrder = $data->transaction->description;
-$amount_fiat = $data->transaction->amount_fiat;
-$txnId = $data->transaction->id;
+//echo $data;
+//echo $json;
 
-var_dump($requestData);
-var_dump(json_encode($_REQUEST));
-var_dump($json );
+
+
+$key = $data->key;
+echo $key;
+
+
+$status = $data->transaction->status;
+echo $key;
+$orderId = $data->transaction->external_reference;
+echo $orderId;
+$userIdFromOrder = $data->transaction->description;
+echo $userIdFromOrder;
+$amount_fiat = $data->transaction->amount_fiat;
+echo $amount_fiat;
+$txnId = $data->transaction->id;
+echo $txnId;
+
+
+//var_dump($requestData);
+//var_dump(json_encode($_REQUEST));
+//var_dump($json );
 
 $stderr = fopen('php://stderr', 'w');
 fwrite($stderr,$json);
@@ -26,13 +40,17 @@ fclose($stderr);
 
 if ($key!='shhhhhh') {
     echo "key not correct";
-    exit();
+    
 }
 
+echo "HEOLLO";
 
 if (!isset($userId)) {
     $userID = $userIdFromOrder;
-    echo "userid not set";
+    echo "userid was not set";
+} else {
+    echo "userid is:  ";
+    echo $userID;
 }
 
 if (!isset($adminFee)) {
@@ -67,7 +85,7 @@ if (isset($status) && ($status=='C')) {
         $pAData = mysqli_fetch_array($planDetails, MYSQLI_ASSOC);
         $planAmount = $pAData['plan_amount'];
         mysqli_query($db, "UPDATE i_users SET wallet_points = wallet_points + $planAmount WHERE iuid = '$userID'") or die(mysqli_error($db));
-        mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'pending' WHERE payer_iuid_fk = '$userID' AND payment_type = 'point' AND payment_option = 'bitcoin'") or die(mysqli_error($db));
+        mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'ok' WHERE payer_iuid_fk = '$userID' AND payment_type = 'point' AND payment_option = 'bitcoin' AND paymet_product_id='$productId'") or die(mysqli_error($db));
     }else if(!empty($productID)){
         $productDetailsFromID = mysqli_query($db, "SELECT * FROM i_user_product_posts WHERE pr_id = '$productID'") or die(mysqli_error($db));
         $productData = mysqli_fetch_array($productDetailsFromID, MYSQLI_ASSOC);
@@ -75,7 +93,7 @@ if (isset($status) && ($status=='C')) {
         $productOwnerID = isset($productData['iuid_fk']) ? $productData['iuid_fk'] : NULL;
         $adminEarning = ($adminFee * $productPrice) / 100;
         $userEarning = $productPrice - $adminEarning;
-        mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'pending' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE payer_iuid_fk = '$payerUserID' AND payment_type = 'product' AND payment_status = 'pending' AND payment_option = 'bitcoin'") or die(mysqli_error($db));
+        mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'ok' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE payer_iuid_fk = '$payerUserID' AND payment_type = 'product' AND payment_status = 'pending' AND payment_option = 'bitcoin'") or die(mysqli_error($db));
         mysqli_query($db, "UPDATE i_users SET wallet_money = wallet_money + '$userEarning' WHERE iuid = '$productOwnerID'") or die(mysqli_error($db));
     }
     // Check if payment not successfull
@@ -101,11 +119,11 @@ function paymentResponse($paymentResponseData) {
     // payment status success
     if ($paymentResponseData['status']) {
         // Show payment success page or do whatever you want, like send email, notify to user etc
-        header('Location: ' . getAppUrl('payment-success.php'));
+        //header('Location: ' . getAppUrl('payment-success.php'));
         //  var_dump($paymentResponseData);
     } else {
         // Show payment error page or do whatever you want, like send email, notify to user etc
-        header('Location: ' . getAppUrl('payment-failed.php'));
+        //header('Location: ' . getAppUrl('payment-failed.php'));
     }
 }
 
