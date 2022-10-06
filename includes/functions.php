@@ -7342,8 +7342,10 @@ class iN_UPDATES {
 	/*Check item purchased before*/
 	public function iN_CheckItemPurchasedBefore($userID, $productID){
 		if($this->iN_CheckUserExist($userID) == 1 && $this->iN_CheckProductIDExistFromURL($productID)){
-            $query = mysqli_query($this->db,"SELECT * FROM i_user_payments WHERE paymet_product_id = '$productID' AND payer_iuid_fk = '$userID'  AND payed_iuid_fk IS NOT NULL") or die(mysqli_error($this->db));
-			if(mysqli_num_rows($query) > 0){
+//            $query = mysqli_query($this->db,"SELECT * FROM i_user_payments WHERE paymet_product_id = '$productID' AND payer_iuid_fk = '$userID'  AND payed_iuid_fk IS NOT NULL") or die(mysqli_error($this->db));
+		    $query = mysqli_query($this->db,"SELECT * FROM i_user_payments WHERE paymet_product_id = '$productID' AND payer_iuid_fk = '$userID'  AND payed_iuid_fk IS NOT NULL AND payment_status = 'ok'") or die(mysqli_error($this->db));
+		    
+		    if(mysqli_num_rows($query) > 0){
                return true;
 			}else{
 				return false;

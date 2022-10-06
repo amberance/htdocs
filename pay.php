@@ -139,7 +139,7 @@ try {
   $productPrice = -1;
   foreach($db->query("SELECT * FROM i_user_payments where order_key='$orderId'") as $row) {
     //
-    echo "<li>Payer ID:" . $row['payer_iuid_fk'] . "</li>";
+    //echo "<li>Payer ID:" . $row['payer_iuid_fk'] . "</li>";
     $customerId = $row['payer_iuid_fk'];
     $productId = $row['paymet_product_id'];
     $creditPlanId = $row['credit_plan_id'];
