@@ -4,20 +4,25 @@
        <div class="i_modal_content">  
           <div class="purchase_premium_header flex_ tabing border_top_radius mp" data-p="<?php echo filter_var($planID, FILTER_SANITIZE_STRING);?>"><?php echo filter_var($LANG['choose_payment_method'], FILTER_SANITIZE_STRING);?></div>
           <div class="purchase_post_details tabing"> 
-             <?php if($bitPayPaymentStatus == '1'){?>
+
              <!---->
-              <div class="payment_method_box transition payMethod" id="bitpay" data-type="bitpay">
+              <div class="payment_method_box transition payMethod" id="bitcoin" data-type="bitcoin">
                   <div class="payment_method_item flex_ bitpay"></div>
               </div>
              <!---->
-             <?php }?>
-             <?php if($razorPayPaymentStatus == '1'){?>
              <!---->
-             <div class="payment_method_box transition payMethod" id="razorpay" data-type="razorpay">
-                  <div class="payment_method_item flex_ razorpay"></div>
+              <div class="payment_method_box transition payMethod" id="ethereum" data-type="bitcoin">
+                  <div class="payment_method_item flex_ bitpay"></div>
               </div>
              <!---->
-             <?php }?>
+             
+             <!---->
+              <div class="payment_method_box transition payMethod" id="tether" data-type="bitcoin">
+                  <div class="payment_method_item flex_ bitpay"></div>
+              </div>
+             <!---->
+
+
              <?php if($payPalPaymentStatus == '1'){?> 
              <!---->
              <div class="payment_method_box transition payMethod" id="paypal" data-type="paypal">
@@ -25,41 +30,7 @@
               </div>
              <!---->
              <?php }?>
-             <?php if($stripePaymentStatus == '1'){?>
-             <!---->
-             <div class="payment_method_box transition payMethod" id="stripe" data-type="stripe">
-                  <div class="payment_method_item flex_ stripe"></div>
-              </div>
-             <!---->
-             <?php }?>
-             <?php if($payStackPaymentStatus == '1'){?>
-             <!---->
-             <div class="payment_method_box transition payMethod" id="paystack" data-type="paystack">
-                  <div class="payment_method_item flex_ paystack"></div>
-              </div>
-             <!---->
-             <?php }?>
-             <?php if($iyziCoPaymentStatus == '1'){?>
-             <!---->
-             <div class="payment_method_box transition paywith" id="iyzico" data-type="iyzico">
-                  <div class="payment_method_item flex_ iyzico"></div>
-              </div>
-             <!---->
-             <?php }?>
-             <?php if($autHorizePaymentStatus == '1'){?>
-             <!---->
-             <div class="payment_method_box transition paywith" id="authorize-net" data-type="authorize-net">
-                  <div class="payment_method_item flex_ authorize"></div>
-              </div>
-             <!---->
-             <?php }?>
-             <?php if($coinPaymentStatus == '1'){?>
-             <!---->
-             <div class="payment_method_box transition paywithCrip" id="coinpayment" data-type="coinpayment">
-                  <div class="payment_method_item flex_ coinpayment"></div>
-              </div>
-             <!---->
-             <?php }?>
+             
           </div>
           <div class="i_modal_g_footer"> 
               <div class="alertBtnLeft no-del transition"><?php echo filter_var($LANG['cancel'], FILTER_SANITIZE_STRING);?></div>
@@ -123,42 +94,13 @@ $(document).ready(function() {
                         $(".lw-show-till-loading").show();
                         //on success load paypalUrl page 
                         window.location.href = response.paypalUrl;
-                    }else if(payWidth == 'bitpay'){
+                    }else if(payWidth == 'bitcoin' || payWidth == 'ethereum' || payWidth == 'tether'){
                         if (response.status == "success") {
-                            window.location.href = response.invoiceUrl;
+                        	console.log("Crypto was selected.");
+                        	window.location.href = response+"?productID=<?php echo filter_var($productID, FILTER_SANITIZE_STRING);?>"+ '&' + $.param(JSON.parse('<?php echo json_encode($DataUserDetails) ?>'));
                         } else {
                             alert('Something went wrong on server.'); 
                         }
-                    }else if(payWidth == 'iyzico'){
-                        //on success load html content page on iyzico else show error message
-                        if (response.status == 'success') {
-                            $('body').html(response.htmlContent);
-                        } else if (response.message == 'failed') { 
-                            alert(response.errorMessage);
-                        } else {
-                            //error message
-                            //validation message
-                            $.each(response.validationMessage, function(index, value) {
-                                messageData = value;
-                                alert(messageData);
-                            });
-                        }
-                        //print error mesaages
-                        $('#lwValidationMessage').html(string);
-                    }else if(payWidth == 'authorize-net'){
-                        var authorizeNetCallbackUrl = <?php echo json_encode($authorizeNetCallbackUrl); ?> ;
-                        if (response.status == "success") {
-                            $('body').html("<form action='" + authorizeNetCallbackUrl + "' method='post'><input type='hidden' name='response' value='" + JSON.stringify(response) + "'><input type='hidden' name='paymentOption' value='authorize-net'></form>");
-                            $('body form').submit();
-                        } else if (response.status == "error") {
-                            alert(response.message);
-                        } else {
-                            $.each(response.validationMessage, function(index, value) {
-                                messageData = value;
-                                alert(messageData);
-                            });
-                        }
-                        $('#lwValidationMessage').html(string);
                     }
                     /***********/
                 }
