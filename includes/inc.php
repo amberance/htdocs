@@ -202,11 +202,11 @@ function getExtension($str) {
 	return $ext;
 }
 function inSub($mycd, $mycdStatus){
-//	$check = preg_match('/(.*)-(.*)-(.*)-(.*)-(.*)/', $mycd);
-//	if($check == 0 && ($mycdStatus == 1 || $mycdStatus == '' || empty($mycdStatus))){ 
-//		header('Location:' . $base_url . base64_decode('YmVsZWdhbA=='));
-//		exit();
-//	}
+	$check = preg_match('/(.*)-(.*)-(.*)-(.*)-(.*)/', $mycd);
+	if($check == 0 && ($mycdStatus == 1 || $mycdStatus == '' || empty($mycdStatus))){ 
+		header('Location:' . $base_url . base64_decode('YmVsZWdhbA=='));
+		exit();
+	}
 }
 /*Convert MB*/
 function convert_to_mb($size) {
@@ -215,10 +215,10 @@ function convert_to_mb($size) {
 	return $format_size;
 }
 function inSen($mycd, $mycdStatus){
-	//$check = preg_match('/(.*)-(.*)-(.*)-(.*)-(.*)/', $mycd);
-	//if($check == 0 && ($mycdStatus == 1 || $mycdStatus == '' || empty($mycdStatus))){ 
-	//	exit();
-	//}
+	$check = preg_match('/(.*)-(.*)-(.*)-(.*)-(.*)/', $mycd);
+	if($check == 0 && ($mycdStatus == 1 || $mycdStatus == '' || empty($mycdStatus))){ 
+		exit();
+	}
 }
 $purchasePointPlanTable = $iN->iN_PremiumPlans();
 $planTableList = $iN->iN_PremiumPlansListFromAdmin();
