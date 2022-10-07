@@ -7831,7 +7831,7 @@ background: #ccc;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
-.bitpay {
+.bitpay { 
   width: 90px;
   height: 40px;
   background: url("paymentIcons/bitpay.svg") no-repeat center;
@@ -7839,21 +7839,21 @@ background: #ccc;
 }
 
 .bitcoin {
-  width: 90px;
+  width: 140px;
   height: 40px;
   background: url("paymentIcons/bitcoin.svg") no-repeat center;
   background-size: cover;
 }
 
 .tether {
-  width: 90px;
+  width: 140px;
   height: 40px;
   background: url("paymentIcons/tether.svg") no-repeat center;
   background-size: cover;
 }
 
 .ethereum {
-  width: 90px;
+  width: 140px;
   height: 40px;
   background: url("paymentIcons/ethereum.svg") no-repeat center;
   background-size: cover;

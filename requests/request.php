@@ -571,13 +571,12 @@ if (isset($_POST['f']) && $logedIn == '1') {
 								$width = 500;
 								$height = 500;
 								$file = $pathFilea;
-								$anotherFile = $serverDocumentRoot .'/uploads/files/' . $d . '/' . $getFilename;
 								//indicate the path and name for the new resized file
 								$resizedFile = $tumbnails . $UploadedFileName . '_' . $userID . '.' . $ext;
 								//call the function (when passing path to pic)
-								smart_resize_image($anotherFile, null, $width, $height, false, $resizedFile, false, false, 100);
+								smart_resize_image($file, null, $width, $height, false, $resizedFile, false, false, 100);
 								//call the function (when passing pic as string)
-								smart_resize_image(null, $iN->iN_fetchDataFromURL($resizedFile), $width, $height, false, $resizedFile, false, false, 100);
+								smart_resize_image(null, file_get_contents($resizedFile), $width, $height, false, $resizedFile, false, false, 100);
 
 								$tumbnailPath = 'uploads/files/' . $d . '/' . $UploadedFileName . '_' . $userID . '.' . $ext;
 								$thePathM = '../' . $pathFile;

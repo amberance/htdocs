@@ -1,5 +1,4 @@
 <?php
-ini_set('allow_url_fopen',1);
 /**
  * easy image resize function
  * @param  $file - file name to resize
