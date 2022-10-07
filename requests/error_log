@@ -1,0 +1,63 @@
+[07-Oct-2022 10:43:40 Europe/Istanbul] PHP Warning:  getimagesize(../uploads/files/2022-10-07/image_1665128620086437400_1.jpg): failed to open stream: No such file or directory in /home/tallsoxs/public_html/includes/imageFilter.php on line 106
+[07-Oct-2022 10:43:40 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/imageFilter.php on line 107
+[07-Oct-2022 10:43:40 Europe/Istanbul] PHP Fatal error:  Uncaught Exception: Invalid image: ../uploads/files/2022-10-07/image_1665128620086437400_1.jpg in /home/tallsoxs/public_html/includes/imageFilter.php:115
+Stack trace:
+#0 /home/tallsoxs/public_html/includes/imageFilter.php(71): imageFilter\ImageFilter->get_image_information()
+#1 /home/tallsoxs/public_html/requests/request.php(400): imageFilter\ImageFilter->load('../uploads/file...')
+#2 {main}
+  thrown in /home/tallsoxs/public_html/includes/imageFilter.php on line 115
+[07-Oct-2022 10:45:48 Europe/Istanbul] PHP Notice:  Undefined variable: userTextForPostTip in /home/tallsoxs/public_html/themes/default/layouts/posts/ImagePost.php on line 10
+[07-Oct-2022 10:46:30 Europe/Istanbul] PHP Warning:  getimagesize(): https:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/tallsoxs/public_html/includes/compressImage.php on line 31
+[07-Oct-2022 10:46:30 Europe/Istanbul] PHP Warning:  getimagesize(https://www.tallsoxs.com/uploads/files/2022-10-07/image_1665128790038950100_1.png): failed to open stream: no suitable wrapper could be found in /home/tallsoxs/public_html/includes/compressImage.php on line 31
+[07-Oct-2022 10:46:30 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 56
+[07-Oct-2022 10:46:30 Europe/Istanbul] PHP Warning:  file_get_contents(/home/tallsoxs/public_html/uploads/files/2022-10-07/image_1665128790038950100_1_1.png): failed to open stream: No such file or directory in /home/tallsoxs/public_html/requests/request.php on line 579
+[07-Oct-2022 10:46:30 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 31
+[07-Oct-2022 10:46:30 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 56
+[07-Oct-2022 10:47:02 Europe/Istanbul] PHP Notice:  Undefined variable: userTextForPostTip in /home/tallsoxs/public_html/themes/default/layouts/posts/ImagePost.php on line 10
+[07-Oct-2022 10:51:43 Europe/Istanbul] PHP Warning:  getimagesize(): https:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/tallsoxs/public_html/includes/compressImage.php on line 31
+[07-Oct-2022 10:51:43 Europe/Istanbul] PHP Warning:  getimagesize(https://www.tallsoxs.com/uploads/files/2022-10-07/image_1665129103061213000_1.png): failed to open stream: no suitable wrapper could be found in /home/tallsoxs/public_html/includes/compressImage.php on line 31
+[07-Oct-2022 10:51:43 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 56
+[07-Oct-2022 10:51:43 Europe/Istanbul] PHP Warning:  file_get_contents(/home/tallsoxs/public_html/uploads/files/2022-10-07/image_1665129103061213000_1_1.png): failed to open stream: No such file or directory in /home/tallsoxs/public_html/requests/request.php on line 579
+[07-Oct-2022 10:51:43 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 31
+[07-Oct-2022 10:51:43 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 56
+[07-Oct-2022 10:53:29 Europe/Istanbul] PHP Warning:  getimagesize(): https:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/tallsoxs/public_html/includes/compressImage.php on line 31
+[07-Oct-2022 10:53:29 Europe/Istanbul] PHP Warning:  getimagesize(https://www.tallsoxs.com/uploads/files/2022-10-07/image_1665129209030814500_1.png): failed to open stream: no suitable wrapper could be found in /home/tallsoxs/public_html/includes/compressImage.php on line 31
+[07-Oct-2022 10:53:29 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 56
+[07-Oct-2022 10:53:29 Europe/Istanbul] PHP Warning:  file_get_contents(/home/tallsoxs/public_html/uploads/files/2022-10-07/image_1665129209030814500_1_1.png): failed to open stream: No such file or directory in /home/tallsoxs/public_html/requests/request.php on line 579
+[07-Oct-2022 10:53:29 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 31
+[07-Oct-2022 10:53:29 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 56
+[07-Oct-2022 10:56:22 Europe/Istanbul] PHP Warning:  getimagesize(): https:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 10:56:22 Europe/Istanbul] PHP Warning:  getimagesize(https://www.tallsoxs.com/uploads/files/2022-10-07/image_1665129382045606900_1.png): failed to open stream: no suitable wrapper could be found in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 10:56:22 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 10:56:22 Europe/Istanbul] PHP Warning:  file_get_contents(/home/tallsoxs/public_html/uploads/files/2022-10-07/image_1665129382045606900_1_1.png): failed to open stream: No such file or directory in /home/tallsoxs/public_html/requests/request.php on line 579
+[07-Oct-2022 10:56:22 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 10:56:22 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:02:23 Europe/Istanbul] PHP Warning:  getimagesize(): https:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:02:23 Europe/Istanbul] PHP Warning:  getimagesize(https://www.tallsoxs.com/uploads/files/2022-10-07/image_1665129743000084000_1.png): failed to open stream: no suitable wrapper could be found in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:02:23 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:02:23 Europe/Istanbul] PHP Warning:  file_get_contents(/home/tallsoxs/public_html/uploads/files/2022-10-07/image_1665129743000084000_1_1.png): failed to open stream: No such file or directory in /home/tallsoxs/public_html/requests/request.php on line 579
+[07-Oct-2022 11:02:23 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:02:23 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:05:26 Europe/Istanbul] PHP Warning:  getimagesize(): https:// wrapper is disabled in the server configuration by allow_url_fopen=0 in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:05:26 Europe/Istanbul] PHP Warning:  getimagesize(https://www.tallsoxs.com/uploads/files/2022-10-07/image_1665129926038056600_1.png): failed to open stream: no suitable wrapper could be found in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:05:26 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:05:26 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:05:26 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:08:02 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:08:02 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:09:15 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:09:15 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:10:48 Europe/Istanbul] PHP Warning:  getimagesize(): Filename cannot be empty in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:10:48 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:10:48 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:10:48 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:11:37 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:11:37 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:12:42 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:14:09 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:14:09 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:17:39 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:17:39 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
+[07-Oct-2022 11:17:44 Europe/Istanbul] PHP Notice:  Undefined variable: userTextForPostTip in /home/tallsoxs/public_html/themes/default/layouts/posts/ImagePost.php on line 10
+[07-Oct-2022 11:19:17 Europe/Istanbul] PHP Notice:  getimagesizefromstring(): Read error! in /home/tallsoxs/public_html/includes/compressImage.php on line 32
+[07-Oct-2022 11:19:17 Europe/Istanbul] PHP Notice:  Trying to access array offset on value of type bool in /home/tallsoxs/public_html/includes/compressImage.php on line 57
