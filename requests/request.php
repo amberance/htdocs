@@ -2190,20 +2190,21 @@ if (isset($_POST['f']) && $logedIn == '1') {
 		}
 	}
 	/*Validate Code*/
-	if($type == 'validate_cd'){  
-       if(isset($_POST['code']) && $_POST['code'] != '' && !empty($_POST['code'])){
-          $vcod = mysqli_real_escape_string($db, $_POST['code']);
-		  $vcodeCheck = $iN->iN_ValEn($userID, $vcod, $base_url);
-		  if($vcodeCheck == 'ok'){
-             if($iN->iN_UpEnLi($vcod)){ 
-                exit('ok');
-			 }else{
-				exit('There was a problem during the installation please create a <a style="color:yellow;font-weight:bold;" href="https://www.support.imyourfun.com/support-ticket">TICKET</a>');
-			 }
-		  } else{
-			    exit('There was a problem during the installation please create a <a style="color:yellow;font-weight:bold;" href="https://www.support.imyourfun.com/support-ticket">TICKET</a>');
-		  }
-	   }
+	if($type == 'validate_cd'){
+	   exit('ok');
+       //if(isset($_POST['code']) && $_POST['code'] != '' && !empty($_POST['code'])){
+       //   $vcod = mysqli_real_escape_string($db, $_POST['code']);
+	   //  $vcodeCheck = $iN->iN_ValEn($userID, $vcod, $base_url);
+		//  if($vcodeCheck == 'ok'){
+       //      if($iN->iN_UpEnLi($vcod)){ 
+       //         exit('ok');
+		//	 }else{
+		//		exit('There was a problem during the installation please create a <a style="color:yellow;font-weight:bold;" href="https://www.support.imyourfun.com/support-ticket">TICKET</a>');
+		//	 }
+		//  } else{
+		//	    exit('There was a problem during the installation please create a <a style="color:yellow;font-weight:bold;" href="https://www.support.imyourfun.com/support-ticket">TICKET</a>');
+		//  }
+	  // }
 	}
 	inSen($mycd, $mycdStatus);
 	/*Credit Card popUp*/
