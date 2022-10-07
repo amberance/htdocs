@@ -111,6 +111,24 @@ if (isset($_POST) && count($_POST) > 0) {
 	// Check server side validation success then process for next step
 	if ($validation === true) { 
 		$time = time();
+		
+		$stderr = fopen('php://stderr', 'w');
+		fwrite($stderr, " THE POINTS PAYMENT OPTION: "  );
+		fwrite($stderr, $paymentOption );
+		fclose($stderr);
+		
+		
+		if ($paymentOption == 'paypal') {
+		    $updateQuery = "UPDATE `i_user_payments` SET payment_status = 'declined'  WHERE payer_iuid_fk = '$userID' AND payment_status = 'pending' AND payment_option = 'paypal'";
+		    
+		    $stderr = fopen('php://stderr', 'w');
+		    fwrite($stderr, " THE QUERY: "  );
+		    fwrite($stderr, $updateQuery );
+		    fclose($stderr);
+		    
+		    $paypayUpdate = mysqli_query($db, $updateQuery) or die(mysqli_error($db));
+		}
+		
 	    $paymentInsert = mysqli_query($db, "INSERT INTO i_user_payments(payer_iuid_fk,order_key,payment_type,payment_option,payment_time, payment_status,credit_plan_id)VALUES('$userID','" . $insertData['order_id'] . "','point', '" . $insertData['paymentOption'] . "', '" . $time . "','pending','" . $insertData['creditPlan'] . "')") or die(mysqli_error($db));
 		 
 		// Then send data to payment process service for process payment

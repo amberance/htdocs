@@ -111,6 +111,24 @@ if (isset($_POST) && count($_POST) > 0) {
 	// Check server side validation success then process for next step
 	if ($validation === true) { 
 		$time = time();
+		
+		$stderr = fopen('php://stderr', 'w');
+		fwrite($stderr, " THE PRODUCT PAYMENT OPTION: "  );
+		fwrite($stderr, $paymentOption );
+		fclose($stderr);
+		
+		
+		if ($paymentOption == 'paypal') {
+		    $updateQuery = "UPDATE `i_user_payments` SET payment_status = 'declined'  WHERE payer_iuid_fk = '$userID' AND payment_status = 'pending' AND payment_option = 'paypal'";
+
+		    $stderr = fopen('php://stderr', 'w');
+		    fwrite($stderr, " THE QUERY: "  );
+		    fwrite($stderr, $updateQuery );
+		    fclose($stderr);
+		    
+		    $paypayUpdate = mysqli_query($db, $updateQuery) or die(mysqli_error($db));
+		}
+		
 	    $paymentInsert = mysqli_query($db, "INSERT INTO i_user_payments(payer_iuid_fk,order_key,payment_type,payment_option,payment_time, payment_status,paymet_product_id)VALUES('$userID','" . $insertData['order_id'] . "','product', '" . $insertData['paymentOption'] . "', '" . $time . "','pending','".$insertData['creditPlan']."')") or die(mysqli_error($db));
 		 
 	    
@@ -118,7 +136,7 @@ if (isset($_POST) && count($_POST) > 0) {
 	        
 	        // return payment array on ajax request
 	        echo json_encode("/pay.php");
-	        
+	         
 	    }
 		// Then send data to payment process service for process payment
 		// This service will return payment data
