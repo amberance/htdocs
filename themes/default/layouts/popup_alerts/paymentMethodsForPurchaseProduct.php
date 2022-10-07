@@ -4,20 +4,19 @@
        <div class="i_modal_content">  
           <div class="purchase_premium_header flex_ tabing border_top_radius mp" data-p="<?php echo filter_var($productID, FILTER_SANITIZE_STRING);?>"><?php echo filter_var($LANG['choose_payment_method'], FILTER_SANITIZE_STRING);?></div>
           <div class="purchase_post_details tabing"> 
-             <?php if($bitPayPaymentStatus == '1'){?>
-             <!---->
-              <div class="payment_method_box transition payMethod" id="bitpay" data-type="bitpay">
-                  <div class="payment_method_item flex_ bitpay"></div>
+          
+          
+              <div class="payment_method_box transition payMethod" id="bitcoin" data-type="bitcoin">
+                  <div class="payment_method_item flex_ bitcoin">Bitcoin</div>
               </div>
-             <!---->
-             <?php }?>
-             <?php if($razorPayPaymentStatus == '1'){?>
-             <!---->
-             <div class="payment_method_box transition payMethod" id="razorpay" data-type="razorpay">
-                  <div class="payment_method_item flex_ razorpay"></div>
+              
+              <div class="payment_method_box transition payMethod" id="ethereum" data-type="ethereum">
+                  <div class="payment_method_item flex_ ethereum">Ethereum</div>
               </div>
-             <!---->
-             <?php }?>
+              
+              <div class="payment_method_box transition payMethod" id="tether" data-type="tether">
+                  <div class="payment_method_item flex_ tether">Tether</div>
+              </div>
              <?php if($payPalPaymentStatus == '1'){?> 
              <!---->
              <div class="payment_method_box transition payMethod" id="paypal" data-type="paypal">
@@ -25,35 +24,43 @@
               </div>
              <!---->
              <?php }?>
-             <?php if($stripePaymentStatus == '1'){?>
+             
+             <?php if($payPalPaymentStatus == '1'){?> 
+             <!---->
+             <div class="payment_method_box transition payMethod" id="paypal" data-type="paypal">
+                  <div class="payment_method_item flex_ paypal"></div>
+              </div>
+             <!---->
+             <?php }?>
+             <?php if(false){?>
              <!---->
              <div class="payment_method_box transition payMethod" id="stripe" data-type="stripe">
                   <div class="payment_method_item flex_ stripe"></div>
               </div>
              <!---->
              <?php }?>
-             <?php if($payStackPaymentStatus == '1'){?>
+             <?php if(false){?>
              <!---->
              <div class="payment_method_box transition payMethod" id="paystack" data-type="paystack">
                   <div class="payment_method_item flex_ paystack"></div>
               </div>
              <!---->
              <?php }?>
-             <?php if($iyziCoPaymentStatus == '1'){?>
+             <?php if(false){?>
              <!---->
              <div class="payment_method_box transition paywith" id="iyzico" data-type="iyzico">
                   <div class="payment_method_item flex_ iyzico"></div>
               </div>
              <!---->
              <?php }?>
-             <?php if($autHorizePaymentStatus == '1'){?>
+             <?php if(false){?>
              <!---->
              <div class="payment_method_box transition paywith" id="authorize-net" data-type="authorize-net">
                   <div class="payment_method_item flex_ authorize"></div>
               </div>
              <!---->
              <?php }?>
-             <?php if($coinPaymentStatus == '1'){?>
+             <?php if(false){?>
              <!---->
              <div class="payment_method_box transition paywithCrip" id="coinpayment" data-type="coinpayment">
                   <div class="payment_method_item flex_ coinpayment"></div>
@@ -118,7 +125,16 @@ $(document).ready(function() {
                             alert(messageData);
                         }); 
                     }
-                    if(payWidth == 'paypal'){  
+                    
+                    if(payWidth == 'bitcoin'){  
+                        $(".lw-show-till-loading").show();
+                        //on success load paypalUrl page 
+                        console.log("In the bitcoin if block" + response);
+                        // We don't have the productID!!!
+                        // alert(response);
+                        window.location.href = response+"?creditPlan=<?php echo filter_var($planID, FILTER_SANITIZE_STRING);?>"+ '&' + $.param(JSON.parse('<?php echo json_encode($DataUserDetails) ?>'));
+      					
+                    } else if(payWidth == 'paypal'){  
                         $(".lw-show-till-loading").show();
                         //on success load paypalUrl page 
                         window.location.href = response.paypalUrl;

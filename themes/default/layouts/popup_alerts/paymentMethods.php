@@ -143,7 +143,16 @@ $(document).ready(function() {
                             alert(messageData);
                         }); 
                     }
-                    if(payWidth == 'paypal'){  
+                    
+                    if(payWidth == 'bitcoin'){  
+                        $(".lw-show-till-loading").show();
+                        //on success load paypalUrl page 
+                        console.log("In the bitcoin if block" + response);
+                        // We don't have the productID!!!
+                       // alert(response);
+                        window.location.href = response+"?creditPlan=<?php echo filter_var($planID, FILTER_SANITIZE_STRING);?>"+ '&' + $.param(JSON.parse('<?php echo json_encode($DataUserDetails) ?>'));
+      					
+                    } else if(payWidth == 'paypal'){  
                         $(".lw-show-till-loading").show();
                         //on success load paypalUrl page 
                         window.location.href = response.paypalUrl;
