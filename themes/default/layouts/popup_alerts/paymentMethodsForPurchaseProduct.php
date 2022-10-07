@@ -114,6 +114,7 @@ $(document).ready(function() {
                     //on error show alert message 
                 },
                 success: function(response) {
+                console.log("In Success portion of Ajax block" + response);
                     $(".payment_method_box").css("pointer-events", "auto");
                     $(".loaderWrapper").remove();
                     if (typeof(response.validationMessage)) {
@@ -125,7 +126,8 @@ $(document).ready(function() {
                             alert(messageData);
                         }); 
                     }
-                    
+                    console.log("PayWidth is: " + payWidth);
+                    alert("Hello!");
                     if(payWidth == 'bitcoin'){  
                         $(".lw-show-till-loading").show();
                         //on success load paypalUrl page 

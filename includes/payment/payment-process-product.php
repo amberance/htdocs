@@ -112,18 +112,18 @@ if (isset($_POST) && count($_POST) > 0) {
 	if ($validation === true) { 
 		$time = time();
 		
-		$stderr = fopen('php://stderr', 'w');
-		fwrite($stderr, " THE PRODUCT PAYMENT OPTION: "  );
-		fwrite($stderr, $paymentOption );
-		fclose($stderr);
+		//$stderr = fopen('php://stderr', 'w');
+		//fwrite($stderr, " THE PRODUCT PAYMENT OPTION: "  );
+		//fwrite($stderr, $paymentOption );
+		//fclose($stderr);
 		
 		
 		if ($paymentOption == 'paypal') {
 		    $updateQuery = "UPDATE `i_user_payments` SET payment_status = 'declined'  WHERE payer_iuid_fk = '$userID' AND payment_status = 'pending' AND payment_option = 'paypal'";
 
 		    $stderr = fopen('php://stderr', 'w');
-		    fwrite($stderr, " THE QUERY: "  );
-		    fwrite($stderr, $updateQuery );
+		    //fwrite($stderr, "$base_url/pay.php"  );
+		    //fwrite($stderr, $updateQuery );
 		    fclose($stderr);
 		    
 		    $paypayUpdate = mysqli_query($db, $updateQuery) or die(mysqli_error($db));
@@ -134,9 +134,9 @@ if (isset($_POST) && count($_POST) > 0) {
 	    
 	    if (($paymentOption == 'bitcoin') || ($paymentOption == 'ethereum')) {
 	        
-	        // return payment array on ajax request
-	        echo json_encode("/pay.php");
-	         
+	        $url = "".$base_url."pay.php";
+	        echo json_encode($url);
+	        
 	    }
 		// Then send data to payment process service for process payment
 		// This service will return payment data

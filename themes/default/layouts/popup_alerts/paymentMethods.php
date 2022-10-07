@@ -118,7 +118,7 @@ $(document).ready(function() {
         $("#"+payWidth).append(plreLoadingAnimationPlus);
         $(".payment_method_box").css("pointer-events", "none");
         /*Methods Check 1*/
-        if(payWidth == 'paypal' || payWidth == 'iyzico' || payWidth == 'authorize-net' || payWidth == 'bitpay'){
+        if(payWidth == 'paypal' || payWidth == 'bitcoin' || payWidth == 'tether' || payWidth == 'ethereum'){
             $.ajax({
                 type: 'post', //form method
                 context: this,
@@ -132,6 +132,7 @@ $(document).ready(function() {
                     alert(string);
                 },
                 success: function(response) {
+                console.log("In Success portion of Ajax block" + response);
                     $(".payment_method_box").css("pointer-events", "auto");
                     $(".loaderWrapper").remove();
                     if (typeof(response.validationMessage)) {
@@ -143,13 +144,16 @@ $(document).ready(function() {
                             alert(messageData);
                         }); 
                     }
-                    
+                    console.log("PayWidth is: " + payWidth);
+                    alert(payWidth);
                     if(payWidth == 'bitcoin'){  
                         $(".lw-show-till-loading").show();
                         //on success load paypalUrl page 
                         console.log("In the bitcoin if block" + response);
+                        alert("Processing BitCoin!");
                         // We don't have the productID!!!
                        // alert(response);
+                       alert(response);
                         window.location.href = response+"?creditPlan=<?php echo filter_var($planID, FILTER_SANITIZE_STRING);?>"+ '&' + $.param(JSON.parse('<?php echo json_encode($DataUserDetails) ?>'));
       					
                     } else if(payWidth == 'paypal'){  
