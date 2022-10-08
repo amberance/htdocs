@@ -34,7 +34,15 @@ echo $txnId;
 //var_dump($json );
 
 $stderr = fopen('php://stderr', 'w');
-fwrite($stderr,$json);
+fwrite($stderr, " The JSON in BITCOIN Product Payment Routine: " );
+fwrite($stderr, $json);
+fwrite($stderr," Amount Fiat:  " );
+fwrite($stderr,$amount_fiat);
+fwrite($stderr,"  Order ID from Order: " );
+fwrite($stderr, $orderId);
+
+
+
 fclose($stderr);
 
 
@@ -46,17 +54,17 @@ fclose($stderr);
 
 if (!isset($userId)) {
     $userID = $userIdFromOrder;
-    echo "userid was not set";
+    echo " userid was not set ";
 } else {
-    echo "userid is:  ";
+    echo " userid is:  ";
     echo $userID;
 }
 
 if (!isset($adminFee)) {
     $adminFee=10;
-    echo "Admin Fee Not Set. Setting it to 10.";
+    echo " Admin Fee Not Set. Setting it to 10. ";
 } else {
-    echo "The Admin Fee: ";
+    echo " The Admin Fee: ";
     echo $adminFee;
 }
 
@@ -68,6 +76,8 @@ fwrite($stderr," THE USERID: " );
 fwrite($stderr,$userID);
 fwrite($stderr," THE ORDERID: ");
 fwrite($stderr,$orderId);
+fwrite($stderr," THE STATUS: " );
+fwrite($stderr,$status);
 fclose($stderr);
 
 
@@ -94,33 +104,55 @@ if (isset($status) && ($status=='C') && isset($key) && ($key=='shhhhhh')) {
     $payerUserID = isset($pData['payer_iuid_fk']) ? $pData['payer_iuid_fk'] : NULL;
     $productID = isset($pData['paymet_product_id']) ? $pData['paymet_product_id'] : NULL;
     if(!empty($userPayedPlanID)){
-        $planDetails = mysqli_query($db, "SELECT * FROM i_premium_plans WHERE plan_id = '$userPayedPlanID'") or die(mysqli_error($db));
+        $planSQL = "SELECT * FROM i_premium_plans WHERE plan_id = '$userPayedPlanID'";
+        
+        
+        $planDetails = mysqli_query($db, $planSQL) or die(mysqli_error($db));
         $pAData = mysqli_fetch_array($planDetails, MYSQLI_ASSOC);
         $planAmount = $pAData['plan_amount'];
         $planCost = $pAData['amount'];
         
+        $stderr = fopen('php://stderr', 'w');
+        fwrite($stderr, " PayerUserId:  ");
+        fwrite($stderr, $payerUserID);
+        fwrite($stderr, " Plan SQL: ");
+        fwrite($stderr, $planSQL);
+        fwrite($stderr, " Amount fiat:  ");
+        fwrite($stderr, $amount_fiat );
+        fclose($stderr);
+        
         if ($amount_fiat < $planCost) {
+            $insufficientSQL = "UPDATE i_user_payments SET payment_status = 'insufficient' WHERE order_key = '" . $orderId . "'";
             $stderr = fopen('php://stderr', 'w');
             fwrite($stderr, $amount_fiat );
-            fwrite($stderr," Insufficient Payment. ");
+            fwrite($stderr," Insufficient Payment for premium plan. ");
             fwrite($stderr, $planCost);
+            fwrite($stderr, $insufficientSQL);
             fclose($stderr);
-            mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'insufficient' WHERE order_key = '" . $orderId . "'") or die(mysqli_error($db));
+            $insufficientSQL = "UPDATE i_user_payments SET payment_status = 'insufficient' WHERE order_key = '" . $orderId . "'";
+            mysqli_query($db, $insufficientSQL) or die(mysqli_error($db));
         } else {
+
+            $walletSqlUpdate = "UPDATE i_users SET wallet_points = wallet_points + $planAmount WHERE iuid = '$userID'";
+            $paymentStatusSqlUpdate = "UPDATE i_user_payments SET payment_status = 'payed' WHERE order_key = '" . $orderId . "'";
             $stderr = fopen('php://stderr', 'w');
-            fwrite($stderr," Bitcoin points payment about to be processed... ");
+            fwrite($stderr, $walletSqlUpdate);
+            fwrite($stderr," These are the SQL before the bitcoin plan updates... ");
+            fwrite($stderr, $paymentStatusSqlUpdate);
             fclose($stderr);
-           mysqli_query($db, "UPDATE i_users SET wallet_points = wallet_points + $planAmount WHERE iuid = '$userID'") or die(mysqli_error($db));
-           mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'payed' WHERE order_key = '" . $orderId . "'") or die(mysqli_error($db));
+            mysqli_query($db, $walletSqlUpdate) or die(mysqli_error($db));
+            mysqli_query($db, $paymentStatusSqlUpdate) or die(mysqli_error($db));
            $stderr = fopen('php://stderr', 'w');
            fwrite($stderr," Bitcoin points payment processed. ");
            fclose($stderr);
         }
     }else if(!empty($productID)){
+        $productSelectedSQL = "SELECT * FROM i_user_product_posts WHERE pr_id = '$productID'";
+        
         $stderr = fopen('php://stderr', 'w');
         fwrite($stderr," Bitcoin product payment about to be processed. ");
         fclose($stderr);
-        $productDetailsFromID = mysqli_query($db, "SELECT * FROM i_user_product_posts WHERE pr_id = '$productID'") or die(mysqli_error($db));
+        $productDetailsFromID = mysqli_query($db, $productSelectedSQL) or die(mysqli_error($db));
         $productData = mysqli_fetch_array($productDetailsFromID, MYSQLI_ASSOC);
         $productPrice = isset($productData['pr_price']) ? $productData['pr_price'] : NULL;
         $productOwnerID = isset($productData['iuid_fk']) ? $productData['iuid_fk'] : NULL;
@@ -128,15 +160,29 @@ if (isset($status) && ($status=='C') && isset($key) && ($key=='shhhhhh')) {
         $userEarning = $productPrice - $adminEarning;
         
         if ($amount_fiat < $productPrice) {
-            mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'insufficient' WHERE order_key = '" . $orderId . "'") or die(mysqli_error($db));
-            $stderr = fopen('php://stderr', 'w');
+            $insuffienceProductPaymentSql = "UPDATE i_user_payments SET payment_status = 'insufficient' WHERE order_key = '" . $orderId . "'";
             fwrite($stderr, $amount_fiat );
             fwrite($stderr," Insufficient bitcoin product payment. ");
             fwrite($stderr, $productPrice);
+            fwrite($stderr, $insuffienceProductPaymentSql);
             fclose($stderr);
+            mysqli_query($db, $insuffienceProductPaymentSql) or die(mysqli_error($db));
+            $stderr = fopen('php://stderr', 'w');
+
         } else {
-            mysqli_query($db, "UPDATE i_user_payments SET payment_status = ''payed'' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE order_key = '" . $orderId . "'") or die(mysqli_error($db));
-            mysqli_query($db, "UPDATE i_users SET wallet_money = wallet_money + '$userEarning' WHERE iuid = '$productOwnerID'") or die(mysqli_error($db));
+            
+            $productPaymentAndStatusSql = "UPDATE i_user_payments SET payment_status = ''payed'' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE order_key = '" . $orderId . "'";
+            $productPaymentEarningsSqlUpdate = "UPDATE i_users SET wallet_money = wallet_money + '$userEarning' WHERE iuid = '$productOwnerID'";
+            
+            fwrite($stderr, " productPaymentAndStatusSql: " );
+            fwrite($stderr, $productPaymentAndStatusSql);
+            fwrite($stderr, " productPaymentEarningsSqlUpdate ");
+            fwrite($stderr, $productPaymentEarningsSqlUpdate);
+            fwrite($stderr, " About to execute these queries...");
+            fclose($stderr);
+            
+            mysqli_query($db, $productPaymentAndStatusSql) or die(mysqli_error($db));
+            mysqli_query($db, $productPaymentEarningsSqlUpdate) or die(mysqli_error($db));
             $stderr = fopen('php://stderr', 'w');
             fwrite($stderr," Product payment complete. ");
             fclose($stderr);
@@ -145,11 +191,14 @@ if (isset($status) && ($status=='C') && isset($key) && ($key=='shhhhhh')) {
     // Check if payment not successfull
 } else {
     
+    $bitcoinPaymentDeclinedSql = "UPDATE i_user_payments SET payment_status = 'declined' WHERE paymet_product_id = '$productID'";
+    
     $stderr = fopen('php://stderr', 'w');
     fwrite($stderr," Bitcoin payment declined. ");
+    fwrite($stderr, $bitcoinPaymentDeclinedSql);
     fclose($stderr);
     
-    mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'declined' WHERE paymet_product_id = '$productID'") or die(mysqli_error($db));
+    mysqli_query($db, $bitcoinPaymentDeclinedSql) or die(mysqli_error($db));
     
     //mysqli_query($db, "DELETE FROM i_user_payments WHERE payer_iuid_fk = '$userID' AND payment_option = 'bitcoin' AND payment_type  IN('point','product') AND payment_status = 'pending'") or die(mysqli_error($db));
     // Prepare payment failed data

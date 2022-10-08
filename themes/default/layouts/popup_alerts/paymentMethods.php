@@ -7,17 +7,17 @@
           
           
               <div class="payment_method_box transition payMethod" id="bitcoin" data-type="bitcoin">
-                  <div class="payment_method_item flex_ bitcoin"> </div>
+                  <div class="payment_method_item flex_ bitcoin"> Bitcoin</div>
               </div>
 
 
               <div class="payment_method_box transition payMethod" id="tether" data-type="tether">
-                  <div class="payment_method_item flex_ tether"> </div>
+                  <div class="payment_method_item flex_ tether">Tether </div>
               </div>
               
                             
               <div class="payment_method_box transition payMethod" id="ethereum" data-type="ethereum">
-                  <div class="payment_method_item flex_ ethereum"> </div>
+                  <div class="payment_method_item flex_ ethereum"> Ethereum</div>
               </div>
               
 

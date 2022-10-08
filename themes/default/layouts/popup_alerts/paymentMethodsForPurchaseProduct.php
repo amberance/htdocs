@@ -12,11 +12,11 @@
               
 
               <div class="payment_method_box transition payMethod" id="tether" data-type="bitcoin">
-                  <div class="payment_method_item flex_ tether"></div>
+                  <div class="payment_method_item flex_ tether">Tether</div>
               </div>
               
               <div class="payment_method_box transition payMethod" id="ethereum" data-type="bitcoin">
-                  <div class="payment_method_item flex_ ethereum"></div>
+                  <div class="payment_method_item flex_ ethereum">Ethereum</div>
               </div>
 
             <div class="payment_method_box transition payMethod" id="paypal" data-type="paypal">
