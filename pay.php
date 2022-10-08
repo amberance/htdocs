@@ -246,8 +246,7 @@ try {
 ?>
 
 <center>
-	Please pay the specified amount to the given address through your
-	crypto wallet.<br />
+	Please choose your preferred crypto currency.<br />
 
 	<div
 		data-boxcoin="custom-<?php echo filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL) ?>-<?php echo $customerId ?>"
@@ -255,7 +254,8 @@ try {
 		data-external-reference="<?php echo filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL) ?>"
 		data-title="<?php echo filter_input(INPUT_GET, 'item_id', FILTER_SANITIZE_URL) ?>"
 		data-description="<?php echo $customerId ?>"></div>
-	Please do not close your browser until the transaction completesd.
+		Pay the total amount to the address provided using your digital wallet.</br>
+	Please do not close your browser until the transaction completes.
 </center>
 
 
