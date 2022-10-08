@@ -8424,6 +8424,35 @@ background: #ccc;
     background-size: contain;
 }
 
+.tether {
+    width: 90px;
+    height: 40px;
+    background: url('paymentIcons/tether.svg') no-repeat center;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    -ms-background-size: cover;
+}
+
+.bitcoin {
+    width: 90px;
+    height: 40px;
+    background: url('paymentIcons/bitcoin.svg') no-repeat center;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    -ms-background-size: cover;
+}
+
+.ethereum {
+    width: 90px;
+    height: 40px;
+    background: url('paymentIcons/ethereum.svg') no-repeat center;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    -ms-background-size: cover;
+}
 .paypal {
     width: 90px;
     height: 40px;
