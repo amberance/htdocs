@@ -6,5 +6,5 @@ define('BXC_DB_USER', 'coins');
 define('BXC_DB_PASSWORD', 'password');
 define('BXC_DB_HOST', 'localhost');
 define('BXC_DB_PORT', '3306');
-define('BXC_URL', 'http://localhost/abcd/');
+define('BXC_URL', 'https://www.amberance.com/abcd/');
 ?>

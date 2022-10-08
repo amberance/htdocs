@@ -7,16 +7,20 @@
           
           
               <div class="payment_method_box transition payMethod" id="bitcoin" data-type="bitcoin">
-                  <div class="payment_method_item flex_ bitcoin">Bitcoin</div>
+                  <div class="payment_method_item flex_ bitcoin"> </div>
               </div>
-              
-              <div class="payment_method_box transition payMethod" id="ethereum" data-type="ethereum">
-                  <div class="payment_method_item flex_ ethereum">Ethereum</div>
-              </div>
-              
+
+
               <div class="payment_method_box transition payMethod" id="tether" data-type="tether">
-                  <div class="payment_method_item flex_ tether">Tether</div>
+                  <div class="payment_method_item flex_ tether"> </div>
               </div>
+              
+                            
+              <div class="payment_method_box transition payMethod" id="ethereum" data-type="ethereum">
+                  <div class="payment_method_item flex_ ethereum"> </div>
+              </div>
+              
+
              <?php if($payPalPaymentStatus == '1'){?> 
              <!---->
              <div class="payment_method_box transition payMethod" id="paypal" data-type="paypal">
@@ -26,11 +30,9 @@
              <?php }?>
           
           
-          
-          
              <?php if(false){?>
              <!---->
-              <div class="payment_method_box transition payMethod" id="bitpay" data-type="bitpay">
+             <div class="payment_method_box transition payMethod" id="bitpay" data-type="bitpay">
                   <div class="payment_method_item flex_ bitpay"></div>
               </div>
              <!---->
@@ -118,7 +120,7 @@ $(document).ready(function() {
         $("#"+payWidth).append(plreLoadingAnimationPlus);
         $(".payment_method_box").css("pointer-events", "none");
         /*Methods Check 1*/
-        if(payWidth == 'paypal' || payWidth == 'bitcoin' || payWidth == 'tether' || payWidth == 'ethereum'){
+        if (payWidth == 'paypal' || payWidth == 'bitcoin' || payWidth == 'tether' || payWidth == 'ethereum'){
             $.ajax({
                 type: 'post', //form method
                 context: this,
@@ -145,15 +147,12 @@ $(document).ready(function() {
                         }); 
                     }
                     console.log("PayWidth is: " + payWidth);
-                    alert(payWidth);
-                    if(payWidth == 'bitcoin'){  
+                    if (payWidth == 'bitcoin'){  
                         $(".lw-show-till-loading").show();
                         //on success load paypalUrl page 
                         console.log("In the bitcoin if block" + response);
-                        alert("Processing BitCoin!");
                         // We don't have the productID!!!
-                       // alert(response);
-                       alert(response);
+                        // alert(response);
                         window.location.href = response+"?creditPlan=<?php echo filter_var($planID, FILTER_SANITIZE_STRING);?>"+ '&' + $.param(JSON.parse('<?php echo json_encode($DataUserDetails) ?>'));
       					
                     } else if(payWidth == 'paypal'){  

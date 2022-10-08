@@ -7834,29 +7834,33 @@ background: #ccc;
 .bitpay { 
   width: 90px;
   height: 40px;
-  background: url("paymentIcons/bitpay.svg") no-repeat center;
+  background: url("paymentIcons/bitpay.svg");
   background-size: cover;
 }
 
 .bitcoin {
-  width: 140px;
+  width: 120px;
   height: 40px;
-  background: url("paymentIcons/bitcoin.svg") no-repeat center;
-  background-size: cover;
+  background: url("paymentIcons/bitcoin.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+
 }
 
 .tether {
   width: 140px;
   height: 40px;
-  background: url("paymentIcons/tether.svg") no-repeat center;
-  background-size: cover;
+  background: url("paymentIcons/tether.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .ethereum {
   width: 140px;
   height: 40px;
-  background: url("paymentIcons/ethereum.svg") no-repeat center;
-  background-size: cover;
+  background: url("paymentIcons/ethereum.svg")  no-repeat center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .razorpay {

@@ -6,7 +6,7 @@
 	content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 <title>Payments</title>
 <!-- Primary Meta Tags -->
-<script id="boxcoin" src="https://www.radient.one/boxcoin/js/client.js"></script>
+<script id="boxcoin" src="abcd/js/client.js"></script>
 <!-- Open Graph / Facebook -->
 
 
@@ -255,7 +255,7 @@ try {
 		data-external-reference="<?php echo filter_input(INPUT_GET, 'order_id', FILTER_SANITIZE_URL) ?>"
 		data-title="<?php echo filter_input(INPUT_GET, 'item_id', FILTER_SANITIZE_URL) ?>"
 		data-description="<?php echo $customerId ?>"></div>
-	Please do not close your browser until the transaction finished.
+	Please do not close your browser until the transaction completesd.
 </center>
 
 

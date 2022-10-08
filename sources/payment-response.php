@@ -55,7 +55,7 @@ if ($requestData['paymentOption'] == 'paypal') {
             $pAData = mysqli_fetch_array($planDetails, MYSQLI_ASSOC);
             $planAmount = $pAData['plan_amount'];
             mysqli_query($db, "UPDATE i_users SET wallet_points = wallet_points + $planAmount WHERE iuid = '$userID'") or die(mysqli_error($db));
-            mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'ok' WHERE payer_iuid_fk = '$userID' AND payment_type = 'point' AND payment_option = 'paypal'") or die(mysqli_error($db));
+            mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'payed' WHERE payer_iuid_fk = '$userID' AND payment_type = 'point' AND payment_option = 'paypal'") or die(mysqli_error($db));
             $stderr = fopen('php://stderr', 'w');
             fwrite($stderr,"  PayPal Plan Handled!   ");
             fclose($stderr);
@@ -66,7 +66,7 @@ if ($requestData['paymentOption'] == 'paypal') {
             $productOwnerID = isset($productData['iuid_fk']) ? $productData['iuid_fk'] : NULL;
             $adminEarning = ($adminFee * $productPrice) / 100;
             $userEarning = $productPrice - $adminEarning;
-            mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'ok' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE payer_iuid_fk = '$payerUserID' AND payment_type = 'product' AND payment_status = 'pending' AND payment_option = 'paypal'") or die(mysqli_error($db));
+            mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'payed' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE payer_iuid_fk = '$payerUserID' AND payment_type = 'product' AND payment_status = 'pending' AND payment_option = 'paypal'") or die(mysqli_error($db));
             mysqli_query($db, "UPDATE i_users SET wallet_money = wallet_money + '$userEarning' WHERE iuid = '$productOwnerID'") or die(mysqli_error($db));
             $stderr = fopen('php://stderr', 'w');
             fwrite($stderr,"  PayPal Product Handled!   ");
