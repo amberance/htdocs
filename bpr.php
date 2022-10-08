@@ -34,15 +34,12 @@ echo $txnId;
 //var_dump($json );
 
 $stderr = fopen('php://stderr', 'w');
-fwrite($stderr, " The JSON in BITCOIN Product Payment Routine: " );
+fwrite($stderr, " The JSON in BITCOIN Product or Points Payment Routine: \n" );
 fwrite($stderr, $json);
 fwrite($stderr," Amount Fiat:  " );
 fwrite($stderr,$amount_fiat);
 fwrite($stderr,"  Order ID from Order: " );
 fwrite($stderr, $orderId);
-
-
-
 fclose($stderr);
 
 
@@ -150,9 +147,14 @@ if (isset($status) && ($status=='C') && isset($key) && ($key=='shhhhhh')) {
         $productSelectedSQL = "SELECT * FROM i_user_product_posts WHERE pr_id = '$productID'";
         
         $stderr = fopen('php://stderr', 'w');
-        fwrite($stderr," Bitcoin product payment about to be processed. ");
+        fwrite($stderr," Bitcoin product payment about to be processed. Here is the SQL ");
+        fwrite($stderr, $productSelectedSQL);
         fclose($stderr);
         $productDetailsFromID = mysqli_query($db, $productSelectedSQL) or die(mysqli_error($db));
+        $stderr = fopen('php://stderr', 'w');
+        fwrite($stderr," productDetailsFromID SQL completed.");
+        fwrite($stderr, $productSelectedSQL);
+        fclose($stderr);
         $productData = mysqli_fetch_array($productDetailsFromID, MYSQLI_ASSOC);
         $productPrice = isset($productData['pr_price']) ? $productData['pr_price'] : NULL;
         $productOwnerID = isset($productData['iuid_fk']) ? $productData['iuid_fk'] : NULL;
@@ -161,9 +163,11 @@ if (isset($status) && ($status=='C') && isset($key) && ($key=='shhhhhh')) {
         
         if ($amount_fiat < $productPrice) {
             $insuffienceProductPaymentSql = "UPDATE i_user_payments SET payment_status = 'insufficient' WHERE order_key = '" . $orderId . "'";
+            $stderr = fopen('php://stderr', 'w');
             fwrite($stderr, $amount_fiat );
-            fwrite($stderr," Insufficient bitcoin product payment. ");
+            fwrite($stderr," Insufficient bitcoin product payment. Product Price:");
             fwrite($stderr, $productPrice);
+            fwrite($stderr," Here's the SQL: ");
             fwrite($stderr, $insuffienceProductPaymentSql);
             fclose($stderr);
             mysqli_query($db, $insuffienceProductPaymentSql) or die(mysqli_error($db));
@@ -174,6 +178,7 @@ if (isset($status) && ($status=='C') && isset($key) && ($key=='shhhhhh')) {
             $productPaymentAndStatusSql = "UPDATE i_user_payments SET payment_status = ''payed'' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE order_key = '" . $orderId . "'";
             $productPaymentEarningsSqlUpdate = "UPDATE i_users SET wallet_money = wallet_money + '$userEarning' WHERE iuid = '$productOwnerID'";
             
+            $stderr = fopen('php://stderr', 'w');
             fwrite($stderr, " productPaymentAndStatusSql: " );
             fwrite($stderr, $productPaymentAndStatusSql);
             fwrite($stderr, " productPaymentEarningsSqlUpdate ");
