@@ -8435,20 +8435,20 @@ background: #ccc;
 }
 
 .bitcoin {
-    width: 90px;
+    width: 140px;
     height: 40px;
-    background: url('paymentIcons/bitcoin.svg') no-repeat center;
-    background-size: cover;
-    -webkit-background-size: cover;
-    -o-background-size: cover;
-    -ms-background-size: cover;
+    background: url('paymentIcons/bitcoin.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+
 }
 
 .ethereum {
     width: 90px;
     height: 40px;
     background: url('paymentIcons/ethereum.svg') no-repeat center;
-    background-size: cover;
+    background-repeat: no-repeat;
+    background-size: contain;
     -webkit-background-size: cover;
     -o-background-size: cover;
     -ms-background-size: cover;
@@ -8457,7 +8457,8 @@ background: #ccc;
     width: 90px;
     height: 40px;
     background: url('paymentIcons/paypal.svg') no-repeat center;
-    background-size: cover;
+    background-repeat: no-repeat;
+    background-size: contain;
     -webkit-background-size: cover;
     -o-background-size: cover;
     -ms-background-size: cover;
