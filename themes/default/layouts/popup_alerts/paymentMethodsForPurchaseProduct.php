@@ -6,17 +6,18 @@
           <div class="purchase_post_details tabing"> 
           
           
-             <div class="payment_method_box transition payMethod" id="bitcoin" data-type="bitcoin">
-                  <div class="payment_method_item flex_ bitcoin">Bitcoin</div>
+              <div class="payment_method_box transition payMethod" id="bitcoin" data-type="bitcoin">
+                  <div class="payment_method_item flex_ bitcoin"> <img src="/img/bitcoin-13051.jpg"/> </div>
               </div>
-              
 
-              <div class="payment_method_box transition payMethod" id="tether" data-type="bitcoin">
-                  <div class="payment_method_item flex_ tether">Tether</div>
+
+              <div class="payment_method_box transition payMethod" id="tether" data-type="tether">
+                  <div class="payment_method_item flex_ tether"> <img src="/img/tether-13051.jpg"/>  </div>
               </div>
               
-              <div class="payment_method_box transition payMethod" id="ethereum" data-type="bitcoin">
-                  <div class="payment_method_item flex_ ethereum">Ethereum</div>
+                            
+              <div class="payment_method_box transition payMethod" id="ethereum" data-type="ethereum">
+                  <div class="payment_method_item flex_ ethereum"> <img src="/img/ethereum-13051.jpg"/> </div>
               </div>
 
             <div class="payment_method_box transition payMethod" id="paypal" data-type="paypal">
