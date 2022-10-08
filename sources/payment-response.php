@@ -16,8 +16,80 @@ $configData = configItem();
 // Get Request Data when payment success or failed
 $requestData = $_REQUEST;
 
-// Check payment Method is paytm
-if ($requestData['paymentOption'] == 'paytm') {
+
+if ($requestData['paymentOption'] == 'paypal') {
+    
+    $stderr = fopen('php://stderr', 'w');
+    fwrite($stderr," In PayPal Condition ");
+    fclose($stderr);
+    
+    // Get instance of paypal
+    $paypalIpnResponse = new PaypalIpnResponse();
+    
+    // fetch paypal payment data
+    $paypalIpnData = $paypalIpnResponse->getPaypalPaymentData();
+    $rawData = json_decode($paypalIpnData, true);
+    // Note : IPN and redirects will come here
+    // Check if payment status exist and it is success
+    if (isset($requestData['PayerID'])) {
+        
+        $stderr = fopen('php://stderr', 'w');
+        fwrite($stderr,"  Inside paypal with PayerId   ");
+        fclose($stderr);
+        
+        // Then create a data for success paypal data
+        $paymentResponseData = [
+            'status' => true,
+            'rawData' => (array) $paypalIpnData,
+            'data' => preparePaymentData($rawData['invoice'], $rawData['payment_gross'], $rawData['txn_id'], 'paypal'),
+        ];
+        // Send data to payment response function for further process
+        paymentResponse($paymentResponseData);
+        $getPamentData = mysqli_query($db, "SELECT * FROM i_user_payments WHERE payment_type IN('point','product') AND payment_status = 'pending' AND payment_option = 'paypal' AND payer_iuid_fk = '$userID'") or die(mysqli_error($db));
+        $pData = mysqli_fetch_array($getPamentData, MYSQLI_ASSOC);
+        $userPayedPlanID = isset($pData['credit_plan_id']) ? $pData['credit_plan_id'] : NULL;
+        $payerUserID = isset($pData['payer_iuid_fk']) ? $pData['payer_iuid_fk'] : NULL;
+        $productID = isset($pData['paymet_product_id']) ? $pData['paymet_product_id'] : NULL;
+        if(!empty($userPayedPlanID)){
+            $planDetails = mysqli_query($db, "SELECT * FROM i_premium_plans WHERE plan_id = '$userPayedPlanID'") or die(mysqli_error($db));
+            $pAData = mysqli_fetch_array($planDetails, MYSQLI_ASSOC);
+            $planAmount = $pAData['plan_amount'];
+            mysqli_query($db, "UPDATE i_users SET wallet_points = wallet_points + $planAmount WHERE iuid = '$userID'") or die(mysqli_error($db));
+            mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'ok' WHERE payer_iuid_fk = '$userID' AND payment_type = 'point' AND payment_option = 'paypal'") or die(mysqli_error($db));
+            $stderr = fopen('php://stderr', 'w');
+            fwrite($stderr,"  PayPal Plan Handled!   ");
+            fclose($stderr);
+        }else if(!empty($productID)){
+            $productDetailsFromID = mysqli_query($db, "SELECT * FROM i_user_product_posts WHERE pr_id = '$productID'") or die(mysqli_error($db));
+            $productData = mysqli_fetch_array($productDetailsFromID, MYSQLI_ASSOC);
+            $productPrice = isset($productData['pr_price']) ? $productData['pr_price'] : NULL;
+            $productOwnerID = isset($productData['iuid_fk']) ? $productData['iuid_fk'] : NULL;
+            $adminEarning = ($adminFee * $productPrice) / 100;
+            $userEarning = $productPrice - $adminEarning;
+            mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'ok' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE payer_iuid_fk = '$payerUserID' AND payment_type = 'product' AND payment_status = 'pending' AND payment_option = 'paypal'") or die(mysqli_error($db));
+            mysqli_query($db, "UPDATE i_users SET wallet_money = wallet_money + '$userEarning' WHERE iuid = '$productOwnerID'") or die(mysqli_error($db));
+            $stderr = fopen('php://stderr', 'w');
+            fwrite($stderr,"  PayPal Product Handled!   ");
+            fclose($stderr);
+        
+        }
+        // Check if payment not successfull
+    } else {
+        mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'declined'  WHERE payer_iuid_fk = '$payerUserID' AND payment_status = 'pending' AND payment_option = 'paypal'") or die(mysqli_error($db));
+        
+        //mysqli_query($db, "DELETE FROM i_user_payments WHERE payer_iuid_fk = '$userID' AND payment_option = 'paypal' AND payment_type  IN('point','product') AND payment_status = 'pending'") or die(mysqli_error($db));
+        // Prepare payment failed data
+        $paymentResponseData = [
+            'status' => false,
+            'rawData' => [],
+            'data' => preparePaymentData($rawData['invoice'], $rawData['payment_gross'], null, 'paypal'),
+        ];
+        // Send data to payment response function for further process
+        paymentResponse($paymentResponseData);
+    }
+    
+    // Check Paystack payment process
+} elseif ($requestData['paymentOption'] == 'paytm') {
 	// Get Payment Response instance
 	$paytmResponse = new PaytmResponse();
 
@@ -113,61 +185,7 @@ if ($requestData['paymentOption'] == 'paytm') {
 	}
 
 // Check Paypal payment process
-} else if ($requestData['paymentOption'] == 'paypal') {
-	// Get instance of paypal
-	$paypalIpnResponse = new PaypalIpnResponse();
-
-	// fetch paypal payment data
-	$paypalIpnData = $paypalIpnResponse->getPaypalPaymentData();
-	$rawData = json_decode($paypalIpnData, true); 
-	// Note : IPN and redirects will come here
-	// Check if payment status exist and it is success
-	if (isset($requestData['PayerID'])) {
-
-		// Then create a data for success paypal data
-		$paymentResponseData = [
-			'status' => true,
-			'rawData' => (array) $paypalIpnData,
-			'data' => preparePaymentData($rawData['invoice'], $rawData['payment_gross'], $rawData['txn_id'], 'paypal'),
-		];
-		// Send data to payment response function for further process
-		paymentResponse($paymentResponseData);
-		$getPamentData = mysqli_query($db, "SELECT * FROM i_user_payments WHERE payment_type IN('point','product') AND payment_status = 'pending' AND payment_option = 'paypal' AND payer_iuid_fk = '$userID'") or die(mysqli_error($db));
-		$pData = mysqli_fetch_array($getPamentData, MYSQLI_ASSOC);
-		$userPayedPlanID = isset($pData['credit_plan_id']) ? $pData['credit_plan_id'] : NULL;
-		$payerUserID = isset($pData['payer_iuid_fk']) ? $pData['payer_iuid_fk'] : NULL;
-		$productID = isset($pData['paymet_product_id']) ? $pData['paymet_product_id'] : NULL;
-		if(!empty($userPayedPlanID)){
-			$planDetails = mysqli_query($db, "SELECT * FROM i_premium_plans WHERE plan_id = '$userPayedPlanID'") or die(mysqli_error($db));
-			$pAData = mysqli_fetch_array($planDetails, MYSQLI_ASSOC);
-			$planAmount = $pAData['plan_amount'];
-			mysqli_query($db, "UPDATE i_users SET wallet_points = wallet_points + $planAmount WHERE iuid = '$userID'") or die(mysqli_error($db));
-			mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'pending' WHERE payer_iuid_fk = '$userID' AND payment_type = 'point' AND payment_option = 'paypal'") or die(mysqli_error($db));
-		}else if(!empty($productID)){
-            $productDetailsFromID = mysqli_query($db, "SELECT * FROM i_user_product_posts WHERE pr_id = '$productID'") or die(mysqli_error($db));
-			$productData = mysqli_fetch_array($productDetailsFromID, MYSQLI_ASSOC);
-			$productPrice = isset($productData['pr_price']) ? $productData['pr_price'] : NULL;
-			$productOwnerID = isset($productData['iuid_fk']) ? $productData['iuid_fk'] : NULL;
-			$adminEarning = ($adminFee * $productPrice) / 100;
-            $userEarning = $productPrice - $adminEarning;
-			mysqli_query($db, "UPDATE i_user_payments SET payment_status = 'pending' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE payer_iuid_fk = '$payerUserID' AND payment_type = 'product' AND payment_status = 'pending' AND payment_option = 'paypal'") or die(mysqli_error($db));
-			mysqli_query($db, "UPDATE i_users SET wallet_money = wallet_money + '$userEarning' WHERE iuid = '$productOwnerID'") or die(mysqli_error($db));
-		}
-		// Check if payment not successfull
-	} else {
-		mysqli_query($db, "DELETE FROM i_user_payments WHERE payer_iuid_fk = '$userID' AND payment_option = 'paypal' AND payment_type  IN('point','product') AND payment_status = 'pending'") or die(mysqli_error($db));
-		// Prepare payment failed data
-		$paymentResponseData = [
-			'status' => false,
-			'rawData' => [],
-			'data' => preparePaymentData($rawData['invoice'], $rawData['payment_gross'], null, 'paypal'),
-		];
-		// Send data to payment response function for further process
-		paymentResponse($paymentResponseData);
-	}
-
-// Check Paystack payment process
-} else if ($requestData['paymentOption'] == 'paystack') {
+} else  if ($requestData['paymentOption'] == 'paystack') {
 
 	$requestData = json_decode($requestData['response'], true);
 
