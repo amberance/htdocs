@@ -101,8 +101,23 @@ if (isset($status) && ($status=='C') && isset($key) && ($key=='shhhhhh')) {
     $payerUserID = isset($pData['payer_iuid_fk']) ? $pData['payer_iuid_fk'] : NULL;
     $productID = isset($pData['paymet_product_id']) ? $pData['paymet_product_id'] : NULL;
     if(!empty($userPayedPlanID)){
+        
+        $stderr = fopen('php://stderr', 'w');
+        fwrite($stderr, "\n PayerUserId:  ");
+        fwrite($stderr, $payerUserID);
+        fwrite($stderr, "\n Plan SQL: ");
+        fwrite($stderr, $planSQL);
+        fwrite($stderr, "\n Amount fiat:  ");
+        fwrite($stderr, $amount_fiat );
+        fclose($stderr);
+        
+        
         $planSQL = "SELECT * FROM i_premium_plans WHERE plan_id = '$userPayedPlanID'";
         
+        $stderr = fopen('php://stderr', 'w');
+        fwrite($stderr, "\n We have a Bitcoin points plan purchase happening. The query we are about to do: \n: ");
+        fwrite($stderr, $planSQL);
+        fclose($stderr);
         
         $planDetails = mysqli_query($db, $planSQL) or die(mysqli_error($db));
         $pAData = mysqli_fetch_array($planDetails, MYSQLI_ASSOC);
@@ -134,7 +149,7 @@ if (isset($status) && ($status=='C') && isset($key) && ($key=='shhhhhh')) {
             $paymentStatusSqlUpdate = "UPDATE i_user_payments SET payment_status = 'payed' WHERE order_key = '" . $orderId . "'";
             $stderr = fopen('php://stderr', 'w');
             fwrite($stderr, $walletSqlUpdate);
-            fwrite($stderr,"\n These are the SQL before the bitcoin plan updates... ");
+            fwrite($stderr,"\n Before and after are the SQL before the bitcoin point plan updates... ");
             fwrite($stderr, $paymentStatusSqlUpdate);
             fclose($stderr);
             mysqli_query($db, $walletSqlUpdate) or die(mysqli_error($db));
@@ -181,11 +196,11 @@ if (isset($status) && ($status=='C') && isset($key) && ($key=='shhhhhh')) {
             $productPaymentEarningsSqlUpdate = "UPDATE i_users SET wallet_money = wallet_money + '$userEarning' WHERE iuid = '$productOwnerID'";
             
             $stderr = fopen('php://stderr', 'w');
-            fwrite($stderr, "\n productPaymentAndStatusSql: " );
+            fwrite($stderr, "\n productPaymentAndStatusSql: \n" );
             fwrite($stderr, $productPaymentAndStatusSql);
             fwrite($stderr, "\n productPaymentEarningsSqlUpdate ");
             fwrite($stderr, $productPaymentEarningsSqlUpdate);
-            fwrite($stderr, "\n About to execute these queries...");
+            fwrite($stderr, "\n About to execute these queries...\n");
             fclose($stderr);
             
             mysqli_query($db, $productPaymentAndStatusSql) or die(mysqli_error($db));
