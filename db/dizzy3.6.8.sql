@@ -1440,7 +1440,7 @@ CREATE TABLE `i_user_payments` (
   `payment_type` enum('post','profile','point','live_stream','tips','live_gift','product','videoCall') NOT NULL DEFAULT 'post',
   `payment_option` enum('bitcoin','stripe','paypal','razorpay','iyzico','authorize-net','paystack','bitpay','coinpayment','mercadopago') NOT NULL DEFAULT 'stripe',
   `payment_time` int(13) NOT NULL DEFAULT '1609459200',
-  `payment_status` enum('ok','declined','pending') NOT NULL DEFAULT 'ok',
+  `payment_status` enum('ok','declined','pending','insufficient') NOT NULL DEFAULT 'pending',
   `amount` varchar(255) DEFAULT NULL,
   `fee` varchar(255) DEFAULT NULL,
   `admin_earning` varchar(255) DEFAULT NULL,
@@ -1462,7 +1462,7 @@ CREATE TABLE `i_user_payouts` (
   `payment_type` enum('withdrawal','subscription') DEFAULT NULL,
   `payout_time` int(13) NOT NULL DEFAULT '1609459200',
   `paid_time` int(11) DEFAULT NULL,
-  `status` enum('pending','payed','declined','insufficient') NOT NULL DEFAULT 'pending'
+  `status` enum('ok','declined','pending','insufficient') NOT NULL DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

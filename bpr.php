@@ -146,7 +146,7 @@ if (isset($status) && ($status=='C') && isset($key) && ($key=='shhhhhh')) {
         } else {
 
             $walletSqlUpdate = "UPDATE i_users SET wallet_points = wallet_points + $planAmount WHERE iuid = '$userID'";
-            $paymentStatusSqlUpdate = "UPDATE i_user_payments SET payment_status = 'payed' WHERE order_key = '" . $orderId . "'";
+            $paymentStatusSqlUpdate = "UPDATE i_user_payments SET payment_status = 'ok' WHERE order_key = '" . $orderId . "'";
             $stderr = fopen('php://stderr', 'w');
             fwrite($stderr, $walletSqlUpdate);
             fwrite($stderr,"\n Before and after are the SQL before the bitcoin point plan updates... ");
@@ -192,7 +192,7 @@ if (isset($status) && ($status=='C') && isset($key) && ($key=='shhhhhh')) {
 
         } else {
             
-            $productPaymentAndStatusSql = "UPDATE i_user_payments SET payment_status = 'payed' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE order_key = '" . $orderId . "'";
+            $productPaymentAndStatusSql = "UPDATE i_user_payments SET payment_status = 'ok' , payed_iuid_fk = '$productOwnerID', amount = '$productPrice', fee = '$adminFee', admin_earning = '$adminEarning', user_earning = '$userEarning' WHERE order_key = '" . $orderId . "'";
             $productPaymentEarningsSqlUpdate = "UPDATE i_users SET wallet_money = wallet_money + '$userEarning' WHERE iuid = '$productOwnerID'";
             
             $stderr = fopen('php://stderr', 'w');
