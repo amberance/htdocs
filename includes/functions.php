@@ -367,6 +367,15 @@ class iN_UPDATES {
 			return true;
 		} else {return false;}
 	}
+	
+	
+	/*Check User Exist*/
+	public function iN_CheckIsVerified($uid) {
+	    $checkUserisExist = mysqli_query($this->db, "SELECT iuid FROM i_users WHERE iuid = '$uid' AND user_verified_status IN('1','2')") or die(mysqli_error($this->db));
+	    if (mysqli_num_rows($checkUserisExist) == 1) {
+	        return true;
+	    } else {return false;}
+	}
 	/*Get Total Unreaded notifications */
 	public function iN_GetNewNotificationSum($uid) {
 		$uid = mysqli_real_escape_string($this->db, $uid);
