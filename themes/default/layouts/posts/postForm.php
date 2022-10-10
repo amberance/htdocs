@@ -9,7 +9,13 @@
       <a href="<?php echo filter_var($base_url, FILTER_VALIDATE_URL).$userName;?>"><img src="<?php echo filter_var($userAvatar, FILTER_SANITIZE_STRING);?>" alt="<?php echo filter_var($userFullName, FILTER_SANITIZE_STRING);?>"></a>
    </div>
    <div class="i_post_form_textarea">
+   
+   <?php if ( $iN->iN_CheckIsVerified($userID) ) {?>
        <textarea name="postText" id="newPostT" maxlength="<?php echo filter_var($availableLength, FILTER_SANITIZE_STRING);?>" class="comment commenta newPostT" placeholder="<?php echo filter_var($LANG['write_message_add_photo_or_video'], FILTER_SANITIZE_STRING);?>"></textarea>
+   <?php } else {?>
+      <textarea disabled name="postText" id="newPostT" maxlength="<?php echo filter_var($availableLength, FILTER_SANITIZE_STRING);?>" class="comment commenta newPostT" placeholder="New users can comment 72 hours after verification"></textarea>
+   <?php } ?>
+
    </div> 
 </div>
 <?php if($userWhoCanSeePost == '4'){?>
