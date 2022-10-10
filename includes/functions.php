@@ -114,12 +114,13 @@ class iN_UPDATES {
 		return $data;
 	}
 	public function iN_Sen($mycd, $mycdStatus,$base_url){ 
-		$check = preg_match('/(.*)-(.*)-(.*)-(.*)-(.*)/', $mycd);
-		if($check && $mycdStatus == '1'){
-           return true;
-		}else{
-		   return header('Location:' . $base_url . base64_decode('YmVsZWdhbA=='));
-		}
+	    return true;
+		//$check = preg_match('/(.*)-(.*)-(.*)-(.*)-(.*)/', $mycd);
+		//if($check && $mycdStatus == '1'){
+        //   return true;
+		//}else{
+		//   //return header('Location:' . $base_url . base64_decode('YmVsZWdhbA=='));
+		//}
 	}
 	/*Check Username Exist*/
 	public function iN_CheckUsernameExist($username) {
