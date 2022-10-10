@@ -3354,7 +3354,9 @@ class iN_UPDATES {
 				$moreUser = " AND iuid <'" . $lastUID . "' ";
 			}
 			$data = null;
-			$query = mysqli_query($this->db, "SELECT * FROM i_users WHERE profile_category = '$requested' AND certification_status = '2' AND validation_status = '2' AND condition_status = '2' AND fees_status = '2' AND payout_status = '2' AND uStatus IN('1','3') $moreUser ORDER BY iuid DESC LIMIT $userLimit") or die(mysqli_error($this->db));
+			$query = mysqli_query($this->db, "SELECT * FROM i_users WHERE certification_status = '2' AND validation_status = '2' AND condition_status = '2' AND fees_status = '2' AND payout_status = '2' AND uStatus IN('1','3') $moreUser ORDER BY iuid DESC LIMIT $userLimit") or die(mysqli_error($this->db));
+			
+			//$query = mysqli_query($this->db, "SELECT * FROM i_users WHERE profile_category = '$requested' AND certification_status = '2' AND validation_status = '2' AND condition_status = '2' AND fees_status = '2' AND payout_status = '2' AND uStatus IN('1','3') $moreUser ORDER BY iuid DESC LIMIT $userLimit") or die(mysqli_error($this->db));
 			while ($row = mysqli_fetch_array($query)) {
 				$data[] = $row;
 			}
