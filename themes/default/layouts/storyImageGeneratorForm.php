@@ -1,5 +1,10 @@
 <div class="th_middle">
    <div class="pageMiddle">
+   
+    <?php if($iN->iN_ShopData($userID, 1) == 'yes'){?>
+        <?php if($feesStatus == '2' && $iN->iN_ShopData($userID, '8') == 'yes'){?>
+       	 <!--Show it if they qualify-->
+   <!---->
     <div class="live_item transition">
        <div class="live_title_page create_stories flex_"><?php echo $iN->iN_SelectedMenuIcon('154');?>Create your stories</div> 
     </div>
@@ -24,10 +29,47 @@
     </div>
     <!---->
     <!---->
-      <div class="edit_created_stories">
+    <div class="edit_created_stories">
              
-      </div>
+    </div>
     <!---->
+         <!--/End showit--> 
+        <?php }else if($iN->iN_ShopData($userID, '8') == 'no'){?>
+        <!--Show it if they qualify-->
+   <!---->
+    <div class="live_item transition">
+       <div class="live_title_page create_stories flex_"><?php echo $iN->iN_SelectedMenuIcon('154');?>Create your stories</div> 
+    </div>
+    <!---->
+    <div class="create_sotry_form_container flex_ tabing">
+        <div class="upload_story_image">
+            <!--S-->
+            <form id="storiesform" method="post" enctype="multipart/form-data" action="<?php echo $base_url;?>requests/request.php">  
+                <label class="label_storyUpload" data-id="stories" for="storie_img"> 
+                <input type="file" name="storieimg[]" id="storie_img" data-id="stories" multiple="true">
+                <div class="story-view-item" style="background-image:url(<?php echo filter_var($userAvatar, FILTER_SANITIZE_STRING);?>); margin-right:0px;">
+                    <div class="newSto">
+                    <div class="plusSIc"></div>
+                        <?php echo filter_var($LANG['upload_storie_files'], FILTER_SANITIZE_STRING);?>
+                    </div>
+                </div>
+              </label>
+            </form>
+            <!--/S--> 
+        </div> 
+        <div class="i_uploading_not_story flex_ tabing" style="display:none;"><?php echo filter_var($LANG['uploading_please_wait'], FILTER_SANITIZE_STRING);?></div>
+    </div>
+    <!---->
+    <!---->
+    <div class="edit_created_stories">
+             
+    </div>
+    <!---->
+        <!--/End showit--> 
+        <?php }?>
+    <?php }?>
+    
+    
     <!--NON Shared Stories-->
     <div class="live_item transition">
            <div class="live_title_page non-shared-title-style create_stories flex_"><?php echo $iN->iN_SelectedMenuIcon('115').filter_var($LANG['non_shared_stories'], FILTER_SANITIZE_STRING);?></div> 

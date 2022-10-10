@@ -34,23 +34,34 @@
 <!--/Mention Results-->
 <div class="i_form_buttons">
     <!--IMAGE / VIDEO UPLOAD-->
-    <div class="form_btn transition ownTooltip" data-label="<?php echo filter_var($LANG['image_video'], FILTER_SANITIZE_STRING);?>">
-        <form id="uploadform" class="options-form" method="post" enctype="multipart/form-data" action="<?php echo filter_var($base_url, FILTER_VALIDATE_URL).'requests/request.php';?>">
-            <label for="i_image_video">
-                <div class="i_image_video_btn"><?php echo html_entity_decode($iN->iN_SelectedMenuIcon('49'));?></div>
-                <input type="file" id="i_image_video" class="imageorvideo" name="uploading[]" data-id="upload" multiple="true"> 
-            </label>
-        </form>
-    </div> 
+
     <!--/IMAGE VIDEO UPLOAD--> 
     <?php if($iN->iN_ShopData($userID, 1) == 'yes'){?>
         <?php if($feesStatus == '2' && $iN->iN_ShopData($userID, '8') == 'yes'){?>
+       	 <!--Show Upload Button-->
+            <div class="form_btn transition ownTooltip" data-label="<?php echo filter_var($LANG['image_video'], FILTER_SANITIZE_STRING);?>">
+        		<form id="uploadform" class="options-form" method="post" enctype="multipart/form-data" action="<?php echo filter_var($base_url, FILTER_VALIDATE_URL).'requests/request.php';?>">
+            		<label for="i_image_video">
+                	<div class="i_image_video_btn"><?php echo html_entity_decode($iN->iN_SelectedMenuIcon('49'));?></div>
+                	<input type="file" id="i_image_video" class="imageorvideo" name="uploading[]" data-id="upload" multiple="true"> 
+           		 	</label>
+        		</form>
+    		</div> 
             <!--Create Product-->
             <div class="form_btn transition ownTooltip" style="margin-left:5px;" data-label="<?php echo filter_var($LANG['createaProduct'], FILTER_SANITIZE_STRING);?>">
                 <div class="i_image_video_btn"><a href="<?php echo $base_url.'settings?tab=createaProduct';?>"><?php echo html_entity_decode($iN->iN_SelectedMenuIcon('155'));?></a></div>
             </div> 
             <!--/Create Product--> 
         <?php }else if($iN->iN_ShopData($userID, '8') == 'no'){?>
+        <!--Show Upload Button-->
+            <div class="form_btn transition ownTooltip" data-label="<?php echo filter_var($LANG['image_video'], FILTER_SANITIZE_STRING);?>">
+        		<form id="uploadform" class="options-form" method="post" enctype="multipart/form-data" action="<?php echo filter_var($base_url, FILTER_VALIDATE_URL).'requests/request.php';?>">
+            		<label for="i_image_video">
+                	<div class="i_image_video_btn"><?php echo html_entity_decode($iN->iN_SelectedMenuIcon('49'));?></div>
+                	<input type="file" id="i_image_video" class="imageorvideo" name="uploading[]" data-id="upload" multiple="true"> 
+           		 	</label>
+        		</form>
+    		</div> 
             <!--Create Product-->
             <div class="form_btn transition ownTooltip" style="margin-left:5px;" data-label="<?php echo filter_var($LANG['createaProduct'], FILTER_SANITIZE_STRING);?>">
                 <div class="i_image_video_btn"><a href="<?php echo $base_url.'settings?tab=createaProduct';?>"><?php echo html_entity_decode($iN->iN_SelectedMenuIcon('155'));?></a></div>

@@ -1,0 +1,11 @@
+    <?php if($iN->iN_ShopData($userID, 1) == 'yes'){?>
+        <?php if($feesStatus == '2' && $iN->iN_ShopData($userID, '8') == 'yes'){?>
+       	 <!--Show it if they qualify-->
+
+         <!--/End showit--> 
+        <?php }else if($iN->iN_ShopData($userID, '8') == 'no'){?>
+        <!--Show it if they qualify-->
+
+        <!--/End showit--> 
+        <?php }?>
+    <?php }?>

@@ -1,5 +1,8 @@
 <div class="stories_wrapper flex_">
     <!---->
+    <?php if($iN->iN_ShopData($userID, 1) == 'yes'){?>
+        <?php if($feesStatus == '2' && $iN->iN_ShopData($userID, '8') == 'yes'){?>
+       	 <!--Show it if they qualify-->
         <div class="story-view-item-fake chsStoryw" style="margin-bottom:0px; background-image:url(<?php echo filter_var($userAvatar, FILTER_SANITIZE_STRING)?>)">
             <div class="newSto">
             <div class="plusSIc">
@@ -8,6 +11,20 @@
             <?php echo filter_var($LANG['upload_storie_files'], FILTER_SANITIZE_STRING)?>
             </div>
         </div>
+         <!--/End showit--> 
+        <?php }else if($iN->iN_ShopData($userID, '8') == 'no'){?>
+        <!--Show it if they qualify-->
+        <div class="story-view-item-fake chsStoryw" style="margin-bottom:0px; background-image:url(<?php echo filter_var($userAvatar, FILTER_SANITIZE_STRING)?>)">
+            <div class="newSto">
+            <div class="plusSIc">
+                <div class="plstr"><?php echo $iN->iN_SelectedMenuIcon('153')?></div>
+            </div>
+            <?php echo filter_var($LANG['upload_storie_files'], FILTER_SANITIZE_STRING)?>
+            </div>
+        </div>
+        <!--/End showit--> 
+        <?php }?>
+    <?php }?>
         <!---->
         <div class="my-stories-wrapper flex_ mystoriesstyle" id="story-view">  
             <?php 
