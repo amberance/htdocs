@@ -1777,11 +1777,34 @@ function bxc_get_array_value_by_path($path, $array) {
 }
 
 function bxc_update($domain) {
-    return true;
+    $envato_purchase_code = bxc_settings_get('envato-purchase-code');
+    if (!$envato_purchase_code) return 'envato-purchase-code-not-found';
+    if (!class_exists('ZipArchive')) return 'no-zip-archive';
+    $latest_version = bxc_versions();
+    if (bxc_isset($latest_version, 'boxcoin') == BXC_VERSION) return 'latest-version-installed';
+    $response = json_decode(bxc_download('https://boxcoin.dev/sync/updates.php?key=' . trim($envato_purchase_code) . '&domain=' . $domain), true);
+    if (empty($response['boxcoin'])) return 'invalid-envato-purchase-code';
+    $zip = bxc_download('https://boxcoin.dev/sync/temp/' . $response['boxcoin']);
+    if ($zip) {
+        $file_path = __DIR__ . '/boxcoin.zip';
+        file_put_contents($file_path, $zip);
+        if (file_exists($file_path)) {
+            $zip = new ZipArchive;
+            if ($zip->open($file_path) === true) {
+                $zip->extractTo(__DIR__);
+                $zip->close();
+                unlink($file_path);
+                return true;
+            }
+            return 'zip-error';
+        }
+        return 'file-not-found';
+    }
+    return 'download-error';
 }
 
 function bxc_versions() {
-    return json_decode('{"boxcoin":  "1.0.9"}', true);
+    return json_decode(bxc_download('https://boxcoin.dev/sync/versions.json'), true);
 }
 
 function bxc_is_demo($attributes = false) {
