@@ -124,7 +124,7 @@ if (isset($_POST) && count($_POST) > 0) {
 		
 		$stderr = fopen('php://stderr', 'w');
 		//fwrite($stderr, "$base_url/pay.php"  );
-		fwrite($stderr, "In true validation" );
+		fwrite($stderr, "In true validation\n\n" );
 		fclose($stderr);
 		
 		
@@ -142,10 +142,21 @@ if (isset($_POST) && count($_POST) > 0) {
 		$stderr = fopen('php://stderr', 'w');
 		//fwrite($stderr, "$base_url/pay.php"  );
 		fwrite($stderr, $base_url );
+		fwrite($stderr, $paymentOption );
 		fclose($stderr);
+
 		
-	    $paymentInsert = mysqli_query($db, "INSERT INTO i_user_payments(payer_iuid_fk,order_key,payment_type,payment_option,payment_time, payment_status,credit_plan_id)VALUES('$userID','" . $insertData['order_id'] . "','point', '" . $insertData['paymentOption'] . "', '" . $time . "','pending','" . $insertData['creditPlan'] . "')") or die(mysqli_error($db));
+		$sql = "INSERT INTO i_user_payments(payer_iuid_fk,order_key,payment_type,payment_option,payment_time, payment_status,credit_plan_id)VALUES('$userID','" . $insertData['order_id'] . "','point', '" . $insertData['paymentOption'] . "', '" . $time . "','pending','" . $insertData['creditPlan'] . "')";
+		$stderr = fopen('php://stderr', 'w');
+		//fwrite($stderr, "$base_url/pay.php"  );
+		fwrite($stderr, $sql );
+		fwrite($stderr, "\n\nbefore sql executesn\n" );
+		fclose($stderr);
+	    $paymentInsert = mysqli_query($db, $sql) or die(mysqli_error($db));
 		 
+	    
+	    
+	    
 	    if (($paymentOption == 'bitcoin') || ($paymentOption == 'ethereum')) {
 	        
 	        $url = "".$base_url."pay.php";
