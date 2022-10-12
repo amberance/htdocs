@@ -1,0 +1,21 @@
+    <?php if($iN->iN_ShopData($userID, 1) == 'yes'){?>
+        <?php if($feesStatus == '2' && $iN->iN_ShopData($userID, '8') == 'yes'){?>
+       	 <!--Show it if they qualify-->
+
+         <!--/End showit--> 
+        <?php }else if($iN->iN_ShopData($userID, '8') == 'no'){?>
+        <!--Show it if they qualify-->
+
+        <!--/End showit--> 
+        <?php }?>
+    <?php }?>
+	
+	
+	
+   <?php if ( $iN->iN_CheckIsVerified($userID) ) {?>
+    <textarea name="post_comment" class="comment commenta nwComment" data-id="<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>" id="comment<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>" placeholder="<?php echo filter_var($LANG['write_your_comment'], FILTER_SANITIZE_STRING);?>"></textarea><input type="hidden" id="stic_<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>"><input type="hidden" id="cgif_<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>"></div>
+
+   <?php } else {?>
+    <textarea disabled name="post_comment" class="comment commenta nwComment" data-id="<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>" id="comment<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>" placeholder="New users can comment 72 hours after verification"><input type="hidden" id="cgif_<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>"></div>
+
+   <?php } ?>	

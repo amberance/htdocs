@@ -43,6 +43,11 @@ if(preg_match('~([[\w.-]+)~u', urldecode($request_uri), $match)){
 }
 
 if(preg_match('~([[\w.-]+)~u', urldecode($request_uri), $match)){
+    
+    $stderr = fopen('php://stderr', 'w');
+    fwrite($stderr, " \nI'm not sure what this does. Something to do with belegal. When is it called? \n\n" );
+    fclose($stderr);
+    
 	$tag = $match[1];
 	$thePage = mysqli_real_escape_string($db, $match[1]); 
 	if($thePage == base64_decode('YmVsZWdhbA==')){

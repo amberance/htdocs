@@ -211,12 +211,12 @@ div {
 }
 
 *::-webkit-scrollbar {
-    width: 1px!important;
-    height: 1px!important;
+    width: 5px!important;
+    height: 5px!important;
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, .2);
+    background-color: rgba(0, 0, 0, .5);
 }
 
 *::-webkit-scrollbar-track {
@@ -8424,11 +8424,41 @@ background: #ccc;
     background-size: contain;
 }
 
+.tether {
+    width: 90px;
+    height: 40px;
+    background: url('paymentIcons/tether.svg') no-repeat center;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    -ms-background-size: cover;
+}
+
+.bitcoin {
+    width: 140px;
+    height: 40px;
+    background: url('paymentIcons/bitcoin.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+
+}
+
+.ethereum {
+    width: 90px;
+    height: 40px;
+    background: url('paymentIcons/ethereum.svg') no-repeat center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    -ms-background-size: cover;
+}
 .paypal {
     width: 90px;
     height: 40px;
     background: url('paymentIcons/paypal.svg') no-repeat center;
-    background-size: cover;
+    background-repeat: no-repeat;
+    background-size: contain;
     -webkit-background-size: cover;
     -o-background-size: cover;
     -ms-background-size: cover;

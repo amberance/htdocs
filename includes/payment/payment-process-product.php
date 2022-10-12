@@ -111,13 +111,31 @@ if (isset($_POST) && count($_POST) > 0) {
 	// Check server side validation success then process for next step
 	if ($validation === true) { 
 		$time = time();
+		
+		//$stderr = fopen('php://stderr', 'w');
+		//fwrite($stderr, " THE PRODUCT PAYMENT OPTION: "  );
+		//fwrite($stderr, $paymentOption );
+		//fclose($stderr);
+		
+		
+		if ($paymentOption == 'paypal') {
+		    $updateQuery = "UPDATE `i_user_payments` SET payment_status = 'declined'  WHERE payer_iuid_fk = '$userID' AND payment_status = 'pending' AND payment_option = 'paypal'";
+
+		    $stderr = fopen('php://stderr', 'w');
+		    //fwrite($stderr, "$base_url/pay.php"  );
+		    //fwrite($stderr, $updateQuery );
+		    fclose($stderr);
+		    
+		    $paypayUpdate = mysqli_query($db, $updateQuery) or die(mysqli_error($db));
+		}
+		
 	    $paymentInsert = mysqli_query($db, "INSERT INTO i_user_payments(payer_iuid_fk,order_key,payment_type,payment_option,payment_time, payment_status,paymet_product_id)VALUES('$userID','" . $insertData['order_id'] . "','product', '" . $insertData['paymentOption'] . "', '" . $time . "','pending','".$insertData['creditPlan']."')") or die(mysqli_error($db));
 		 
 	    
 	    if (($paymentOption == 'bitcoin') || ($paymentOption == 'ethereum')) {
 	        
-	        // return payment array on ajax request
-	        echo json_encode("https://www.radient.one/pay.php");
+	        $url = "".$base_url."pay.php";
+	        echo json_encode($url);
 	        
 	    }
 		// Then send data to payment process service for process payment
@@ -132,7 +150,7 @@ if (isset($_POST) && count($_POST) > 0) {
 
 			// If paytm payment method are selected then get payment merchant form
 			$paymentData['merchantForm'] = getPaytmMerchantForm($paymentData);
-			var_dump($paymentData);
+
 			// return payment array on ajax request
 			echo json_encode($paymentData);
 
@@ -144,10 +162,7 @@ if (isset($_POST) && count($_POST) > 0) {
 			// return payment array on ajax request
 			echo json_encode($paymentData);
 
-		} 
-		
-		
-		else if ($paymentOption == 'razorpay') {
+		} else if ($paymentOption == 'razorpay') {
 			echo json_encode(array_values($paymentData)[0]);
 		}
 

@@ -6096,18 +6096,6 @@ if($type == 'shareMyTextStory'){
 	  }
    }
 } 
-
-
-if ($type=='paywithBitcoin') {
-    var_dump("hello");
-
-
-    
-}
-
-
-
-
 if ($type == 'buyProduct') {
 	if (isset($_POST['type']) && $_POST['type'] != '' && !empty($_POST['type'])) {
 		$productID = mysqli_real_escape_string($db, $_POST['type']);

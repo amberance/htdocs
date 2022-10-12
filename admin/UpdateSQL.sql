@@ -1,1 +1,0 @@
-UPDATE `i_configurations` SET `version` = '3.6.8' WHERE `i_configurations`.`configuration_id` = 1;

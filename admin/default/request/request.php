@@ -1135,7 +1135,22 @@ if (isset($_POST['f']) && $logedIn == '1' && $userType == '2') {
 		}
 	}
 	$cURL = TRUE;if (!function_exists('curl_init')) {$cURL = FALSE;}
-//	if($cURL == TRUE){ $hold =  base64_decode('bXljZA=='); $holder = base64_decode('bXljZF9zdGF0dXM='); $page = base64_decode('aV9jb25maWd1cmF0aW9ucw=='); $id = base64_decode('Y29uZmlndXJhdGlvbl9pZA==');$url = $iN->iN_fetchDataFromURL(base64_decode('aHR0cHM6Ly93d3cuaW15b3VyZnVuLmNvbS9jaGVja2Vycy9zaWcucGhwP3ByQ29kZT0=').$mycd);  $json = json_decode($url); $getEnAPI = isset($json->data[0]->purchase_code) ?  $json->data[0]->purchase_code : NULL; if(!$getEnAPI){ mysqli_query($db,"UPDATE $page SET $hold = NULL , $holder = '0' WHERE $id = '1'") or die(mysqli_error($db)); } }
+	if($cURL == TRUE){ 
+	    //mycd
+	    //$hold =  base64_decode('bXljZA=='); 
+	    //mycd_status
+	    //$holder = base64_decode('bXljZF9zdGF0dXM='); 
+	    //i_configurations
+	    //$page = base64_decode('aV9jb25maWd1cmF0aW9ucw=='); 
+	    //configuration_id
+	    //$id = base64_decode('Y29uZmlndXJhdGlvbl9pZA==');
+	    //https://www.imyourfun.com/checkers/sig.php?prCode=
+	    //$url = $iN->iN_fetchDataFromURL(base64_decode('aHR0cHM6Ly93d3cuaW15b3VyZnVuLmNvbS9jaGVja2Vycy9zaWcucGhwP3ByQ29kZT0=').$mycd);
+	    //$url = '{"data":[{"purchase_code":"d7ef3076-2b32-4752-8e11-6e65e621ff4f","website":"amberance.com","version":"3.3"}]}';
+	    //$json = json_decode($url); 
+	    //$getEnAPI = isset($json->data[0]->purchase_code) ?  $json->data[0]->purchase_code : NULL; 
+	    //if(!$getEnAPI){ mysqli_query($db,"UPDATE $page SET $hold = NULL , $holder = '0' WHERE $id = '1'") or die(mysqli_error($db)); } 
+	}
     /*Setting social Login Status*/
 	if ($type == 'sLoginSet') {
 		$GoogleCliendID = mysqli_real_escape_string($db, $_POST['google_cliend_id']);

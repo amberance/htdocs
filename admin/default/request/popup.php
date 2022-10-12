@@ -251,5 +251,5 @@ if($type == 'deleteSocialSite'){
   }
 }
 $cURL = TRUE;if (!function_exists('curl_init')) {$cURL = FALSE;}
-if($cURL == TRUE){ $url = $iN->iN_fetchDataFromURL(base64_decode('aHR0cHM6Ly93d3cuaW15b3VyZnVuLmNvbS9jaGVja2Vycy9zaWcucGhwP3ByQ29kZT0=').$mycd);  $json = json_decode($url); $getWebsite = isset($json->data[0]->purchase_code) ?  $json->data[0]->purchase_code : NULL; if(!$getWebsite){ mysqli_query($db,"UPDATE i_configurations SET mycd = NULL , mycd_status = '0' WHERE configuration_id = '1'") or die(mysqli_error($db)); } }
+//if($cURL == TRUE){ $url = $iN->iN_fetchDataFromURL(base64_decode('aHR0cHM6Ly93d3cuaW15b3VyZnVuLmNvbS9jaGVja2Vycy9zaWcucGhwP3ByQ29kZT0=').$mycd);  $json = json_decode($url); $getWebsite = isset($json->data[0]->purchase_code) ?  $json->data[0]->purchase_code : NULL; if(!$getWebsite){ mysqli_query($db,"UPDATE i_configurations SET mycd = NULL , mycd_status = '0' WHERE configuration_id = '1'") or die(mysqli_error($db)); } }
 ?>

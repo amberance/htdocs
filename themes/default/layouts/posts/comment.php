@@ -4,7 +4,10 @@
     <img src="<?php echo filter_var($userAvatar, FILTER_SANITIZE_STRING);?>"/>
 </div> 
 <div class="i_comment_form_textarea" data-id="<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>">
-    <div class="i_comment_t_body"><textarea name="post_comment" class="comment commenta nwComment" data-id="<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>" id="comment<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>" placeholder="<?php echo filter_var($LANG['write_your_comment'], FILTER_SANITIZE_STRING);?>"></textarea><input type="hidden" id="stic_<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>"><input type="hidden" id="cgif_<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>"></div>
+    <div class="i_comment_t_body">
+    
+   <?php if ( $iN->iN_CheckIsVerified($userID) ) {?>
+    <textarea name="post_comment" class="comment commenta nwComment" data-id="<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>" id="comment<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>" placeholder="<?php echo filter_var($LANG['write_your_comment'], FILTER_SANITIZE_STRING);?>"></textarea><input type="hidden" id="stic_<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>"><input type="hidden" id="cgif_<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>"></div>
     <!--FAST COMMENT BUTTONS-->
     <div class="i_comment_footer i_comment_footer<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>">
         <div class="i_comment_fast_answers getStickers<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?> ">
@@ -15,6 +18,12 @@
         </div>
     </div>
     <!--/FAST COMMENT BUTTONS-->
+   <?php } else {?>
+    <textarea disabled name="post_comment" class="comment commenta nwComment" data-id="<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>" id="comment<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>" placeholder="New users can comment 72 hours after verification"></textarea><input type="hidden" id="cgif_<?php echo filter_var($userPostID, FILTER_SANITIZE_STRING);?>"></div>
+
+   <?php } ?>	
+
+
 </div>
 <!--/COMMENT FORM AVATAR--> 
 </div>

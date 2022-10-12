@@ -7831,11 +7831,36 @@ background: #ccc;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
-.bitpay {
+.bitpay { 
   width: 90px;
   height: 40px;
-  background: url("paymentIcons/bitpay.svg") no-repeat center;
+  background: url("paymentIcons/bitpay.svg");
   background-size: cover;
+}
+
+.bitcoin {
+  width: 120px;
+  height: 40px;
+  background: url("paymentIcons/bitcoin.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+
+}
+
+.tether {
+  width: 140px;
+  height: 40px;
+  background: url("paymentIcons/tether.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.ethereum {
+  width: 140px;
+  height: 40px;
+  background: url("paymentIcons/ethereum.svg")  no-repeat center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .razorpay {
@@ -7854,31 +7879,6 @@ background: #ccc;
   -o-background-size: cover;
   -ms-background-size: cover;
 }
-
-.bitcoin {
-  width: 205px;
-  height: 40px;
-  background: url("paymentIcons/bitcoin.svg") no-repeat center;
-  background-size: cover;
-  -webkit-background-size: cover;
-  -o-background-size: cover;
-  -ms-background-size: cover;
-}
-
-
-.ethereum {
-  width: 205px;
-  height: 40px;
-  background: url("paymentIcons/ethereum.svg") no-repeat center;
-  background-size: cover;
-  -webkit-background-size: cover;
-  -o-background-size: cover;
-  -ms-background-size: cover;
-}
-
-
-
-
 
 .stripe {
   width: 90px;

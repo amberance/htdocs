@@ -1,0 +1,34 @@
+{"key":"shhhhhh","transaction":{"id":"24","from":"3F7CttHecgn4s85cJ1wUCDRXMfpS9L5cU2","to":"bc1qd9wzxelhpg8vd8p5qxd3aemjgadrlwlne5w6h3","hash":"1d8039317e4eda34891219314fd9ff8fec01364e1f52a177d241c16bb2f8499d","title":"ITEM633cd22bc7b25","description":"admin@dizzy.com","amount":"0.00009907","amount_fiat":"2","cryptocurrency":"btc","currency":"USD","external_reference":"ORDS633cd22bc7b22-1-admin@dizzy.com","creation_time":"2022-10-05 00:39:13","status":"C","webhook":"0","billing":""}}
+
+
+
+
+
+{"key":"shhhhhh","transaction":{"id":"27","from":"32pLLkDhG8QQWj6D1JYji9RTVnuwVW3bGR","to":"bc1qd9wzxelhpg8vd8p5qxd3aemjgadrlwlne5w6h3","hash":"557c9b58b6e8d568d11ef7d0f4f9a365ef42707fb7115a5681dff4510ebe1790","title":"ITEM633cd2c9eb09d","description":"admin@dizzy.com","amount":"0.00049478","amount_fiat":"10","cryptocurrency":"btc","currency":"USD","external_reference":"ORDS633cd2c9eb09b-1-admin@dizzy.com","creation_time":"2022-10-05 00:41:51","status":"C","webhook":"0","billing":""}}
+
+
+
+
+
+
+[Tue Oct 04 20:56:38.172590 2022] [php7:error] [pid 10060:tid 1828] [client 127.0.0.1:53923] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 28672 bytes) in C:\\xampp\\htdocs\\includes\\functions.php on line 3540, referer: https://www.amberance.com/pay.php?creditPlan=4&amounts%5BUSD%5D=100&amounts%5BTRY%5D=100&amounts%5BNGN%5D=100&amounts%5BINR%5D=100&order_id=ORDS633c584418d2f&customer_id=CUSTOMER633c584418d30&item_name=Point%20Purchaseing&item_qty=1&item_id=ITEM633c584418d31&payer_email=admin%40dizzy.com&payer_name=admin&description=You%20are%20currently%20purchasing%20points%20from%20https%3A%2F%2Fwww.amberance.com%2F.&ip_address=127.0.0.1&address=3234%20Godfrey%20Street%20Tigard%2C%20OR%2097223&city=Tigard&country=United%20States
+[Tue Oct 04 21:02:31.952610 2022] [php7:notice] [pid 10060:tid 1840] [client 127.0.0.1:54462] PHP Notice:  Undefined index: PayerID in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 12
+[Tue Oct 04 21:02:31.953611 2022] [php7:notice] [pid 10060:tid 1840] [client 127.0.0.1:54462] PHP Notice:  Undefined index: PayerID in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 13
+[Tue Oct 04 21:02:31.953611 2022] [php7:notice] [pid 10060:tid 1840] [client 127.0.0.1:54462] PHP Notice:  Undefined index: PayerID in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 15
+{"key":"shhhhhh","transaction":{"id":"24","from":"3F7CttHecgn4s85cJ1wUCDRXMfpS9L5cU2","to":"bc1qd9wzxelhpg8vd8p5qxd3aemjgadrlwlne5w6h3","hash":"1d8039317e4eda34891219314fd9ff8fec01364e1f52a177d241c16bb2f8499d","title":"ITEM633cd22bc7b25","description":"admin@dizzy.com","amount":"0.00009907","amount_fiat":"2","cryptocurrency":"btc","currency":"USD","external_reference":"ORDS633cd22bc7b22-1-admin@dizzy.com","creation_time":"2022-10-05 00:39:13","status":"C","webhook":"0","billing":""}}in source response1664931751[Tue Oct 04 21:02:31.953611 2022] [php7:notice] [pid 10060:tid 1840] [client 127.0.0.1:54462] PHP Notice:  Undefined index: order_id in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 51
+[Tue Oct 04 21:02:31.956015 2022] [php7:notice] [pid 10060:tid 1840] [client 127.0.0.1:54462] PHP Notice:  Undefined variable: rawData in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 104
+[Tue Oct 04 21:02:31.956015 2022] [php7:notice] [pid 10060:tid 1840] [client 127.0.0.1:54462] PHP Notice:  Trying to access array offset on value of type null in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 104
+[Tue Oct 04 21:02:31.956015 2022] [php7:notice] [pid 10060:tid 1840] [client 127.0.0.1:54462] PHP Notice:  Undefined variable: rawData in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 104
+[Tue Oct 04 21:02:31.957041 2022] [php7:notice] [pid 10060:tid 1840] [client 127.0.0.1:54462] PHP Notice:  Trying to access array offset on value of type null in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 104
+[Tue Oct 04 21:02:31.957433 2022] [php7:error] [pid 10060:tid 1840] [client 127.0.0.1:54462] PHP Fatal error:  Uncaught Error: Call to undefined function getAppUrl() in C:\\xampp\\htdocs\\bitcoin-payment-response.php:127\nStack trace:\n#0 C:\\xampp\\htdocs\\bitcoin-payment-response.php(107): paymentResponse(Array)\n#1 {main}\n  thrown in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 127
+[Tue Oct 04 21:05:31.931612 2022] [php7:notice] [pid 10060:tid 1824] [client 127.0.0.1:54709] PHP Notice:  Undefined index: PayerID in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 12
+[Tue Oct 04 21:05:31.931612 2022] [php7:notice] [pid 10060:tid 1824] [client 127.0.0.1:54709] PHP Notice:  Undefined index: PayerID in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 13
+[Tue Oct 04 21:05:31.931612 2022] [php7:notice] [pid 10060:tid 1824] [client 127.0.0.1:54709] PHP Notice:  Undefined index: PayerID in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 15
+{"key":"shhhhhh","transaction":{"id":"27","from":"32pLLkDhG8QQWj6D1JYji9RTVnuwVW3bGR","to":"bc1qd9wzxelhpg8vd8p5qxd3aemjgadrlwlne5w6h3","hash":"557c9b58b6e8d568d11ef7d0f4f9a365ef42707fb7115a5681dff4510ebe1790","title":"ITEM633cd2c9eb09d","description":"admin@dizzy.com","amount":"0.00049478","amount_fiat":"10","cryptocurrency":"btc","currency":"USD","external_reference":"ORDS633cd2c9eb09b-1-admin@dizzy.com","creation_time":"2022-10-05 00:41:51","status":"C","webhook":"0","billing":""}}in source response1664931931[Tue Oct 04 21:05:31.931612 2022] [php7:notice] [pid 10060:tid 1824] [client 127.0.0.1:54709] PHP Notice:  Undefined index: order_id in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 51
+[Tue Oct 04 21:05:31.931612 2022] [php7:notice] [pid 10060:tid 1824] [client 127.0.0.1:54709] PHP Notice:  Undefined variable: rawData in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 104
+[Tue Oct 04 21:05:31.931612 2022] [php7:notice] [pid 10060:tid 1824] [client 127.0.0.1:54709] PHP Notice:  Trying to access array offset on value of type null in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 104
+[Tue Oct 04 21:05:31.931612 2022] [php7:notice] [pid 10060:tid 1824] [client 127.0.0.1:54709] PHP Notice:  Undefined variable: rawData in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 104
+[Tue Oct 04 21:05:31.931612 2022] [php7:notice] [pid 10060:tid 1824] [client 127.0.0.1:54709] PHP Notice:  Trying to access array offset on value of type null in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 104
+[Tue Oct 04 21:05:31.931612 2022] [php7:error] [pid 10060:tid 1824] [client 127.0.0.1:54709] PHP Fatal error:  Uncaught Error: Call to undefined function getAppUrl() in C:\\xampp\\htdocs\\bitcoin-payment-response.php:127\nStack trace:\n#0 C:\\xampp\\htdocs\\bitcoin-payment-response.php(107): paymentResponse(Array)\n#1 {main}\n  thrown in C:\\xampp\\htdocs\\bitcoin-payment-response.php on line 127
+
+

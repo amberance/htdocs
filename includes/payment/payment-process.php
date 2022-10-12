@@ -107,19 +107,63 @@ if (isset($_POST) && count($_POST) > 0) {
 			'cvv' => 'required',
 		));
 	}
+	
+	$stderr = fopen('php://stderr', 'w');
+	//fwrite($stderr, "$base_url/pay.php"  );
+	fwrite($stderr, "Outside true validation" );
+	fclose($stderr);
 
 	// Check server side validation success then process for next step
 	if ($validation === true) { 
 		$time = time();
-	    $paymentInsert = mysqli_query($db, "INSERT INTO i_user_payments(payer_iuid_fk,order_key,payment_type,payment_option,payment_time, payment_status,credit_plan_id)VALUES('$userID','" . $insertData['order_id'] . "','point', '" . $insertData['paymentOption'] . "', '" . $time . "','pending','" . $insertData['creditPlan'] . "')") or die(mysqli_error($db));
+		
+		//$stderr = fopen('php://stderr', 'w');
+		//fwrite($stderr, " THE POINTS PAYMENT OPTION: "  );
+		//fwrite($stderr, $paymentOption );
+		//fclose($stderr);
+		
+		$stderr = fopen('php://stderr', 'w');
+		//fwrite($stderr, "$base_url/pay.php"  );
+		fwrite($stderr, "In true validation\n\n" );
+		fclose($stderr);
+		
+		
+		if ($paymentOption == 'paypal') {
+		    $updateQuery = "UPDATE `i_user_payments` SET payment_status = 'declined'  WHERE payer_iuid_fk = '$userID' AND payment_status = 'pending' AND payment_option = 'paypal'";
+		    
+		    //$stderr = fopen('php://stderr', 'w');
+		    //fwrite($stderr, " THE QUERY: "  );
+		    //fwrite($stderr, $paymentOption );
+		    //fclose($stderr);
+		    
+		    $paypayUpdate = mysqli_query($db, $updateQuery) or die(mysqli_error($db));
+		}
+		
+		$stderr = fopen('php://stderr', 'w');
+		//fwrite($stderr, "$base_url/pay.php"  );
+		fwrite($stderr, $base_url );
+		fwrite($stderr, $paymentOption );
+		fclose($stderr);
+
+		
+		$sql = "INSERT INTO i_user_payments(payer_iuid_fk,order_key,payment_type,payment_option,payment_time, payment_status,credit_plan_id)VALUES('$userID','" . $insertData['order_id'] . "','point', '" . $insertData['paymentOption'] . "', '" . $time . "','pending','" . $insertData['creditPlan'] . "')";
+		$stderr = fopen('php://stderr', 'w');
+		//fwrite($stderr, "$base_url/pay.php"  );
+		fwrite($stderr, $sql );
+		fwrite($stderr, "\n\nbefore sql executesn\n" );
+		fclose($stderr);
+	    $paymentInsert = mysqli_query($db, $sql) or die(mysqli_error($db));
 		 
 	    
-	    if  (($paymentOption == 'bitcoin') || ($paymentOption == 'ethereum'))  {
+	    
+	    
+	    if (($paymentOption == 'bitcoin') || ($paymentOption == 'ethereum')) {
 	        
-	        // return payment array on ajax request
-	        echo json_encode("https://www.radient.one/pay.php");
+	        $url = "".$base_url."pay.php";
+	        echo json_encode($url);
 	        
 	    }
+		
 		
 		// Then send data to payment process service for process payment
 		// This service will return payment data
