@@ -5647,7 +5647,7 @@ class iN_UPDATES {
 	/*Suggestion Creators*/ 
     public function iN_SuggestionCreatorsList($uid) {
 		$uid = mysqli_real_escape_string($this->db, $uid); 
-		$query = mysqli_query($this->db, "SELECT * FROM i_users WHERE uStatus IN('3') AND certification_status = '2' AND validation_status = '2' AND condition_status = '2' AND fees_status = '2' AND iuid NOT IN (SELECT fr_two FROM i_friends WHERE fr_one = '$uid' OR fr_two = '$uid')  ORDER BY rand() LIMIT 5") or die(mysqli_error($this->db));
+		$query = mysqli_query($this->db, "SELECT * FROM i_users WHERE user_gender = 'female' AND uStatus IN('3') AND certification_status = '2' AND validation_status = '2' AND condition_status = '2' AND fees_status = '2' AND iuid NOT IN (SELECT fr_two FROM i_friends WHERE fr_one = '$uid' OR fr_two = '$uid')  ORDER BY rand() LIMIT 5") or die(mysqli_error($this->db));
 		$data = array();
 		while ($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) { 
 			$data[] = $row;
@@ -5659,7 +5659,7 @@ class iN_UPDATES {
 	} 
 	/*Suggestion Creators*/ 
     public function iN_SuggestionCreatorsListOut() { 
-		$query = mysqli_query($this->db, "SELECT * FROM i_users WHERE uStatus IN('3') ORDER BY rand() LIMIT 5") or die(mysqli_error($this->db));
+		$query = mysqli_query($this->db, "SELECT * FROM i_users WHERE user_gender = 'female' AND uStatus IN('3') ORDER BY rand() LIMIT 5") or die(mysqli_error($this->db));
 		$data = array();
 		while ($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) {
 			$data[] = $row;
